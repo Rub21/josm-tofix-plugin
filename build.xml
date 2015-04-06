@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="sumoconvert" default="dist" basedir=".">
+
+    <!-- enter the SVN commit message -->
+    <property name="commit.message" value="Commit message"/>
+    <!-- enter the *lowest* JOSM version this plugin is currently compatible with -->
+    <property name="plugin.main.version" value="7001"/>
+
+    <!-- Configure these properties (replace "..." accordingly).
+
+
+
+         See http://josm.openstreetmap.de/wiki/DevelopersGuide/DevelopingPlugins
+    -->
+    <property name="plugin.author" value="Rub21"/>
+    <property name="plugin.class" value="org.openstreetmap.josm.plugins.tofix.Tofix"/>
+    <property name="plugin.description" value="Integrate to-fix http://osmlab.github.io/to-fix/ to JOSM,  to repair errors on OpenStreetMap"/>
+    <property name="plugin.icon" value="images/icontofix.png"/>
+    <!-- <property name="plugin.link" value="..."/>-->
+    <!--<property name="plugin.early" value="..."/>-->
+    <!--<property name="plugin.requires" value="..."/>-->
+    <!--<property name="plugin.stage" value="..."/>-->
+    
+	<property name="josm" location="../../core/dist/josm-custom.jar"/>
+	<property name="plugin.dist.dir" value="../../dist"/>
+	
+    <!-- ** include targets that all plugins have in common ** -->
+    <import file="../build-common.xml"/>
+  
+</project>
