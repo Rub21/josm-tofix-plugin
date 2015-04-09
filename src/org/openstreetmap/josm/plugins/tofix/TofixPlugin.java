@@ -1,10 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import javax.swing.JMenu;
-
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.IconToggleButton;
-import org.openstreetmap.josm.gui.MainMenu;
 import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
@@ -18,9 +14,6 @@ public class TofixPlugin extends Plugin {
 
     public TofixPlugin(PluginInformation info) {
         super(info);
-//        JMenu windowMenu = Main.main.menu.windowMenu;
-//        MainMenu.add(windowMenu, new TofixAcction());
-
     }
 
     @Override

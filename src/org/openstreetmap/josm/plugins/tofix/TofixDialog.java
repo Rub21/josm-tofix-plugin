@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import javax.net.ssl.SSLEngineResult;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -17,6 +18,8 @@ import javax.swing.JRadioButton;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.plugins.tofix.bean.StatusBean;
+import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -47,6 +50,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 //JOptionPane.showConfirmDialog(Main.parent, "Edit");
                 JOptionPane.showMessageDialog(Main.parent, tr("Edit."));
+                StatusBean statusBean = null;
+                StatusController statusController = new StatusController(statusBean, "test");
+                statusController.getStatusBean();
             }
         });
         skipButton = new SideButton(new AbstractAction() {
@@ -159,4 +165,5 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     }
 
+    //http://54.147.184.23:8000/count/unconnectedmajor
 }
