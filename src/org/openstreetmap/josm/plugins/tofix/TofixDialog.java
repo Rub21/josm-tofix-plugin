@@ -51,8 +51,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 //JOptionPane.showConfirmDialog(Main.parent, "Edit");
                 JOptionPane.showMessageDialog(Main.parent, tr("Edit."));
-                StatusBean statusBean = null;
-                StatusController statusController = new StatusController(statusBean, "test");
+                StatusController statusController = new StatusController("http://54.147.184.23:8000/status");
                 statusController.getStatusBean();
             }
         });

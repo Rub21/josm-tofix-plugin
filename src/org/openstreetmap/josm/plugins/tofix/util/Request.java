@@ -11,7 +11,7 @@ import java.net.URL;
  *
  * @author ruben
  */
-public class PostRequest {
+public class Request {
 
     public static String sendPOST(String url) throws IOException {
         URL obj = new URL(url);
@@ -24,7 +24,7 @@ public class PostRequest {
         os.flush();
         os.close();
         //POST - END
-        int responseCode = con.getResponseCode();        
+        int responseCode = con.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     con.getInputStream()));
@@ -42,4 +42,32 @@ public class PostRequest {
             return null;
         }
     }
+
+    public static String sendGET(String url) throws IOException {
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        // con.setRequestProperty("User-Agent", USER_AGENT);
+        int responseCode = con.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            System.out.println(response.toString());
+            return response.toString();
+
+        } else {
+            System.out.println("GET request not worked");
+            return null;
+        }
+
+    }
+
 }

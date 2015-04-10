@@ -18,4 +18,9 @@ public class StatusBean {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void sumary() {
+        System.err.println("Status :" + getStatus());
+
+    }
 }
