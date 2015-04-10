@@ -28,6 +28,7 @@ public class TofixPlugin extends Plugin {
             btn = null;
             mode = null;
             tofixDialog = null;
+            //Rub21
         }
 
     }

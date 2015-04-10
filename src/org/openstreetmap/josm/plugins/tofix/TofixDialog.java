@@ -20,6 +20,7 @@ import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.StatusBean;
 import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
+import org.openstreetmap.josm.plugins.tofix.controller.TaskController;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -64,7 +65,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Main.parent, tr("Skip."));
+//                JOptionPane.showMessageDialog(Main.parent, tr("Skip."));
+                TaskController taskController = new TaskController("http://54.147.184.23:8000/task/unconnectedmajor");
+                taskController.getTaskBean();
+
             }
         });
 

@@ -9,6 +9,7 @@ import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.tools.Shortcut;
 
 
+
 @SuppressWarnings("serial")
 public class TofixAcction extends JosmAction {
 
