@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import javax.net.ssl.SSLEngineResult;
+import java.util.concurrent.Future;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -16,9 +16,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
+import org.openstreetmap.josm.actions.downloadtasks.PostDownloadHandler;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.tofix.bean.StatusBean;
+import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
 import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
 import org.openstreetmap.josm.plugins.tofix.controller.TaskController;
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -49,10 +54,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //JOptionPane.showConfirmDialog(Main.parent, "Edit");
-                JOptionPane.showMessageDialog(Main.parent, tr("Edit."));
                 StatusController statusController = new StatusController("http://54.147.184.23:8000/status");
-                statusController.getStatusBean();
+                // JOptionPane.showMessageDialog(Main.parent, statusController.getStatusBean().getStatus());
+
             }
         });
         skipButton = new SideButton(new AbstractAction() {
@@ -64,9 +68,31 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-//                JOptionPane.showMessageDialog(Main.parent, tr("Skip."));
                 TaskController taskController = new TaskController("http://54.147.184.23:8000/task/unconnectedmajor");
-                taskController.getTaskBean();
+                //JOptionPane.showMessageDialog(Main.parent, taskController.getTaskBean().getKey());
+                TaskBean taskBean = taskController.getTaskBean();
+                LatLon coor = new LatLon(taskBean.getValue().getY(), taskBean.getValue().getX());
+                //Main.map.mapView.getLatLon(13, 74);
+                //Main.map.mapView.setLocation(13, 74);
+                //Main.map.repaint();
+
+                if (coor.isOutSideWorld()) {
+                    JOptionPane.showMessageDialog(Main.parent, tr("Can not draw outside of the world."));
+                    return;
+                }
+
+                BoundingXYVisitor v = new BoundingXYVisitor();
+                //v.visit(coor);
+                //double ex = 0.0001; = 2.34 m
+                double ex = 0.0007;// 16.7 m
+                Bounds bounds = new Bounds(taskBean.getValue().getY() - ex, taskBean.getValue().getX() - ex, taskBean.getValue().getY() + ex, taskBean.getValue().getX() + ex);
+                v.visit(bounds);
+                Main.map.mapView.zoomTo(v);
+
+                //Dowloan rub21
+                DownloadOsmTask task = new DownloadOsmTask();
+                Future<?> future = task.download(true, bounds, null);
+                Main.worker.submit(new PostDownloadHandler(task, future));
 
             }
         });
