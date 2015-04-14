@@ -17,6 +17,7 @@ import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
+import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.progress.NullProgressMonitor;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
@@ -30,37 +31,19 @@ public class Download {
     private static Future<?> future;
 
     public static void Download(final DownloadOsmTask task, Bounds bounds, final TaskBean taskBean) {
-        ProgressMonitor monitor = NullProgressMonitor.INSTANCE;
+        ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
-
         Runnable runAfterTask = new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    
-                    // https://api.openstreetmap.org/api/0.6/map?bbox=-78.116826,42.448604,-78.115426,42.450004node?id=2837619796
-                    // this is not strictly necessary because of the type of executor service
-                    // Main.worker is initialized with, but it doesn't harm either
-                    //
-             
                     future.get(); // wait for the download task to complete                
                     Node node = new Node(taskBean.getValue().getNode_id());
-                    node.
+                    Way way = new Way(taskBean.getValue().getWay_id());
+                    //Collection<OsmPrimitive> selection = task.getDownloadedData().allPrimitives();
+                    Main.main.getCurrentDataSet().setSelected(node);
 
-                    //Collection<OsmPrimitive> selection = Main.main.getCurrentDataSet().allPrimitives();
-                    //Collection<OsmPrimitive> selection = Main.main.getEditLayer().data.allPrimitives();
-                    Collection<OsmPrimitive> selection = task.getDownloadedData().allPrimitives();
-                    
-                    Main.main.getCurrentDataSet().setSelected(selection);
-
-                    Set<Node> selectedNodes = OsmPrimitive.getFilteredSet(selection, Node.class);
-
-                    Util.print(selectedNodes);
-                    Main.main.getCurrentDataSet().setSelected(selectedNodes);
-                    
-                    
-                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {
@@ -70,7 +53,6 @@ public class Download {
         };
 
         Main.worker.submit(runAfterTask);
-
     }
 
     public void selectobjects(TaskBean taskBean, DownloadOsmTask task) {
