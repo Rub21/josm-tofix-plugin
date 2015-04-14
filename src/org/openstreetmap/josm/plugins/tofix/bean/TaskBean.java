@@ -1,40 +1,36 @@
 package org.openstreetmap.josm.plugins.tofix.bean;
-
 /**
  *
  * @author ruben
  */
 public class TaskBean {
 
-    String key;
-    ValueBean value;
+    private String id;
+    private String title;
+    private String source;
 
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public ValueBean getValue() {
-        return value;
+    public String getTitle() {
+        return title;
     }
 
-    public void setValue(ValueBean value) {
-        this.value = value;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void sumary() {
-        System.err.println("Key :" + getKey());
-        System.err.println("X :" + getValue().getX());
-        System.err.println("Y :" + getValue().getY());
-        System.err.println("weight :" + getValue().getWeight());
-        System.err.println("problem_id :" + getValue().getProblem_id());
-        System.err.println("node_id :" + getValue().getNode_id());
-        System.err.println("way_id :" + getValue().getWay_id());
-        System.err.println("highwaykey :" + getValue().getHighwaykey());
-        System.err.println("distance :" + getValue().getDistance());
-        System.err.println("iso_a2 :" + getValue().getIso_a2());
+    public String getSource() {
+        return source;
     }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
 }

@@ -21,10 +21,10 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.tofix.bean.ListTasksBean;
-import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
-import org.openstreetmap.josm.plugins.tofix.controller.ListTasksController;
-import org.openstreetmap.josm.plugins.tofix.controller.TaskController;
+import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
+import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.util.*;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -40,14 +40,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private final SideButton skipButton;
     private final SideButton fixedButton;
 
-    ListTasksBean listTasksBean = null;
-    ListTasksController listTasksController = new ListTasksController("http://osmlab.github.io/to-fix/src/data/tasks.json");
+    String host = "http://54.147.184.23:8000";
+    String url_task = url_task = host + "/task/unconnectedmajor";
 
-    DownloadOsmTask task = null;
-    TaskController taskController = new TaskController("http://54.147.184.23:8000/task/unconnectedmajor");
-    TaskBean taskBean = null;
+    ListTaskBean listTaskBean = null;
+    ListTaskController listTaskController = new ListTaskController("http://osmlab.github.io/to-fix/src/data/tasks.json");
+
+    ItemController itemController = null;
+    ItemBean itemBean = null;
 
     Bounds bounds = null;
+    DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
 
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
@@ -62,15 +65,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //StatusController statusController = new StatusController("http://54.147.184.23:8000/status");
-                // JOptionPane.showMessageDialog(Main.parent, statusController.getStatusBean().getStatus());
+                //StatusController statusController = new StatusController("http://54.147.184.23:8000/status");            
 
-                //Dowloan rub21
-                task = new DownloadOsmTask();
-                Download.Download(task, bounds, taskBean);
+                Download.Download(downloadOsmTask, bounds, itemBean);
 
             }
         });
+        editButton.setEnabled(false);
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
@@ -80,24 +81,21 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                taskBean = taskController.getTaskBean();
-
-                LatLon coor = new LatLon(taskBean.getValue().getY(), taskBean.getValue().getX());
-
+                itemController = new ItemController(url_task);
+                itemBean = itemController.getItemBean();
+                LatLon coor = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
                 if (coor.isOutSideWorld()) {
-                    JOptionPane.showMessageDialog(Main.parent, tr("Can not draw outside of the world."));
+                    JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
                     return;
                 }
                 BoundingXYVisitor v = new BoundingXYVisitor();
-
                 //double ex = 0.0001; = 2.34 m
                 double ex = 0.0007;// 16.7 m
-                bounds = new Bounds(taskBean.getValue().getY() - ex, taskBean.getValue().getX() - ex, taskBean.getValue().getY() + ex, taskBean.getValue().getX() + ex);
+                bounds = new Bounds(itemBean.getValue().getY() - ex, itemBean.getValue().getX() - ex, itemBean.getValue().getY() + ex, itemBean.getValue().getX() + ex);
                 v.visit(bounds);
                 Main.map.mapView.zoomTo(v);
-
                 // skipButton.setEnabled(!Main.isOffline(OnlineResource.OSM_API)); // agregr para despues
+                editButton.setEnabled(true);
             }
         });
         fixedButton = new SideButton(new AbstractAction() {
@@ -121,13 +119,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         //Call the tasks
         ButtonGroup group = new ButtonGroup();
-
-        listTasksBean = listTasksController.getListTasksBean();
-        for (int i = 0; i < listTasksBean.getTasks().size(); i++) {
-            System.out.println(listTasksBean.getTasks().get(i).getId());
-            JRadioButton jRadioButton = new JRadioButton(listTasksBean.getTasks().get(i).getTitle());
+        listTaskBean = listTaskController.getListTasksBean();
+        for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
+            System.out.println(listTaskBean.getTasks().get(i).getId());
+            JRadioButton jRadioButton = new JRadioButton(listTaskBean.getTasks().get(i).getTitle());
             group.add(jRadioButton);
-            jRadioButton.setActionCommand(listTasksBean.getTasks().get(i).getId());
+            jRadioButton.setActionCommand(listTaskBean.getTasks().get(i).getId());
             jcontenpanel.add(jRadioButton);
             jRadioButton.addActionListener(this);
         }
@@ -139,8 +136,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JOptionPane.showMessageDialog(Main.parent, tr(e.getActionCommand()));
-
+        url_task = host + "/task/" + e.getActionCommand();
     }
 
     //http://54.147.184.23:8000/count/unconnectedmajor

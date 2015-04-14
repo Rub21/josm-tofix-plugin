@@ -6,16 +6,15 @@ import java.util.List;
  *
  * @author ruben
  */
-public class ListTasksBean {
+public class ListTaskBean {
 
-    private List<TasksBean> tasks;
+    private List<TaskBean> tasks;
 
-    public List<TasksBean> getTasks() {
+    public List<TaskBean> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<TasksBean> tasks) {
+    public void setTasks(List<TaskBean> tasks) {
         this.tasks = tasks;
     }
-
 }

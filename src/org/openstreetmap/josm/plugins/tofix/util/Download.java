@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
-import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Download {
 
     private static Future<?> future;
 
-    public static void Download(final DownloadOsmTask task, Bounds bounds, final TaskBean taskBean) {
+    public static void Download(DownloadOsmTask task, Bounds bounds, final ItemBean itemBean) {
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
         Runnable runAfterTask = new Runnable() {
@@ -30,8 +30,8 @@ public class Download {
             public void run() {
                 try {
                     future.get(); // wait for the download task to complete                
-                    Node node = new Node(taskBean.getValue().getNode_id());
-                    Way way = new Way(taskBean.getValue().getWay_id());
+                    Node node = new Node(itemBean.getValue().getNode_id());
+                    Way way = new Way(itemBean.getValue().getWay_id());
                     //Collection<OsmPrimitive> selection = task.getDownloadedData().allPrimitives();
                     Main.main.getCurrentDataSet().setSelected(node);
 
@@ -46,7 +46,7 @@ public class Download {
         Main.worker.submit(runAfterTask);
     }
 
-    public void selectobjects(TaskBean taskBean, DownloadOsmTask task) {
+    public void selectobjects(ItemBean taskBean, DownloadOsmTask task) {
 
     }
 }
