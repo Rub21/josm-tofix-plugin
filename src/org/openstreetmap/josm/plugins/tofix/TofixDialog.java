@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.concurrent.Future;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -17,15 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
-import org.openstreetmap.josm.actions.downloadtasks.PostDownloadHandler;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
-import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
 import org.openstreetmap.josm.plugins.tofix.controller.TaskController;
+import org.openstreetmap.josm.plugins.tofix.util.*;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -39,6 +37,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
+    DownloadOsmTask task = null;
+    //fix after
+    TaskController taskController = new TaskController("http://54.147.184.23:8000/task/unconnectedmajor");
+    //JOptionPane.showMessageDialog(Main.parent, taskController.getTaskBean().getKey());
+    TaskBean taskBean = null;
+    Bounds bounds = null;
 
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
@@ -54,9 +58,34 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                StatusController statusController = new StatusController("http://54.147.184.23:8000/status");
+                //StatusController statusController = new StatusController("http://54.147.184.23:8000/status");
                 // JOptionPane.showMessageDialog(Main.parent, statusController.getStatusBean().getStatus());
 
+                //Dowloan rub21
+                task = new DownloadOsmTask();
+
+                Download.Download(task, bounds, taskBean);
+
+//        
+//          final Future<?> future = task.download(true, bounds, null);
+//                Runnable runAfterTask = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            // this is not strictly necessary because of the type of executor service
+//                            // Main.worker is initialized with, but it doesn't harm either
+//                            //
+//                            future.get(); // wait for the download task to complete
+//                            selectobjects();
+//                        } catch (InterruptedException ex) {
+//                            Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
+//                        } catch (ExecutionException ex) {
+//                            Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
+//                        }
+//                    }
+//                };
+//                
+//                Main.worker.submit(runAfterTask);
             }
         });
         skipButton = new SideButton(new AbstractAction() {
@@ -68,32 +97,24 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                TaskController taskController = new TaskController("http://54.147.184.23:8000/task/unconnectedmajor");
-                //JOptionPane.showMessageDialog(Main.parent, taskController.getTaskBean().getKey());
-                TaskBean taskBean = taskController.getTaskBean();
+
+                taskBean = taskController.getTaskBean();
+
                 LatLon coor = new LatLon(taskBean.getValue().getY(), taskBean.getValue().getX());
-                //Main.map.mapView.getLatLon(13, 74);
-                //Main.map.mapView.setLocation(13, 74);
-                //Main.map.repaint();
 
                 if (coor.isOutSideWorld()) {
                     JOptionPane.showMessageDialog(Main.parent, tr("Can not draw outside of the world."));
                     return;
                 }
-
                 BoundingXYVisitor v = new BoundingXYVisitor();
-                //v.visit(coor);
+
                 //double ex = 0.0001; = 2.34 m
                 double ex = 0.0007;// 16.7 m
-                Bounds bounds = new Bounds(taskBean.getValue().getY() - ex, taskBean.getValue().getX() - ex, taskBean.getValue().getY() + ex, taskBean.getValue().getX() + ex);
+                bounds = new Bounds(taskBean.getValue().getY() - ex, taskBean.getValue().getX() - ex, taskBean.getValue().getY() + ex, taskBean.getValue().getX() + ex);
                 v.visit(bounds);
                 Main.map.mapView.zoomTo(v);
 
-                //Dowloan rub21
-                DownloadOsmTask task = new DownloadOsmTask();
-                Future<?> future = task.download(true, bounds, null);
-                Main.worker.submit(new PostDownloadHandler(task, future));
-
+                // skipButton.setEnabled(!Main.isOffline(OnlineResource.OSM_API)); // agregr para despues
             }
         });
 
@@ -195,4 +216,5 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     //http://54.147.184.23:8000/count/unconnectedmajor
+
 }

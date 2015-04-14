@@ -1,4 +1,3 @@
-
 package org.openstreetmap.josm.plugins.tofix.bean;
 
 /**
@@ -7,15 +6,15 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  */
 public class ValueBean {
 
-     Double X;
-     Double Y;
-     Float weight;
-     Integer problem_id;
-     String way_id;
-     String node_id;
-     Double highwaykey;
-     Double distance;
-     String iso_a2;
+    Double X;
+    Double Y;
+    Float weight;
+    Integer problem_id;
+    Long way_id;
+    Long node_id;
+    String highwaykey;
+    Double distance;
+    String iso_a2;
 
     public Double getX() {
         return X;
@@ -49,27 +48,27 @@ public class ValueBean {
         this.problem_id = problem_id;
     }
 
-    public String getWay_id() {
+    public Long getWay_id() {
         return way_id;
     }
 
-    public void setWay_id(String way_id) {
+    public void setWay_id(Long way_id) {
         this.way_id = way_id;
     }
 
-    public String getNode_id() {
+    public Long getNode_id() {
         return node_id;
     }
 
-    public void setNode_id(String node_id) {
+    public void setNode_id(Long node_id) {
         this.node_id = node_id;
     }
 
-    public Double getHighwaykey() {
+    public String getHighwaykey() {
         return highwaykey;
     }
 
-    public void setHighwaykey(Double highwaykey) {
+    public void setHighwaykey(String highwaykey) {
         this.highwaykey = highwaykey;
     }
 
