@@ -121,12 +121,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         ButtonGroup group = new ButtonGroup();
         listTaskBean = listTaskController.getListTasksBean();
         for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-            System.out.println(listTaskBean.getTasks().get(i).getId());
-            JRadioButton jRadioButton = new JRadioButton(listTaskBean.getTasks().get(i).getTitle());
-            group.add(jRadioButton);
-            jRadioButton.setActionCommand(listTaskBean.getTasks().get(i).getId());
-            jcontenpanel.add(jRadioButton);
-            jRadioButton.addActionListener(this);
+            JRadioButton jRBItem = new JRadioButton(listTaskBean.getTasks().get(i).getTitle());
+            group.add(jRBItem);
+            jRBItem.setActionCommand(listTaskBean.getTasks().get(i).getId());
+            jcontenpanel.add(jRBItem);
+            jRBItem.addActionListener(this);
         }
         this.setPreferredSize(new Dimension(0, 92));
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
@@ -138,6 +137,5 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         url_task = host + "/task/" + e.getActionCommand();
     }
-
     //http://54.147.184.23:8000/count/unconnectedmajor
 }
