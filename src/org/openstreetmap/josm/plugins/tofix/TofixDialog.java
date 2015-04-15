@@ -66,7 +66,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //StatusController statusController = new StatusController("http://54.147.184.23:8000/status");            
-
                 Download.Download(downloadOsmTask, bounds, itemBean);
 
             }
@@ -126,6 +125,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             jRBItem.setActionCommand(listTaskBean.getTasks().get(i).getId());
             jcontenpanel.add(jRBItem);
             jRBItem.addActionListener(this);
+            if (i == 0) {
+                jRBItem.setSelected(true);
+            }
         }
         this.setPreferredSize(new Dimension(0, 92));
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
@@ -137,5 +139,4 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         url_task = host + "/task/" + e.getActionCommand();
     }
-    //http://54.147.184.23:8000/count/unconnectedmajor
 }
