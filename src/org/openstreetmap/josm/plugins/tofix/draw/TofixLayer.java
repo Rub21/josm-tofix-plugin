@@ -69,12 +69,12 @@ public class TofixLayer extends Layer {
             if (l != null) {
                 g.drawLine(l.x, l.y, pnt.x, pnt.y);
             }
-            g.drawOval(pnt.x - 2, pnt.y - 2, 20, 20);
+            g.drawOval(pnt.x - 2, pnt.y -2, 20, 20);
             l = pnt;
         }
         Util.print(coordinate);
         Point pnt = mv.getPoint(coordinate);
-        g.drawOval(pnt.x, pnt.y-2, 100, 100);
+        g.drawOval(pnt.x, pnt.y, 50, 50);
     }
 
     @Override
