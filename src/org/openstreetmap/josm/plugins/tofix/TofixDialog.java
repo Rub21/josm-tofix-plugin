@@ -28,6 +28,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.draw.DrawWay;
+import org.openstreetmap.josm.plugins.tofix.draw.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
@@ -98,6 +99,15 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Main.map.mapView.zoomTo(v);
                 // skipButton.setEnabled(!Main.isOffline(OnlineResource.OSM_API)); // agregr para despues
                 editButton.setEnabled(true);
+
+                //SELECT
+                MapView mv = Main.map.mapView;
+               
+                
+                TofixLayer layer = new TofixLayer("test",coor);
+                mv.addLayer(layer);
+                    //node.setCoor(mv.getLatLon(mv.lastMEvent.getX(), mv.lastMEvent.getY()));
+
             }
         });
         fixedButton = new SideButton(new AbstractAction() {
@@ -110,9 +120,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // JOptionPane.showMessageDialog(Main.parent, tr("Fixed."));
-                
 
-               
             }
         });
 
