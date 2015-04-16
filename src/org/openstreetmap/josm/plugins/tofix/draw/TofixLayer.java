@@ -45,7 +45,7 @@ public class TofixLayer extends Layer {
 
     @Override
     public String getToolTipText() {
-        return tr("Layer to make measurements");
+        return tr("Layer to draw OSM error");
     }
 
     @Override
