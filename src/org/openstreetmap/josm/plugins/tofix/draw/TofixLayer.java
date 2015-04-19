@@ -1,19 +1,26 @@
 package org.openstreetmap.josm.plugins.tofix.draw;
 
+import java.awt.BasicStroke;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MapView;
@@ -21,22 +28,22 @@ import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.plugins.tofix.util.Util;
+import org.openstreetmap.josm.tools.date.DateUtils;
 
-/**
- * This is a layer that draws a grid
- */
-public class TofixLayer extends Layer {
+
+public class TofixLayer extends Layer implements ActionListener {
 
     LatLon coordinate;
+    List<LatLon> listcoordinates = new LinkedList<LatLon>();
 
-    public TofixLayer(String name, LatLon coordinate) {
+    public TofixLayer(String name) {
         super(name);
-        this.coordinate = coordinate;
+
     }
 
     private static final Icon icon = new ImageIcon("icontofix.png");
 
-    private Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
+    final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
     @Override
     public Icon getIcon() {
@@ -50,31 +57,34 @@ public class TofixLayer extends Layer {
 
     @Override
     public boolean isMergable(Layer other) {
-        //return other instanceof TofixLayer;
         return false;
     }
 
-    @Override
-    public void mergeFrom(Layer from) {
-        // TODO: 
+    public void add_coordinate(LatLon coordinate) {
+        listcoordinates.add(coordinate);
+        Main.map.mapView.repaint();
+
     }
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
-
         g.setColor(Color.green);
+        g.setStroke(new BasicStroke((float) 3.8));
         Point l = null;
-        for (OsmPrimitive p : points) {
-            Point pnt = mv.getPoint(p.getBBox().getCenter());
-            if (l != null) {
-                g.drawLine(l.x, l.y, pnt.x, pnt.y);
-            }
-            g.drawOval(pnt.x - 2, pnt.y -2, 20, 20);
-            l = pnt;
+//        for (OsmPrimitive p : points) {
+//            Point pnt = mv.getPoint(p.getBBox().getCenter());
+//            if (l != null) {
+//                g.drawLine(l.x, l.y, pnt.x, pnt.y);
+//            }
+//            g.drawOval(pnt.x - 2, pnt.y - 2, 20, 20);
+//            l = pnt;
+//        }
+        for (LatLon coor : listcoordinates) {
+            Point pnt = mv.getPoint(coor);
+            g.drawOval(pnt.x, pnt.y, 50, 50);
+
         }
-        Util.print(coordinate);
-        Point pnt = mv.getPoint(coordinate);
-        g.drawOval(pnt.x, pnt.y, 50, 50);
+
     }
 
     @Override
@@ -97,15 +107,15 @@ public class TofixLayer extends Layer {
             new LayerListPopup.InfoAction(this)};
     }
 
-    private int round(double d) {
-        double dAbs = Math.abs(d);
-        int i = (int) dAbs;
-        double result = dAbs - (double) i;
-        if (result < 0.5) {
-            return d < 0 ? -i : i;
-        } else {
-            return d < 0 ? -(i + 1) : i + 1;
-        }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        JOptionPane.showConfirmDialog(null, e.getSource());
+    }
+
+    @Override
+    public void mergeFrom(Layer layer) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
