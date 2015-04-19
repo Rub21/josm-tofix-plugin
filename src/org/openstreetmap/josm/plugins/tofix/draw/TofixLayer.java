@@ -20,16 +20,12 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
-import org.openstreetmap.josm.tools.date.DateUtils;
-
 
 public class TofixLayer extends Layer implements ActionListener {
 
@@ -68,8 +64,8 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
-        g.setColor(Color.green);
-        g.setStroke(new BasicStroke((float) 3.8));
+        g.setColor(Color.red);
+        g.setStroke(new BasicStroke((float) 5));
         Point l = null;
 //        for (OsmPrimitive p : points) {
 //            Point pnt = mv.getPoint(p.getBBox().getCenter());
@@ -81,7 +77,7 @@ public class TofixLayer extends Layer implements ActionListener {
 //        }
         for (LatLon coor : listcoordinates) {
             Point pnt = mv.getPoint(coor);
-            g.drawOval(pnt.x, pnt.y, 50, 50);
+            g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
 
         }
 
@@ -115,7 +111,7 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void mergeFrom(Layer layer) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
 }
