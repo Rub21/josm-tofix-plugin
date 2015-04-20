@@ -5,12 +5,18 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
 import static javax.swing.Action.SMALL_ICON;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -63,15 +69,18 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
     JPanel valuePanel = new JPanel();
-    JPanel jcontenpanel = new JPanel(new GridLayout(0, 2));
+    JPanel jcontenpanel = new JPanel(new GridLayout(4, 0));
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
+
+    JCheckBox autoedit = new JCheckBox("Automatic Download after Skip");
+    JCheckBox autoskip = new JCheckBox("Automatic Skip after Fixed");
 
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
-                        KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 150);
-
+                        KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
+        // Fixed Button
         editButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Edit"));
@@ -86,6 +95,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
         editButton.setEnabled(false);
+        // Fixed Skip
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
@@ -99,10 +109,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 editButton.setEnabled(true);
                 editButton.setFocusable(true);
                 fixedButton.setEnabled(false);
-                editButton.doClick();
+                if (autoedit.isSelected()) {
+                    editButton.doClick();
+                }
+
             }
         });
-
+        // Fixed Button
         fixedButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Fixed"));
@@ -113,50 +126,48 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fixed();
-                skipButton.doClick();
+                if (autoskip.isSelected()) {
+                    skipButton.doClick();
+                }
+
             }
         });
         fixedButton.setEnabled(false);
-
+        // Panels
         valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jcontenpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        ButtonGroup group = new ButtonGroup();
-
+        // JComboBox for each task
+        ArrayList<String> tasksList = new ArrayList<String>();
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-                JRadioButton jRBItem = new JRadioButton(listTaskBean.getTasks().get(i).getTitle());
-                group.add(jRBItem);
-                jRBItem.setActionCommand(listTaskBean.getTasks().get(i).getId());
-                jcontenpanel.add(jRBItem);
-                jRBItem.addActionListener(this);
-                if (i == 0) {
-                    jRBItem.setSelected(true);
-                }
+                tasksList.add(listTaskBean.getTasks().get(i).getTitle());
             }
             if (!Status.server()) {
                 editButton.setEnabled(false);
                 skipButton.setEnabled(false);
                 fixedButton.setEnabled(false);
             }
-
         } else {
             editButton.setEnabled(false);
             skipButton.setEnabled(false);
-
         }
+        JComboBox comboBox = new JComboBox(tasksList.toArray());
+        jcontenpanel.add(comboBox);
+        comboBox.addActionListener(this);
+        jcontenpanel.add(autoedit);
 
-        this.setPreferredSize(new Dimension(0, 92));
+        jcontenpanel.add(autoskip);
+        this.setPreferredSize(new Dimension(0, 40));
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
             editButton, skipButton, fixedButton
         }));
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        task = e.getActionCommand();
+        JComboBox cb = (JComboBox) e.getSource();
+        task = listTaskBean.getTasks().get(cb.getSelectedIndex()).getId();
         url_task = host + "/task/" + task;
     }
 
@@ -175,14 +186,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         bounds = new Bounds(itemBean.getValue().getY() - ex, itemBean.getValue().getX() - ex, itemBean.getValue().getY() + ex, itemBean.getValue().getX() + ex);
         v.visit(bounds);
         Main.map.mapView.zoomTo(v);
-
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
             mv.addLayer(tofixLayer);
             tofixLayer.add_coordinate(coor);
         } else {
             tofixLayer.add_coordinate(coor);
         }
-
     }
 
     public void edit() {
@@ -192,8 +201,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void fixed() {
         ItemFixedBean itemFixedBean = new ItemFixedBean();
         itemFixedBean.setUser(josmUserIdentityManager.getUserName());
-        Util.print("fixe=================");
-        Util.print(itemBean.getKey());
         itemFixedBean.setKey(itemBean.getKey());
         ItemFixedController ItemFixedController = new ItemFixedController(host + "/fixed/" + task);
         ItemFixedController.fixed(itemFixedBean);
