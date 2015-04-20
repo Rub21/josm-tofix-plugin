@@ -35,7 +35,6 @@ public class Download {
                     //Collection<OsmPrimitive> selection = task.getDownloadedData().allPrimitives();
                     Main.main.getCurrentDataSet().setSelected(node);
 
-
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {

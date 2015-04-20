@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.tofix.draw;
+package org.openstreetmap.josm.plugins.tofix.layer;
 
 import java.awt.BasicStroke;
 import static org.openstreetmap.josm.tools.I18n.tr;
