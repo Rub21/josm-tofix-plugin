@@ -19,12 +19,15 @@ import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
+import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
@@ -44,6 +47,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     String host = "http://54.147.184.23:8000";
     String url_task = url_task = host + "/task/unconnectedmajor";
+    String task = "unconnectedmajor";
 
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController("http://osmlab.github.io/to-fix/src/data/tasks.json");
@@ -61,6 +65,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel valuePanel = new JPanel();
     JPanel jcontenpanel = new JPanel(new GridLayout(0, 2));
 
+    JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
+
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
@@ -76,7 +82,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 edit();
-
             }
         });
         editButton.setEnabled(false);
@@ -89,17 +94,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                // String userName = XmlWriter.encode(comment.getUser().getName());
-                //                    if (userName == null || userName.trim().length() == 0) {
-                //                        userName = "&lt;Anonymous&gt;";
-                //                    }
-                //node.setCoor(mv.getLatLon(mv.lastMEvent.getX(), mv.lastMEvent.getY()));
                 editButton.setEnabled(true);
                 skip();
             }
-
-            // repaint to make sure new data is displayed properly.
         });
 
         fixedButton = new SideButton(new AbstractAction() {
@@ -111,7 +108,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showConfirmDialog(Main.parent, Status.isInternetReachable());
+                fixed();
             }
         });
 
@@ -153,7 +150,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        url_task = host + "/task/" + e.getActionCommand();
+        task = e.getActionCommand();
+        url_task = host + "/task/" + task;
     }
 
     public void skip() {
@@ -183,5 +181,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void edit() {
         Download.Download(downloadOsmTask, bounds, itemBean);
+    }
+
+    public void fixed() {
+        ItemFixedBean itemFixedBean = new ItemFixedBean();
+        itemFixedBean.setUser(josmUserIdentityManager.getUserName());
+        itemFixedBean.setKey(itemBean.getKey());
+        ItemFixedController ItemFixedController = new ItemFixedController(host + "/fixed/" + task);
+        ItemFixedController.fixed(itemFixedBean);
     }
 }
