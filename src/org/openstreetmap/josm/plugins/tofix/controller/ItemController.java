@@ -26,7 +26,7 @@ public class ItemController {
         try {
             stringItemBean = Request.sendPOST(url);
             itemBean = gson.fromJson(stringItemBean, ItemBean.class);
-            itemBean.sumary();
+            //itemBean.sumary();
         } catch (IOException ex) {
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }

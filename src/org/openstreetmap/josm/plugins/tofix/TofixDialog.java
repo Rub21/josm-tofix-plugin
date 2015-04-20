@@ -82,6 +82,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 edit();
+                fixedButton.setEnabled(true);
             }
         });
         editButton.setEnabled(false);
@@ -94,8 +95,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                editButton.setEnabled(true);
                 skip();
+                editButton.setEnabled(true);
+                editButton.setFocusable(true);
+                fixedButton.setEnabled(false);
+                editButton.doClick();
             }
         });
 
@@ -109,8 +113,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fixed();
+                skipButton.doClick();
             }
         });
+        fixedButton.setEnabled(false);
 
         valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jcontenpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -138,7 +144,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         } else {
             editButton.setEnabled(false);
             skipButton.setEnabled(false);
-            fixedButton.setEnabled(false);
+
         }
 
         this.setPreferredSize(new Dimension(0, 92));
@@ -157,7 +163,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void skip() {
         itemController = new ItemController(url_task);
         itemBean = itemController.getItemBean();
-
+        Util.print(itemBean.getKey());
         LatLon coor = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
         if (coor.isOutSideWorld()) {
             JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
@@ -186,6 +192,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void fixed() {
         ItemFixedBean itemFixedBean = new ItemFixedBean();
         itemFixedBean.setUser(josmUserIdentityManager.getUserName());
+        Util.print("fixe=================");
+        Util.print(itemBean.getKey());
         itemFixedBean.setKey(itemBean.getKey());
         ItemFixedController ItemFixedController = new ItemFixedController(host + "/fixed/" + task);
         ItemFixedController.fixed(itemFixedBean);
