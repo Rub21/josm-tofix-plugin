@@ -74,7 +74,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     JCheckBox autoedit = new JCheckBox("Automatic Download after Skip");
-    JCheckBox autoskip = new JCheckBox("Automatic Skip after Fixed");
+    // JCheckBox autoskip = new JCheckBox("Automatic Skip after Fixed");
 
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
@@ -90,8 +90,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                edit();
                 fixedButton.setEnabled(true);
+                edit();
+
             }
         });
         editButton.setEnabled(false);
@@ -105,12 +106,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                skip();
                 editButton.setEnabled(true);
-                editButton.setFocusable(true);
                 fixedButton.setEnabled(false);
+                skip();
                 if (autoedit.isSelected()) {
                     editButton.doClick();
+                    fixedButton.setEnabled(true);
                 }
 
             }
@@ -125,10 +126,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+
+//                if (autoskip.isSelected()) {
+//                    
+//                }
+                // fixedButton.setEnabled(false);
                 fixed();
-                if (autoskip.isSelected()) {
-                    skipButton.doClick();
-                }
+                skipButton.doClick();
 
             }
         });
@@ -157,7 +161,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         comboBox.addActionListener(this);
         jcontenpanel.add(autoedit);
 
-        jcontenpanel.add(autoskip);
+        //  jcontenpanel.add(autoskip);
         this.setPreferredSize(new Dimension(0, 40));
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
             editButton, skipButton, fixedButton
@@ -172,7 +176,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public void skip() {
-        itemController = new ItemController(url_task);
+        itemController = new ItemController(url_task, josmUserIdentityManager.getUserName());
         itemBean = itemController.getItemBean();
         Util.print(itemBean.getKey());
         LatLon coor = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());

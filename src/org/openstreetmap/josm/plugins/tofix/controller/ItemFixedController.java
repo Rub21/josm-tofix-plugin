@@ -24,7 +24,7 @@ public class ItemFixedController {
         Gson gson = new Gson();
         String stringItemBean = null;
         try {
-             Request.sendPOSTA(url, itemFixedBean);
+             Request.sendPOST_fixed(url, itemFixedBean);
 
         } catch (IOException ex) {
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);

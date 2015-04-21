@@ -14,17 +14,19 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
 public class ItemController {
 
     private String url;
+    private String user;
     private ItemBean itemBean;
 
-    public ItemController(String url) {
+    public ItemController(String url,String user) {
         this.url = url;
+        this.user=user;
     }
 
     public ItemBean getItemBean() {
         Gson gson = new Gson();
         String stringItemBean = null;
         try {
-            stringItemBean = Request.sendPOST(url);
+            stringItemBean = Request.sendPOST_skip(url, user);
             itemBean = gson.fromJson(stringItemBean, ItemBean.class);
             //itemBean.sumary();
         } catch (IOException ex) {
