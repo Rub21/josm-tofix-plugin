@@ -37,6 +37,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemEditController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
+import org.openstreetmap.josm.plugins.tofix.controller.ItemSkipController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
@@ -98,6 +99,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fixedButton.setEnabled(true);
+                skipButton.setEnabled(true);
                 edit();
 
             }
@@ -113,16 +115,20 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                editButton.setEnabled(true);
-                fixedButton.setEnabled(false);
+                //   editButton.setEnabled(true);
+                //fixedButton.setEnabled(false);
                 skip();
-                if (autoedit.isSelected()) {
-                    editButton.doClick();
-                    fixedButton.setEnabled(true);
-                }
+                get_new_item();
+//                if (autoedit.isSelected()) {
+//                    editButton.doClick();
+//                    fixedButton.setEnabled(true);
+//                }
+                skipButton.setEnabled(false);
+                fixedButton.setEnabled(false);
 
             }
         });
+        skipButton.setEnabled(false);
         // Fixed Button
         fixedButton = new SideButton(new AbstractAction() {
             {
@@ -139,7 +145,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 //                }
                 // fixedButton.setEnabled(false);
                 fixed();
-                skipButton.doClick();
+                get_new_item();
+                skipButton.setEnabled(false);
+                fixedButton.setEnabled(false);
+                // skipButton.doClick();
 
             }
         });
@@ -183,7 +192,15 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public void skip() {
-
+        TrackBean trackBean = new TrackBean();
+        AtributesBean atributesBean = new AtributesBean();
+        atributesBean.setAction("skip");
+        atributesBean.setEditor("josm");
+        atributesBean.setUser(josmUserIdentityManager.getUserName());
+        atributesBean.setKey(itemBean.getKey());
+        trackBean.setAttributes(atributesBean);
+        ItemSkipController skipController = new ItemSkipController(host + "/track/" + task, trackBean);
+        skipController.sendTrackBean();
     }
 
     public void edit() {
@@ -200,11 +217,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public void fixed() {
+//        ItemFixedBean itemFixedBean = new ItemFixedBean();
+//        itemFixedBean.setUser(josmUserIdentityManager.getUserName());
+//        itemFixedBean.setKey(itemBean.getKey());
+//        ItemFixedController ItemFixedController = new ItemFixedController(host + "/fixed/" + task);
+//        ItemFixedController.fixed(itemFixedBean);
+
         ItemFixedBean itemFixedBean = new ItemFixedBean();
         itemFixedBean.setUser(josmUserIdentityManager.getUserName());
         itemFixedBean.setKey(itemBean.getKey());
-        ItemFixedController ItemFixedController = new ItemFixedController(host + "/fixed/" + task);
-        ItemFixedController.fixed(itemFixedBean);
+        ItemFixedController itemFixedController = new ItemFixedController(host + "/fixed/" + task, itemFixedBean);
+        itemFixedController.sendTrackBean();
     }
 
     private void get_new_item() {

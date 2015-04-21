@@ -12,12 +12,12 @@ import org.openstreetmap.josm.plugins.tofix.util.Util;
  *
  * @author ruben
  */
-public class ItemEditController {
+public class ItemSkipController {
 
     private String url;
     private TrackBean trackBean;
 
-    public ItemEditController(String url, TrackBean trackBean) {
+    public ItemSkipController(String url, TrackBean trackBean) {
         this.url = url;
         this.trackBean = trackBean;
     }
@@ -32,6 +32,5 @@ public class ItemEditController {
         } catch (IOException ex) {
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }

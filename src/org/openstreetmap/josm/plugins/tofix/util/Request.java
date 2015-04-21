@@ -52,7 +52,7 @@ public class Request {
         }
     }
 
-    public static void sendPOST_edit(String url, String object) throws IOException {
+    public static void sendPOST_Json(String url, String object) throws IOException {
         HttpURLConnection con = (HttpURLConnection) ((new URL(url).openConnection()));
         con.setDoOutput(true);
         con.setRequestProperty("Content-Type", "application/json");
@@ -63,23 +63,10 @@ public class Request {
         OutputStream os = con.getOutputStream();
         os.write(outputBytes);
         os.close();
-
         int responseCode = con.getResponseCode();
         Util.print(responseCode);
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            Util.print(response.toString());
-
-        }
-
     }
+    
 
     public static void sendPOST_fixed(String string_url, ItemFixedBean itemFixedBean) throws IOException {
         URL url = new URL(string_url);
