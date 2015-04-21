@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,9 +11,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
+import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import static org.openstreetmap.josm.tools.I18n.tr;
-
 
 /**
  *
@@ -20,7 +22,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  */
 public class Request {
 
-    public static String sendPOSTr(String url) throws IOException {
+    public static String sendPOST(String url) throws IOException {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
@@ -41,7 +43,7 @@ public class Request {
                 response.append(inputLine);
             }
             in.close();
-            System.out.println(response.toString());
+            Util.print(response.toString());
             return response.toString();
 
         } else {
@@ -50,20 +52,20 @@ public class Request {
         }
     }
 
-    public static String sendPOST_edit(String url, String user) throws IOException {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        //START - POST
+    public static void sendPOST_edit(String url, String object) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) ((new URL(url).openConnection()));
         con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestMethod("POST");
+        con.connect();
+        byte[] outputBytes = object.getBytes("UTF-8");
         OutputStream os = con.getOutputStream();
-        String POST_PARAMS = "user=" + user;
-        Util.print(url + POST_PARAMS);
-        os.write(POST_PARAMS.getBytes());
-        os.flush();
+        os.write(outputBytes);
         os.close();
-        //POST - END
+
         int responseCode = con.getResponseCode();
+        Util.print(responseCode);
         if (responseCode == HttpURLConnection.HTTP_OK) {
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     con.getInputStream()));
@@ -73,63 +75,10 @@ public class Request {
                 response.append(inputLine);
             }
             in.close();
-            System.out.println(response.toString());
-            return response.toString();
+            Util.print(response.toString());
 
-        } else {
-
-            return null;
         }
-    }
 
-    public static String sendPOST_skip(String string_url, String user) throws IOException {
-        URL url = new URL(string_url);
-        URLConnection conn = url.openConnection();
-        conn.setDoOutput(true);
-        OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-        Util.print("user=" + user);
-        writer.write("user=" + user + "&action=edit");
-        writer.flush();
-        String line;
-
-        StringBuffer response = new StringBuffer();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-        }
-        writer.close();
-        reader.close();
-
-        return response.toString();
-//
-//        int responseCode = con.getResponseCode();
-//
-//        if (responseCode == HttpURLConnection.HTTP_OK) {
-//            BufferedReader in = new BufferedReader(new InputStreamReader(
-//                    con.getInputStream()));
-//            String inputLine;
-//            StringBuffer response = new StringBuffer();
-//            while ((inputLine = in.readLine()) != null) {
-//                response.append(inputLine);
-//            }
-//            in.close();
-//            System.out.println(response.toString());
-//            writer.close();
-//
-//            return response.toString();
-//
-//        } else {
-//            writer.close();
-//
-//            return null;
-//        }
-
-//        String line;
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//        while ((line = reader.readLine()) != null) {
-//            System.out.println(line);
-//        }
     }
 
     public static void sendPOST_fixed(String string_url, ItemFixedBean itemFixedBean) throws IOException {
