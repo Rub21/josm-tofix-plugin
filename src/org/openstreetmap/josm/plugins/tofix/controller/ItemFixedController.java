@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
@@ -19,23 +18,22 @@ public class ItemFixedController {
     private String url;
     private ItemFixedBean itemFixedBean;
 
-    public ItemFixedController(String url) {
-        this.url = url;
-    }
-
-    public void fixed(ItemFixedBean itemFixedBean) {
-        Gson gson = new Gson();
-        String stringItemBean = null;
-        try {
-            Request.sendPOST_fixed(url, itemFixedBean);
-
-        } catch (IOException ex) {
-            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
+//    public ItemFixedController(String url) {
+//        this.url = url;
+//    }
+//
+//    public void fixed(ItemFixedBean itemFixedBean) {
+//        Gson gson = new Gson();
+//        String stringItemBean = null;
+//        try {
+//            Request.sendPOST_fixed(url, itemFixedBean);
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//    }
     //======================================================
-
     public ItemFixedController(String url, ItemFixedBean itemFixedBean) {
         this.url = url;
         this.itemFixedBean = itemFixedBean;

@@ -34,11 +34,9 @@ public class TofixLayer extends Layer implements ActionListener {
 
     public TofixLayer(String name) {
         super(name);
-
     }
 
     private static final Icon icon = new ImageIcon("icontofix.png");
-
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
     @Override
@@ -64,7 +62,7 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
-        g.setColor(Color.red);
+        g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) 5));
         Point l = null;
 //        for (OsmPrimitive p : points) {
@@ -97,7 +95,6 @@ public class TofixLayer extends Layer implements ActionListener {
     public Action[] getMenuEntries() {
         return new Action[]{
             LayerListDialog.getInstance().createShowHideLayerAction(),
-            // TODO: implement new JMenuItem(new LayerListDialog.DeleteLayerAction(this)),
             SeparatorLayerAction.INSTANCE,
             SeparatorLayerAction.INSTANCE,
             new LayerListPopup.InfoAction(this)};
@@ -105,13 +102,10 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         JOptionPane.showConfirmDialog(null, e.getSource());
     }
 
     @Override
     public void mergeFrom(Layer layer) {
-
     }
-
 }
