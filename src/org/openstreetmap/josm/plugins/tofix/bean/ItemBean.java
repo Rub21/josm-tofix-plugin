@@ -6,8 +6,8 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  */
 public class ItemBean {
 
-    String key;
-    ValueBean value;
+    private String key;
+    private ValueBean value;
 
     public String getKey() {
         return key;

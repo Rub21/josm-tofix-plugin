@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
@@ -26,10 +27,14 @@ public class ItemController {
         try {
             stringItemBean = Request.sendPOST(url);
             itemBean = gson.fromJson(stringItemBean, ItemBean.class);
-            itemBean.sumary();
-        } catch (IOException ex) {
+            //itemBean.sumary();
+            return itemBean;
+
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null, "null");
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return itemBean;
+        return null;
+
     }
 }

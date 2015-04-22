@@ -15,8 +15,8 @@ public class ListTaskController {
     private ListTaskBean listTasksBean = null;
     private String url;
 
-    public ListTaskController(String url) {
-        this.url = url;
+    public ListTaskController() {
+        this.url = "http://osmlab.github.io/to-fix/src/data/tasks.json";
     }
 
     public ListTaskBean getListTasksBean() {

@@ -24,6 +24,7 @@ import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
@@ -51,13 +52,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private final SideButton fixedButton;
 
     //Tofix host 
-    String host = "http://54.147.184.23:8000";
-    String url_task = url_task = host + "/task/unconnectedmajor";
-    String task = "unconnectedmajor";
+    AccessTaskBean accessTaskBean = new AccessTaskBean();
 
     // Lista de tasks
     ListTaskBean listTaskBean = null;
-    ListTaskController listTaskController = new ListTaskController("http://osmlab.github.io/to-fix/src/data/tasks.json");
+    ListTaskController listTaskController = new ListTaskController();
 
     ItemController itemController = null;
     ItemBean itemBean = null;
@@ -83,6 +82,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
 
         //Geting start request the data
+        accessTaskBean.setTask("mixedlayer");//by default
+        accessTaskBean.setTask_source("mixedlayer");// by default
         get_new_item();
         // Fixed Button
         editButton = new SideButton(new AbstractAction() {
@@ -177,63 +178,78 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
-        task = listTaskBean.getTasks().get(cb.getSelectedIndex()).getId();
-        url_task = host + "/task/" + task;
+        accessTaskBean.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex()).getId());
     }
 
     public void skip() {
-        TrackBean trackBean = new TrackBean();
-        AtributesBean atributesBean = new AtributesBean();
-        atributesBean.setAction("skip");
-        atributesBean.setEditor("josm");
-        atributesBean.setUser(josmUserIdentityManager.getUserName());
-        atributesBean.setKey(itemBean.getKey());
-        trackBean.setAttributes(atributesBean);
-        ItemSkipController skipController = new ItemSkipController(host + "/track/" + task, trackBean);
-        skipController.sendTrackBean();
+        if (accessTaskBean.isAccess()) {
+            TrackBean trackBean = new TrackBean();
+            AtributesBean atributesBean = new AtributesBean();
+            atributesBean.setAction("skip");
+            atributesBean.setEditor("josm");
+            atributesBean.setUser(josmUserIdentityManager.getUserName());
+            atributesBean.setKey(itemBean.getKey());
+            trackBean.setAttributes(atributesBean);
+            ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTask_url(), trackBean);
+            skipController.sendTrackBean();
+        }
+
     }
 
     public void edit() {
-        Download.Download(downloadOsmTask, bounds, itemBean);
-        TrackBean trackBean = new TrackBean();
-        AtributesBean atributesBean = new AtributesBean();
-        atributesBean.setAction("edit");
-        atributesBean.setEditor("josm");
-        atributesBean.setUser(josmUserIdentityManager.getUserName());
-        atributesBean.setKey(itemBean.getKey());
-        trackBean.setAttributes(atributesBean);
-        ItemEditController itemEditController = new ItemEditController(host + "/track/" + task, trackBean);
-        itemEditController.sendTrackBean();
+        if (accessTaskBean.isAccess()) {
+            Download.Download(downloadOsmTask, bounds, itemBean);
+            TrackBean trackBean = new TrackBean();
+            AtributesBean atributesBean = new AtributesBean();
+            atributesBean.setAction("edit");
+            atributesBean.setEditor("josm");
+            atributesBean.setUser(josmUserIdentityManager.getUserName());
+            atributesBean.setKey(itemBean.getKey());
+            trackBean.setAttributes(atributesBean);
+            ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
+            itemEditController.sendTrackBean();
+        }
+
     }
 
     public void fixed() {
-        ItemFixedBean itemFixedBean = new ItemFixedBean();
-        itemFixedBean.setUser(josmUserIdentityManager.getUserName());
-        itemFixedBean.setKey(itemBean.getKey());
-        ItemFixedController itemFixedController = new ItemFixedController(host + "/fixed/" + task, itemFixedBean);
-        itemFixedController.sendTrackBean();
+        if (accessTaskBean.isAccess()) {
+            ItemFixedBean itemFixedBean = new ItemFixedBean();
+            itemFixedBean.setUser(josmUserIdentityManager.getUserName());
+            itemFixedBean.setKey(itemBean.getKey());
+            ItemFixedController itemFixedController = new ItemFixedController(accessTaskBean.getFixed_url(), itemFixedBean);
+            itemFixedController.sendTrackBean();
+        }
+
     }
 
     private void get_new_item() {
-        itemController = new ItemController(url_task);
+        itemController = new ItemController(accessTaskBean.getTask_url());
         itemBean = itemController.getItemBean();
-        Util.print(itemBean.getKey());
-        LatLon coor = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
-        if (coor.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
-            return;
-        }
-        BoundingXYVisitor v = new BoundingXYVisitor();
-        //double ex = 0.0001; = 2.34 m
-        double ex = 0.0007;// 16.7 m
-        bounds = new Bounds(itemBean.getValue().getY() - ex, itemBean.getValue().getX() - ex, itemBean.getValue().getY() + ex, itemBean.getValue().getX() + ex);
-        v.visit(bounds);
-        Main.map.mapView.zoomTo(v);
-        if (!Main.map.mapView.hasLayer(tofixLayer)) {
-            mv.addLayer(tofixLayer);
-            tofixLayer.add_coordinate(coor);
+        if (itemBean != null) {
+            accessTaskBean.setAccess(true);
+            Util.print(itemBean.getKey());
+            LatLon coor = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
+            if (coor.isOutSideWorld()) {
+                JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
+                return;
+            }
+            BoundingXYVisitor v = new BoundingXYVisitor();
+            //double ex = 0.0001; = 2.34 m
+            double ex = 0.0007;// 16.7 m
+            bounds = new Bounds(itemBean.getValue().getY() - ex, itemBean.getValue().getX() - ex, itemBean.getValue().getY() + ex, itemBean.getValue().getX() + ex);
+            v.visit(bounds);
+            Main.map.mapView.zoomTo(v);
+            if (!Main.map.mapView.hasLayer(tofixLayer)) {
+                mv.addLayer(tofixLayer);
+                tofixLayer.add_coordinate(coor);
+            } else {
+                tofixLayer.add_coordinate(coor);
+            }
         } else {
-            tofixLayer.add_coordinate(coor);
+            accessTaskBean.setAccess(false);
+            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
         }
+
     }
 }

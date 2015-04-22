@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
+import com.sun.org.apache.bcel.internal.Constants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +14,7 @@ import java.net.URL;
  */
 public class Request {
 
-    public static String sendPOST(String url) throws IOException {
+    public static String sendPOST(String url) throws Exception {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
@@ -37,8 +38,8 @@ public class Request {
             return response.toString();
 
         } else {
-
             return null;
+
         }
     }
 
@@ -56,23 +57,6 @@ public class Request {
         int responseCode = con.getResponseCode();
         Util.print(responseCode);
     }
-    
-//
-//    public static void sendPOST_fixed(String string_url, ItemFixedBean itemFixedBean) throws IOException {
-//        URL url = new URL(string_url);
-//        URLConnection conn = url.openConnection();
-//        conn.setDoOutput(true);
-//        OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
-//        writer.write("user=" + itemFixedBean.getUser() + "&key=" + itemFixedBean.getKey() + "&editor=JOSM");
-//        writer.flush();
-//        String line;
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//        while ((line = reader.readLine()) != null) {
-//            System.out.println(line);
-//        }
-//        writer.close();
-//        reader.close();
-//    }
 
     public static String sendGET(String url) throws IOException {
         URL obj = new URL(url);
