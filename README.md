@@ -16,4 +16,4 @@
 
 ### How to use
 
-![josm](https://cloud.githubusercontent.com/assets/1152236/7150111/ecedda8c-e2db-11e4-8204-fe80d37586ed.gif)
+![josm](https://cloud.githubusercontent.com/assets/1152236/7286852/ddfc4114-e914-11e4-93c7-b9cf72a30fcc.gif)
