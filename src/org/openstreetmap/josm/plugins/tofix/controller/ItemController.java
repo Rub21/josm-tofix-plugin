@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
 /**
@@ -15,26 +16,45 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
 public class ItemController {
 
     private String url;
-    private ItemBean itemBean;
 
-    public ItemController(String url) {
+    Gson gson = new Gson();
+ 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
         this.url = url;
     }
 
     public ItemBean getItemBean() {
-        Gson gson = new Gson();
-        String stringItemBean = null;
+        ItemBean itemBean = new ItemBean();
+        String stringItem = null;
         try {
-            stringItemBean = Request.sendPOST(url);
-            itemBean = gson.fromJson(stringItemBean, ItemBean.class);
+            stringItem = Request.sendPOST(getUrl());
+            itemBean = gson.fromJson(stringItem, ItemBean.class);
             //itemBean.sumary();
             return itemBean;
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null, "null");
+            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ItemKeeprightBean getItemKeeprightBean() {
+        ItemKeeprightBean itemKeeprightBean = new ItemKeeprightBean();
+        String stringItem = null;
+        try {
+            stringItem = Request.sendPOST(getUrl());
+            itemKeeprightBean = gson.fromJson(stringItem, ItemKeeprightBean.class);
+            return itemKeeprightBean;
 
         } catch (Exception ex) {
             JOptionPane.showConfirmDialog(null, "null");
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
-
     }
+
 }

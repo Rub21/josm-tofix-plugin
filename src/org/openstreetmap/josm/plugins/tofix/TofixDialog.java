@@ -25,15 +25,12 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
-import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
-import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
-import org.openstreetmap.josm.plugins.tofix.controller.ItemEditController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
-import org.openstreetmap.josm.plugins.tofix.controller.ItemSkipController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
@@ -52,14 +49,15 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private final SideButton fixedButton;
 
     //Tofix host 
-    AccessTaskBean accessTaskBean = new AccessTaskBean();
-
+    AccessTaskBean accessTaskBean = null;
     // Lista de tasks
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
 
-    ItemController itemController = null;
+    ItemController itemController = new ItemController();
     ItemBean itemBean = null;
+
+    ItemKeeprightBean itemKeeprightBean = new ItemKeeprightBean();
 
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
@@ -76,14 +74,16 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JCheckBox autoedit_skip = new JCheckBox("Automatic Download after Skip");
     JCheckBox autoedit_fixed = new JCheckBox("Automatic Download after Fixed");
 
+    Long osm_obj_id;
+
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
                         KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
 
         //Geting start request the data
-        accessTaskBean.setTask("mixedlayer");//by default
-        accessTaskBean.setTask_source("mixedlayer");// by default
+        // accessTaskBean = new AccessTaskBean("unconnected_major", "unconnected", false);
+        accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);
         get_new_item();
         // Fixed Button
         editButton = new SideButton(new AbstractAction() {
@@ -179,35 +179,38 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
         accessTaskBean.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex()).getId());
+        accessTaskBean.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex()).getSource());
+        get_new_item();
     }
 
     public void skip() {
-        if (accessTaskBean.isAccess()) {
-            TrackBean trackBean = new TrackBean();
-            AtributesBean atributesBean = new AtributesBean();
-            atributesBean.setAction("skip");
-            atributesBean.setEditor("josm");
-            atributesBean.setUser(josmUserIdentityManager.getUserName());
-            atributesBean.setKey(itemBean.getKey());
-            trackBean.setAttributes(atributesBean);
-            ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTask_url(), trackBean);
-            skipController.sendTrackBean();
-        }
+        get_new_item();
+//        if (accessTaskBean.isAccess()) {
+//            TrackBean trackBean = new TrackBean();
+//            AtributesBean atributesBean = new AtributesBean();
+//            atributesBean.setAction("skip");
+//            atributesBean.setEditor("josm");
+//            atributesBean.setUser(josmUserIdentityManager.getUserName());
+//            atributesBean.setKey(itemBean.getKey());
+//            trackBean.setAttributes(atributesBean);
+//            ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTask_url(), trackBean);
+//            skipController.sendTrackBean();
+//        }
 
     }
 
     public void edit() {
         if (accessTaskBean.isAccess()) {
-            Download.Download(downloadOsmTask, bounds, itemBean);
-            TrackBean trackBean = new TrackBean();
-            AtributesBean atributesBean = new AtributesBean();
-            atributesBean.setAction("edit");
-            atributesBean.setEditor("josm");
-            atributesBean.setUser(josmUserIdentityManager.getUserName());
-            atributesBean.setKey(itemBean.getKey());
-            trackBean.setAttributes(atributesBean);
-            ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
-            itemEditController.sendTrackBean();
+            Download.Download(downloadOsmTask, bounds, osm_obj_id);
+//            TrackBean trackBean = new TrackBean();
+//            AtributesBean atributesBean = new AtributesBean();
+//            atributesBean.setAction("edit");
+//            atributesBean.setEditor("josm");
+//            atributesBean.setUser(josmUserIdentityManager.getUserName());
+//            atributesBean.setKey(itemBean.getKey());
+//            trackBean.setAttributes(atributesBean);
+//            ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
+//            itemEditController.sendTrackBean();
         }
 
     }
@@ -224,32 +227,52 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void get_new_item() {
-        itemController = new ItemController(accessTaskBean.getTask_url());
-        itemBean = itemController.getItemBean();
-        if (itemBean != null) {
+        if (accessTaskBean.getTask_source().equals("keepright")) {
+            get_item_keepright();
+        }
+
+        if (accessTaskBean.getTask_source().equals("unconnected")) {
+            get_item_unconnected();
+        }
+        if (accessTaskBean.getTask_source().equals("tigerdelta")) {
+
+        }
+
+        if (accessTaskBean.getTask_source().equals("nycbuildings")) {
+
+        }
+
+    }
+
+    private void get_item_keepright() {
+        itemController.setUrl(accessTaskBean.getTask_url());
+        itemKeeprightBean = itemController.getItemKeeprightBean();
+        Util.print(itemKeeprightBean.getKey());
+        if (itemKeeprightBean != null) {
             accessTaskBean.setAccess(true);
-            Util.print(itemBean.getKey());
-            LatLon coor = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
-            if (coor.isOutSideWorld()) {
-                JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
-                return;
-            }
-            BoundingXYVisitor v = new BoundingXYVisitor();
-            //double ex = 0.0001; = 2.34 m
-            double ex = 0.0007;// 16.7 m
-            bounds = new Bounds(itemBean.getValue().getY() - ex, itemBean.getValue().getX() - ex, itemBean.getValue().getY() + ex, itemBean.getValue().getX() + ex);
-            v.visit(bounds);
-            Main.map.mapView.zoomTo(v);
-            if (!Main.map.mapView.hasLayer(tofixLayer)) {
-                mv.addLayer(tofixLayer);
-                tofixLayer.add_coordinate(coor);
-            } else {
-                tofixLayer.add_coordinate(coor);
-            }
+            Util.print(itemKeeprightBean.getKey());
+            LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
+            bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
+            osm_obj_id = itemKeeprightBean.getValue().getObject_id();
+            TofixDraw.draw(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
             JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
         }
+    }
 
+    private void get_item_unconnected() {
+        itemController.setUrl(accessTaskBean.getTask_url());
+        itemBean = itemController.getItemBean();
+        if (itemBean != null) {
+            accessTaskBean.setAccess(true);
+            LatLon latLon = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
+            bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
+            osm_obj_id = itemBean.getValue().getNode_id();
+            TofixDraw.draw(tofixLayer, latLon);
+        } else {
+            accessTaskBean.setAccess(false);
+            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+        }
     }
 }

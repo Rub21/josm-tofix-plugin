@@ -13,6 +13,11 @@ public class AccessTaskBean {
     private boolean access;
     // private String track_url;
     //private String fixed_url;
+    public AccessTaskBean(String task, String task_source, boolean access) {
+        this.task = task;
+        this.task_source = task_source;
+        this.access = access;
+    }
 
     public String getHost() {
         return host;
@@ -23,7 +28,8 @@ public class AccessTaskBean {
     }
 
     public String getTask_url() {
-        return getHost() + "/task/" + getTask();
+        String url=this.getHost() + "/task/" + this.getTask();
+        return url;
     }
 
     public String getTask() {

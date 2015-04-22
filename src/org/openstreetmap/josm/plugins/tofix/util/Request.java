@@ -15,6 +15,7 @@ import java.net.URL;
 public class Request {
 
     public static String sendPOST(String url) throws Exception {
+        Util.print(url);
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");

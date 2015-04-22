@@ -6,7 +6,7 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  */
 public class ItemKeeprightValueBean {
     String object_type;
-    String object_id;
+    Long object_id;
     String st_astext;
 
     public String getObject_type() {
@@ -17,13 +17,14 @@ public class ItemKeeprightValueBean {
         this.object_type = object_type;
     }
 
-    public String getObject_id() {
+    public Long getObject_id() {
         return object_id;
     }
 
-    public void setObject_id(String object_id) {
+    public void setObject_id(Long object_id) {
         this.object_id = object_id;
     }
+
 
     public String getSt_astext() {
         return st_astext;

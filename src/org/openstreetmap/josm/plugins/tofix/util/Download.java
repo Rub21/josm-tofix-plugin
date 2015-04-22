@@ -21,7 +21,7 @@ public class Download {
 
     private static Future<?> future;
 
-    public static void Download(DownloadOsmTask task, Bounds bounds, final ItemBean itemBean) {
+    public static void Download(DownloadOsmTask task, Bounds bounds, final Long osm_obj_id) {
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
         Runnable runAfterTask = new Runnable() {
@@ -30,8 +30,10 @@ public class Download {
             public void run() {
                 try {
                     future.get(); // wait for the download task to complete                
-                    Node node = new Node(itemBean.getValue().getNode_id());
-                    Way way = new Way(itemBean.getValue().getWay_id());
+                    //Node node = new Node(itemBean.getValue().getNode_id());
+                   // Way way = new Way(itemBean.getValue().getWay_id());
+                    
+                    Node node = new Node(osm_obj_id);
                     //Collection<OsmPrimitive> selection = task.getDownloadedData().allPrimitives();
                     Main.main.getCurrentDataSet().setSelected(node);
 
@@ -44,9 +46,5 @@ public class Download {
         };
 
         Main.worker.submit(runAfterTask);
-    }
-
-    public void selectobjects(ItemBean taskBean, DownloadOsmTask task) {
-
     }
 }
