@@ -244,7 +244,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (accessTaskBean.getTask_source().equals("nycbuildings")) {
             JOptionPane.showConfirmDialog(Main.parent, "Aun no implementado");
         }
-
     }
 
     private void get_item_keepright() {
