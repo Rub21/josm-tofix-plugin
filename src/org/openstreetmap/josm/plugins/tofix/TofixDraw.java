@@ -7,7 +7,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import static org.openstreetmap.josm.data.projection.CustomProjection.Param.bounds;
 import org.openstreetmap.josm.gui.MapView;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
@@ -17,7 +17,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  */
 public class TofixDraw {
 
-    ItemBean itemBean = null;
+    ItemUnconnectedBean itemBean = null;
 
     public static void draw(final TofixLayer tofixLayer, LatLon latLon) {
         MapView mv = Main.map.mapView;

@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 
 /**
  *

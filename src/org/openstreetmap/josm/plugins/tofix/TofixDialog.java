@@ -25,12 +25,16 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
+import org.openstreetmap.josm.plugins.tofix.controller.ItemEditController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
+import org.openstreetmap.josm.plugins.tofix.controller.ItemSkipController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
@@ -55,9 +59,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     ListTaskController listTaskController = new ListTaskController();
 
     ItemController itemController = new ItemController();
-    ItemBean itemBean = null;
-
-    ItemKeeprightBean itemKeeprightBean = new ItemKeeprightBean();
 
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
@@ -133,7 +134,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 fixed();
-                get_new_item();
                 if (autoedit_fixed.isSelected()) {
                     editButton.doClick();
                 } else {
@@ -183,35 +183,34 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         get_new_item();
     }
 
-    public void skip() {
-        get_new_item();
-//        if (accessTaskBean.isAccess()) {
-//            TrackBean trackBean = new TrackBean();
-//            AtributesBean atributesBean = new AtributesBean();
-//            atributesBean.setAction("skip");
-//            atributesBean.setEditor("josm");
-//            atributesBean.setUser(josmUserIdentityManager.getUserName());
-//            atributesBean.setKey(itemBean.getKey());
-//            trackBean.setAttributes(atributesBean);
-//            ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTask_url(), trackBean);
-//            skipController.sendTrackBean();
-//        }
-
-    }
-
     public void edit() {
         if (accessTaskBean.isAccess()) {
-            Download.Download(downloadOsmTask, bounds, osm_obj_id);
-//            TrackBean trackBean = new TrackBean();
-//            AtributesBean atributesBean = new AtributesBean();
-//            atributesBean.setAction("edit");
-//            atributesBean.setEditor("josm");
-//            atributesBean.setUser(josmUserIdentityManager.getUserName());
-//            atributesBean.setKey(itemBean.getKey());
-//            trackBean.setAttributes(atributesBean);
-//            ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
-//            itemEditController.sendTrackBean();
+            Download.Download(downloadOsmTask, bounds, accessTaskBean.getOsm_obj_id());
+            TrackBean trackBean = new TrackBean();
+            AtributesBean atributesBean = new AtributesBean();
+            atributesBean.setAction("edit");
+            atributesBean.setEditor("josm");
+            atributesBean.setUser(josmUserIdentityManager.getUserName());
+            atributesBean.setKey(accessTaskBean.getKey());
+            trackBean.setAttributes(atributesBean);
+            ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
+            itemEditController.sendTrackBean();
         }
+    }
+
+    public void skip() {
+        if (accessTaskBean.isAccess()) {
+            TrackBean trackBean = new TrackBean();
+            AtributesBean atributesBean = new AtributesBean();
+            atributesBean.setAction("skip");
+            atributesBean.setEditor("josm");
+            atributesBean.setUser(josmUserIdentityManager.getUserName());
+            atributesBean.setKey(accessTaskBean.getKey());
+            trackBean.setAttributes(atributesBean);
+            ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTrack_url(), trackBean);
+            skipController.sendTrackBean();
+        }
+        get_new_item();
 
     }
 
@@ -219,11 +218,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (accessTaskBean.isAccess()) {
             ItemFixedBean itemFixedBean = new ItemFixedBean();
             itemFixedBean.setUser(josmUserIdentityManager.getUserName());
-            itemFixedBean.setKey(itemBean.getKey());
+            itemFixedBean.setKey(accessTaskBean.getKey());
+            //itemFixedBean.setEditor("josm");
             ItemFixedController itemFixedController = new ItemFixedController(accessTaskBean.getFixed_url(), itemFixedBean);
             itemFixedController.sendTrackBean();
         }
-
+        get_new_item();
     }
 
     private void get_new_item() {
@@ -235,25 +235,27 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             get_item_unconnected();
         }
         if (accessTaskBean.getTask_source().equals("tigerdelta")) {
-
+            JOptionPane.showConfirmDialog(Main.parent, "Aun no implementado");
         }
 
         if (accessTaskBean.getTask_source().equals("nycbuildings")) {
-
+            JOptionPane.showConfirmDialog(Main.parent, "Aun no implementado");
         }
 
     }
 
     private void get_item_keepright() {
+        ItemKeeprightBean itemKeeprightBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
         itemKeeprightBean = itemController.getItemKeeprightBean();
         Util.print(itemKeeprightBean.getKey());
         if (itemKeeprightBean != null) {
             accessTaskBean.setAccess(true);
-            Util.print(itemKeeprightBean.getKey());
+            accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
+            accessTaskBean.setKey(itemKeeprightBean.getKey());
             LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
             bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
-            osm_obj_id = itemKeeprightBean.getValue().getObject_id();
+
             TofixDraw.draw(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
@@ -262,13 +264,15 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void get_item_unconnected() {
+        ItemUnconnectedBean itemUnconnectedBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
-        itemBean = itemController.getItemBean();
-        if (itemBean != null) {
+        itemUnconnectedBean = itemController.getItemBean();
+        if (itemUnconnectedBean != null) {
             accessTaskBean.setAccess(true);
-            LatLon latLon = new LatLon(itemBean.getValue().getY(), itemBean.getValue().getX());
+            accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
+            accessTaskBean.setKey(itemUnconnectedBean.getKey());
+            LatLon latLon = new LatLon(itemUnconnectedBean.getValue().getY(), itemUnconnectedBean.getValue().getX());
             bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
-            osm_obj_id = itemBean.getValue().getNode_id();
             TofixDraw.draw(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);

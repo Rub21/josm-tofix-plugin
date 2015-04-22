@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  *
  * @author ruben
  */
-public class ValueBean {
+public class ItemUnconnectedValueBean {
 
     Double X;
     Double Y;

@@ -4,10 +4,10 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  *
  * @author ruben
  */
-public class ItemBean {
+public class ItemUnconnectedBean {
 
     private String key;
-    private ValueBean value;
+    private ItemUnconnectedValueBean value;
 
     public String getKey() {
         return key;
@@ -17,11 +17,11 @@ public class ItemBean {
         this.key = key;
     }
 
-    public ValueBean getValue() {
+    public ItemUnconnectedValueBean getValue() {
         return value;
     }
 
-    public void setValue(ValueBean value) {
+    public void setValue(ItemUnconnectedValueBean value) {
         this.value = value;
     }
 

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
@@ -27,14 +27,14 @@ public class ItemController {
         this.url = url;
     }
 
-    public ItemBean getItemBean() {
-        ItemBean itemBean = new ItemBean();
+    public ItemUnconnectedBean getItemBean() {
+        ItemUnconnectedBean itemUnconnectedBean = new ItemUnconnectedBean();
         String stringItem = null;
         try {
             stringItem = Request.sendPOST(getUrl());
-            itemBean = gson.fromJson(stringItem, ItemBean.class);
+            itemUnconnectedBean = gson.fromJson(stringItem, ItemUnconnectedBean.class);
             //itemBean.sumary();
-            return itemBean;
+            return itemUnconnectedBean;
         } catch (Exception ex) {
             JOptionPane.showConfirmDialog(null, "null");
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);

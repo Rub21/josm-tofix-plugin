@@ -13,6 +13,10 @@ public class AccessTaskBean {
     private boolean access;
     // private String track_url;
     //private String fixed_url;
+
+    private Long osm_obj_id;
+    private String key;
+
     public AccessTaskBean(String task, String task_source, boolean access) {
         this.task = task;
         this.task_source = task_source;
@@ -28,7 +32,7 @@ public class AccessTaskBean {
     }
 
     public String getTask_url() {
-        String url=this.getHost() + "/task/" + this.getTask();
+        String url = this.getHost() + "/task/" + this.getTask();
         return url;
     }
 
@@ -63,5 +67,23 @@ public class AccessTaskBean {
     public String getFixed_url() {
         return getHost() + "/fixed/" + getTask();
     }
+
+    public Long getOsm_obj_id() {
+        return osm_obj_id;
+    }
+
+    public void setOsm_obj_id(Long osm_obj_id) {
+        this.osm_obj_id = osm_obj_id;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+    
+    
 
 }

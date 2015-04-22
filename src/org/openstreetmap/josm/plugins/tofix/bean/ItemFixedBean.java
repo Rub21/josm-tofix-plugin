@@ -7,6 +7,7 @@ package org.openstreetmap.josm.plugins.tofix.bean;
 public class ItemFixedBean {
     private String user;
     private String key;
+    //private String editor;
 
     public String getUser() {
         return user;
@@ -23,5 +24,6 @@ public class ItemFixedBean {
     public void setKey(String key) {
         this.key = key;
     }
+
     
 }
