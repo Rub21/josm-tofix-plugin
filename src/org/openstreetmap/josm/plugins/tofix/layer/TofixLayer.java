@@ -26,6 +26,7 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 public class TofixLayer extends Layer implements ActionListener {
 
@@ -36,12 +37,13 @@ public class TofixLayer extends Layer implements ActionListener {
         super(name);
     }
 
-    private static final Icon icon = new ImageIcon("icontofix.png");
+   // private static final Icon icon = new ImageIcon("icontofix.png");
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
     @Override
     public Icon getIcon() {
-        return icon;
+        //return icon;
+        return ImageProvider.get("layer", "marker_small");
     }
 
     @Override
