@@ -75,17 +75,14 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JCheckBox autoedit_skip = new JCheckBox("Automatic Download after Skip");
     JCheckBox autoedit_fixed = new JCheckBox("Automatic Download after Fixed");
 
-    Long osm_obj_id;
-
     public TofixDialog() {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
                         KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
 
         //Geting start request the data
-        // accessTaskBean = new AccessTaskBean("unconnected_major", "unconnected", false);
         accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);
-        get_new_item();
+        //get_new_item();
         // Fixed Button
         editButton = new SideButton(new AbstractAction() {
             {
@@ -117,7 +114,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 if (autoedit_skip.isSelected()) {
                     editButton.doClick();
                 } else {
-                    skipButton.setEnabled(false);
+                    //skipButton.setEnabled(false);
                     fixedButton.setEnabled(false);
                 }
             }
@@ -137,7 +134,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 if (autoedit_fixed.isSelected()) {
                     editButton.doClick();
                 } else {
-                    skipButton.setEnabled(false);
+                    //skipButton.setEnabled(false);
                     fixedButton.setEnabled(false);
                 }
             }
@@ -148,6 +145,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         jcontenpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<String>();
+        tasksList.add("Select a task ...");
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
@@ -167,8 +165,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         comboBox.addActionListener(this);
         jcontenpanel.add(autoedit_skip);
         jcontenpanel.add(autoedit_fixed);
-
-        //  jcontenpanel.add(autoskip);
         this.setPreferredSize(new Dimension(0, 40));
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
             editButton, skipButton, fixedButton
@@ -178,9 +174,16 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
-        accessTaskBean.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex()).getId());
-        accessTaskBean.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex()).getSource());
-        get_new_item();
+        if (cb.getSelectedIndex() != 0) {
+            accessTaskBean.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
+            accessTaskBean.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
+            get_new_item();
+            editButton.setEnabled(true);
+        } else {
+            editButton.setEnabled(false);
+            skipButton.setEnabled(false);
+            fixedButton.setEnabled(false);
+        }
     }
 
     public void edit() {
@@ -254,7 +257,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
             accessTaskBean.setKey(itemKeeprightBean.getKey());
             LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
-            bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
+            bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
 
             TofixDraw.draw(tofixLayer, latLon);
         } else {
@@ -272,7 +275,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
             accessTaskBean.setKey(itemUnconnectedBean.getKey());
             LatLon latLon = new LatLon(itemUnconnectedBean.getValue().getY(), itemUnconnectedBean.getValue().getX());
-            bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
+            bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
             TofixDraw.draw(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);

@@ -29,7 +29,7 @@ public class TofixDraw {
         BoundingXYVisitor v = new BoundingXYVisitor();
         //double ex = 0.0001; = 2.34 m
         //double ex = 0.0007;// 16.7 m       
-        v.visit(new Bounds(latLon.toBBox(0.001).toRectangle()));
+        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
 
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
