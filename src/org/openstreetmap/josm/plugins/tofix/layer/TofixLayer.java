@@ -9,12 +9,9 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
@@ -30,14 +27,13 @@ import org.openstreetmap.josm.tools.ImageProvider;
 
 public class TofixLayer extends Layer implements ActionListener {
 
-    LatLon coordinate;
-    List<LatLon> listcoordinates = new LinkedList<LatLon>();
+    LatLon latLon;
 
+    //List<LatLon> listcoordinates = new LinkedList<LatLon>();
     public TofixLayer(String name) {
         super(name);
     }
-
-   // private static final Icon icon = new ImageIcon("icontofix.png");
+    // private static final Icon icon = new ImageIcon("icontofix.png");
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
     @Override
@@ -56,8 +52,9 @@ public class TofixLayer extends Layer implements ActionListener {
         return false;
     }
 
-    public void add_coordinate(LatLon coordinate) {
-        listcoordinates.add(coordinate);
+    public void add_coordinate(LatLon latLon) {
+        //listcoordinates.add(coordinate);
+        this.latLon = latLon;
         Main.map.mapView.repaint();
 
     }
@@ -75,11 +72,14 @@ public class TofixLayer extends Layer implements ActionListener {
 //            g.drawOval(pnt.x - 2, pnt.y - 2, 20, 20);
 //            l = pnt;
 //        }
-        for (LatLon coor : listcoordinates) {
-            Point pnt = mv.getPoint(coor);
-            g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
+//        for (LatLon coor : listcoordinates) {
+//            Point pnt = mv.getPoint(coor);
+//            g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
+//
+//        }
 
-        }
+        Point pnt = mv.getPoint(latLon);
+        g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
 
     }
 
