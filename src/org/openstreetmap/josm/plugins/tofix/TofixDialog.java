@@ -1,7 +1,9 @@
 package org.openstreetmap.josm.plugins.tofix;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -66,14 +68,15 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     MapView mv = Main.map.mapView;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    JPanel valuePanel = new JPanel();
-    JPanel jcontenpanel = new JPanel(new GridLayout(4, 0));
+    JPanel valuePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    JPanel jcontenpanel = new JPanel(new GridLayout(1, 0));
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     //JCheckBox autoedit_skip = new JCheckBox("Automatic Download after Skip");
     //JCheckBox autoedit_fixed = new JCheckBox("Automatic Download after Fixed");
     public TofixDialog() {
+
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
                         KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
@@ -98,6 +101,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 //            }
 //        });
         // Fixed Skip
+        ArrayList<String> tasksList = new ArrayList<String>();
+        tasksList.add("Select a task ...");
+        JComboBox jcomboBox = new JComboBox(tasksList.toArray());
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
@@ -142,8 +148,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jcontenpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         // JComboBox for each task
-        ArrayList<String> tasksList = new ArrayList<String>();
-        tasksList.add("Select a task ...");
+
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
@@ -151,23 +156,33 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
             if (!Status.server()) {
                 // editButton.setEnabled(false);
+
                 skipButton.setEnabled(false);
                 fixedButton.setEnabled(false);
+                jcomboBox.setEnabled(false);
             }
         } else {
             // editButton.setEnabled(false);
             //skipButton.setEnabled(false);
         }
-        JComboBox comboBox = new JComboBox(tasksList.toArray());
-        jcontenpanel.add(comboBox);
-        comboBox.addActionListener(this);
+
+        Util.print(getPreferredSize().width);
+
+        // comboBox.setPreferredSize(new Dimension(0, 15));
+        valuePanel.add(jcomboBox);
+
+        //jcontenpanel.add(jcomboBox);
+        jcomboBox.addActionListener(this);
 //        jcontenpanel.add(autoedit_skip);
 //        jcontenpanel.add(autoedit_fixed);
-        this.setPreferredSize(new Dimension(0, 40));
+        //   this.setPreferredSize(new Dimension(0, 15));
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
             // editButton, 
             skipButton, fixedButton
         }));
+
+        jcontenpanel.add(valuePanel);
+
     }
 
     @Override

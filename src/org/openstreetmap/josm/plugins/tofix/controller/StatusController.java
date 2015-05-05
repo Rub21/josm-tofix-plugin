@@ -29,7 +29,7 @@ public class StatusController {
         }
 
         statusBean = gson.fromJson(stringStatusBean, StatusBean.class);
-        statusBean.sumary();
+        //statusBean.sumary();
         
         return statusBean;
     }

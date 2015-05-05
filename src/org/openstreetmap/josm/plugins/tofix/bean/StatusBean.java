@@ -6,10 +6,11 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  */
 public class StatusBean {
 
+    private String status;
+
     public StatusBean(String status) {
         this.status = status;
     }
-    private String status;
 
     public String getStatus() {
         return status;
@@ -19,8 +20,8 @@ public class StatusBean {
         this.status = status;
     }
 
-    public void sumary() {
-        System.err.println("Status :" + getStatus());
-
-    }
+//    {
+//statusCode: 404,
+//error: "Not Found"
+//}
 }

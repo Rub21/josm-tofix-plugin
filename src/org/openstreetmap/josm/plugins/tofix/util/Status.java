@@ -14,10 +14,13 @@ import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
  */
 public class Status {
 
-    final static String host = "http://54.147.184.23:8000/";
+    final static String host = "http://54.147.184.23:8000/status";
 
     public static boolean server() {
-        StatusController statusController = new StatusController(host + "status");
+        StatusController statusController = new StatusController(host);
+        Util.print("=============================================");
+        Util.print(statusController.getStatusBean().getStatus());
+        
         if (statusController.getStatusBean().getStatus().equals("a ok")) {
             return true;
         } else {
