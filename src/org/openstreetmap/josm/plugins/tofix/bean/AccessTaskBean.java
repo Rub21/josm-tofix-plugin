@@ -7,13 +7,9 @@ package org.openstreetmap.josm.plugins.tofix.bean;
 public class AccessTaskBean {
 
     private String host = "http://54.147.184.23:8000";
-    // private String task_url; 
     private String task;
     private String task_source;
     private boolean access;
-    // private String track_url;
-    //private String fixed_url;
-
     private Long osm_obj_id;
     private String key;
 

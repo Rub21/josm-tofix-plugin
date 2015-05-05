@@ -29,10 +29,7 @@ public class Download {
             @Override
             public void run() {
                 try {
-                    future.get(); // wait for the download task to complete                
-                    //Node node = new Node(itemBean.getValue().getNode_id());
-                   // Way way = new Way(itemBean.getValue().getWay_id());
-                    
+                    future.get();                    
                     Node node = new Node(osm_obj_id);
                     //Collection<OsmPrimitive> selection = task.getDownloadedData().allPrimitives();
                     Main.main.getCurrentDataSet().setSelected(node);

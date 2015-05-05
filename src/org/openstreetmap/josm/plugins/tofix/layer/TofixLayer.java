@@ -64,20 +64,6 @@ public class TofixLayer extends Layer implements ActionListener {
         g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) 5));
         Point l = null;
-//        for (OsmPrimitive p : points) {
-//            Point pnt = mv.getPoint(p.getBBox().getCenter());
-//            if (l != null) {
-//                g.drawLine(l.x, l.y, pnt.x, pnt.y);
-//            }
-//            g.drawOval(pnt.x - 2, pnt.y - 2, 20, 20);
-//            l = pnt;
-//        }
-//        for (LatLon coor : listcoordinates) {
-//            Point pnt = mv.getPoint(coor);
-//            g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
-//
-//        }
-
         Point pnt = mv.getPoint(latLon);
         g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
 

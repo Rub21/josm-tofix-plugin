@@ -21,7 +21,6 @@ public class TofixDraw {
     public static void draw(final TofixLayer tofixLayer, LatLon latLon) {
         MapView mv = Main.map.mapView;
         Bounds bounds = null;
-        // LatLon coor = new LatLon(lon, lat);
         if (latLon.isOutSideWorld()) {
             JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
             return;
@@ -29,7 +28,7 @@ public class TofixDraw {
         BoundingXYVisitor v = new BoundingXYVisitor();
         //double ex = 0.0001; = 2.34 m
         //double ex = 0.0007;// 16.7 m       
-        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        v.visit(new Bounds(latLon.toBBox(0.0001).toRectangle()));
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
             mv.addLayer(tofixLayer);
