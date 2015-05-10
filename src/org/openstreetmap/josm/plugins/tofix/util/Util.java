@@ -22,4 +22,10 @@ public class Util {
         return coor;
     }
 
+    public static Long format_Elems_Nycbuildings(String elems) {
+        String[] arr = elems.replace("way", "").split("_");
+        
+        Util.print(arr);
+        return Long.valueOf(arr[0]);
+    }
 }

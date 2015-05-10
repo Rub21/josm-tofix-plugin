@@ -20,8 +20,4 @@ public class StatusBean {
         this.status = status;
     }
 
-//    {
-//statusCode: 404,
-//error: "Not Found"
-//}
 }
