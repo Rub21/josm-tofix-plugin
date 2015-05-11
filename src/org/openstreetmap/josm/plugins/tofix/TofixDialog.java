@@ -2,11 +2,13 @@ package org.openstreetmap.josm.plugins.tofix;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -18,6 +20,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
@@ -27,6 +30,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
@@ -37,6 +41,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemSkipController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
+import org.openstreetmap.josm.tools.Geometry;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -207,7 +212,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             get_item_unconnected();
         }
         if (accessTaskBean.getTask_source().equals("tigerdelta")) {
-            JOptionPane.showConfirmDialog(Main.parent, "Aun no implementado");
+            get_item_tigerdelta();
         }
 
         if (accessTaskBean.getTask_source().equals("nycbuildings")) {
@@ -228,7 +233,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
             bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
 
-            TofixDraw.draw(tofixLayer, latLon);
+            TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
             JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
@@ -247,7 +252,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             //Util.print(itemUnconnectedBean.getValue().getY()+"   o "+itemUnconnectedBean.getValue().getX());
             LatLon latLon = new LatLon(itemUnconnectedBean.getValue().getY(), itemUnconnectedBean.getValue().getX());
             bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
-            TofixDraw.draw(tofixLayer, latLon);
+            TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
             JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
@@ -266,7 +271,28 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             LatLon latLon = new LatLon(itemNycbuildingsBean.getValue().getLat(), itemNycbuildingsBean.getValue().getLon());
             Util.print(latLon);
             bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
-            TofixDraw.draw(tofixLayer, latLon);
+            TofixDraw.draw_Node(tofixLayer, latLon);
+        } else {
+            accessTaskBean.setAccess(false);
+            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+        }
+
+    }
+
+    private void get_item_tigerdelta() {
+        ItemTigerdeltaBean itemTigerdeltaBean = null;
+        itemController.setUrl(accessTaskBean.getTask_url());
+        itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
+        Util.print(accessTaskBean.getTask_url());
+        if (itemTigerdeltaBean != null) {
+            accessTaskBean.setAccess(true);
+            accessTaskBean.setOsm_obj_id(itemTigerdeltaBean.getValue().getWay());
+            accessTaskBean.setKey(itemTigerdeltaBean.getKey());
+            List<List<Node>> list = Util.format_st_astext_Tigerdelta(itemTigerdeltaBean.getValue().getSt_astext());
+            LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
+            bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
+            TofixDraw.draw_line(tofixLayer, latLon, list);
+            
         } else {
             accessTaskBean.setAccess(false);
             JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");

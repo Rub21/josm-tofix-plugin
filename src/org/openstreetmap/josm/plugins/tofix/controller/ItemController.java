@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
 /**
@@ -70,4 +71,18 @@ public class ItemController {
         return null;
     }
 
+    public ItemTigerdeltaBean getItemTigerdeltaBean() {
+        ItemTigerdeltaBean itemTigerdeltaBean = new ItemTigerdeltaBean();
+        String stringItem = null;
+        try {
+            stringItem = Request.sendPOST(getUrl());
+            itemTigerdeltaBean = gson.fromJson(stringItem, ItemTigerdeltaBean.class);
+
+            return itemTigerdeltaBean;
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null, "null");
+            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }
