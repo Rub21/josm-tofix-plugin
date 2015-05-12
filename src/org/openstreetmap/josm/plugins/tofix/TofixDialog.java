@@ -204,21 +204,27 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     private void get_new_item() {
         if (accessTaskBean.getTask_source().equals("keepright")) {
-
             get_item_keepright();
+            edit();
         }
 
         if (accessTaskBean.getTask_source().equals("unconnected")) {
-            get_item_unconnected();
+            if (accessTaskBean.getTask().equals("unconnected_minor1")) {
+                JOptionPane.showConfirmDialog(Main.panel, "Not implemented yet");
+            } else {
+                get_item_unconnected();
+                edit();
+            }
         }
         if (accessTaskBean.getTask_source().equals("tigerdelta")) {
             get_item_tigerdelta();
+            edit();
         }
 
         if (accessTaskBean.getTask_source().equals("nycbuildings")) {
             get_item_nycbuildings();
+            edit();
         }
-        edit();
     }
 
     private void get_item_keepright() {
@@ -292,7 +298,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
             bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
             TofixDraw.draw_line(tofixLayer, latLon, list);
-            
+
         } else {
             accessTaskBean.setAccess(false);
             JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
