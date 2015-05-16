@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  *
  * @author ruben
  */
-public class AtributesBean {
+public class AttributesBean {
 
     String user;
     String action;

@@ -6,13 +6,13 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  */
 public class TrackBean {
  
-    AtributesBean attributes;
+    AttributesBean attributes;
 
-    public AtributesBean getAttributes() {
+    public AttributesBean getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(AtributesBean attributes) {
+    public void setAttributes(AttributesBean attributes) {
         this.attributes = attributes;
     }
     
