@@ -162,12 +162,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (accessTaskBean.isAccess()) {
             Download.Download(downloadOsmTask, bounds, accessTaskBean.getOsm_obj_id());
             TrackBean trackBean = new TrackBean();
-            AttributesBean AttributesBean = new AttributesBean();
-            AttributesBean.setAction("edit");
-            AttributesBean.setEditor("josm");
-            AttributesBean.setUser(josmUserIdentityManager.getUserName());
-            AttributesBean.setKey(accessTaskBean.getKey());
-            trackBean.setAttributes(AttributesBean);
+            AttributesBean attributesBean = new AttributesBean();
+            attributesBean.setAction("edit");
+            attributesBean.setEditor("josm");
+            attributesBean.setUser(josmUserIdentityManager.getUserName());
+            attributesBean.setKey(accessTaskBean.getKey());
+            trackBean.setAttributes(attributesBean);
             ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
             itemEditController.sendTrackBean();
         }
@@ -176,12 +176,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void skip() {
         if (accessTaskBean.isAccess()) {
             TrackBean trackBean = new TrackBean();
-            AttributesBean AttributesBean = new AttributesBean();
-            AttributesBean.setAction("skip");
-            AttributesBean.setEditor("josm");
-            AttributesBean.setUser(josmUserIdentityManager.getUserName());
-            AttributesBean.setKey(accessTaskBean.getKey());
-            trackBean.setAttributes(AttributesBean);
+            AttributesBean attributesBean = new AttributesBean();
+            attributesBean.setAction("skip");
+            attributesBean.setEditor("josm");
+            attributesBean.setUser(josmUserIdentityManager.getUserName());
+            attributesBean.setKey(accessTaskBean.getKey());
+            trackBean.setAttributes(attributesBean);
             ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTrack_url(), trackBean);
             skipController.sendTrackBean();
         }
