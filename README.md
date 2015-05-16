@@ -8,7 +8,7 @@ Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challen
 
 *Download*
 
-- Download: https://github.com/Rub21/josm-tofix-plugin/blob/master/dist/tofix.jar?raw=true
+- Download: https://github.com/osmlab/josm-tofix-plugin/blob/master/dist/tofix.jar?raw=true
 - or clone from GitHub: `git clone https://github.com/Rub21/josm-tofix-plugin.git`
 
 *Copy to plugins directory*
