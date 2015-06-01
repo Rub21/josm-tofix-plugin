@@ -15,6 +15,7 @@ Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challen
 
 - Ubuntu: `cp tofix.jar ~/.josm/plugins/`
 - Mac OSX: `cp tofix.jar ~/Library/JOSM/plugins`
+- Windows :  Copy in `C:\Users\(Windows user)\AppData\Roaming\JOSM\plugins`
 
 *Activate plugin*
 
