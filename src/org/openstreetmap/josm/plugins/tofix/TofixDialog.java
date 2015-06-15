@@ -30,7 +30,7 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.io.OnlineResource;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
-import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
+import org.openstreetmap.josm.plugins.tofix.bean.AttributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemNycbuildingsBean;
@@ -61,9 +61,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private final SideButton fixedButton;
     private final SideButton uploadButton;
 
-    //Tofix host 
+    // To-Fix host
     AccessTaskBean accessTaskBean = null;
-    // Lista de tasks
+    // Task list
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
 
@@ -72,7 +72,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
 
-    //Tofix Layer
+    // To-Fix layer
     MapView mv = Main.map.mapView;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
@@ -87,9 +87,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
                         KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
 
-        //Geting start request the data
+        // Request data
         accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);
-        //get_new_item();
 
         skipButton = new SideButton(new AbstractAction() {
             {
@@ -105,7 +104,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
         skipButton.setEnabled(false);
-        // Fixed Button
+        // "Fixed" button
         fixedButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Fixed"));
@@ -185,12 +184,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (accessTaskBean.isAccess()) {
             Download.Download(downloadOsmTask, bounds, accessTaskBean.getOsm_obj_id());
             TrackBean trackBean = new TrackBean();
-            AtributesBean atributesBean = new AtributesBean();
-            atributesBean.setAction("edit");
-            atributesBean.setEditor("josm");
-            atributesBean.setUser(josmUserIdentityManager.getUserName());
-            atributesBean.setKey(accessTaskBean.getKey());
-            trackBean.setAttributes(atributesBean);
+            AttributesBean attributesBean = new AttributesBean();
+            attributesBean.setAction("edit");
+            attributesBean.setEditor("josm");
+            attributesBean.setUser(josmUserIdentityManager.getUserName());
+            attributesBean.setKey(accessTaskBean.getKey());
+            trackBean.setAttributes(attributesBean);
             ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
             itemEditController.sendTrackBean();
         }
@@ -199,12 +198,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void skip() {
         if (accessTaskBean.isAccess()) {
             TrackBean trackBean = new TrackBean();
-            AtributesBean atributesBean = new AtributesBean();
-            atributesBean.setAction("skip");
-            atributesBean.setEditor("josm");
-            atributesBean.setUser(josmUserIdentityManager.getUserName());
-            atributesBean.setKey(accessTaskBean.getKey());
-            trackBean.setAttributes(atributesBean);
+            AttributesBean attributesBean = new AttributesBean();
+            attributesBean.setAction("skip");
+            attributesBean.setEditor("josm");
+            attributesBean.setUser(josmUserIdentityManager.getUserName());
+            attributesBean.setKey(accessTaskBean.getKey());
+            trackBean.setAttributes(attributesBean);
             ItemSkipController skipController = new ItemSkipController(accessTaskBean.getTrack_url(), trackBean);
             skipController.sendTrackBean();
         }
