@@ -73,9 +73,9 @@ public class TofixDraw {
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
             mv.addLayer(tofixLayer);
-            //tofixLayer.add_Line(list_nodes);
+            tofixLayer.add_Nodes(list_nodes);
         } else {
-            //tofixLayer.add_Line(list_nodes);
+            tofixLayer.add_Nodes(list_nodes);
         }
     }
 }

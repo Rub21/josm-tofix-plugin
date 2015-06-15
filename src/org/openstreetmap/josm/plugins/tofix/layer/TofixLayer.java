@@ -27,10 +27,9 @@ import org.openstreetmap.josm.tools.ImageProvider;
 public class TofixLayer extends Layer implements ActionListener {
 
     LatLon latLon;
-    List<List<Node>> list_nodes;
-    boolean isnode = true;
-
-    //List<LatLon> listcoordinates = new LinkedList<LatLon>();
+    List<List<Node>> list_list_nodes;
+    List<Node> list_nodes;
+    String type = "";
     public TofixLayer(String name) {
         super(name);
     }
@@ -39,7 +38,6 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public Icon getIcon() {
-        //return icon;
         return ImageProvider.get("layer", "marker_small");
     }
 
@@ -54,46 +52,46 @@ public class TofixLayer extends Layer implements ActionListener {
     }
 
     public void add_Node(LatLon latLon) {
-        //listcoordinates.add(coordinate);
-        isnode = true;
+        type = "draw_node";
         this.latLon = latLon;
         Main.map.mapView.repaint();
-
     }
 
     public void add_Line(List<List<Node>> list_nodes) {
-        //listcoordinates.add(coordinate);
-        isnode = false;
-        this.list_nodes = list_nodes;
+        type = "draw_line";
+        this.list_list_nodes = list_nodes;
         Main.map.mapView.repaint();
-
     }
 
-//    public void add_Nodes(List<Node> list_nodes) {
-//        //listcoordinates.add(coordinate);
-//        isnode = false;
-//        this.list_nodes = list_nodes;
-//        Main.map.mapView.repaint();
-//
-//    }
+    public void add_Nodes(List<Node> list_nodes) {
+        type = "draw_nodes";
+        this.list_nodes = list_nodes;
+        Main.map.mapView.repaint();
+    }
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
         g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) 5));
-        if (isnode) {
+        if (type.equals("draw_node")) {
             Point pnt = mv.getPoint(latLon);
             g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
-        } else {
-            for (List<Node> l_nodes : list_nodes) {
+        } else if (type.equals("draw_line")) {
+            for (List<Node> l_nodes : list_list_nodes) {
                 for (int i = 0; i < l_nodes.size() - 1; i++) {
                     Point pnt1 = mv.getPoint(l_nodes.get(i).getCoor());
                     Point pnt2 = mv.getPoint(l_nodes.get(i + 1).getCoor());
                     g.drawLine(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
                 }
             }
+        } else if (type.equals("draw_nodes")) {
+            for (Node node : list_nodes) {
+                Point pnt = mv.getPoint(node.getCoor());
+                g.drawOval(pnt.x - 5, pnt.y - 5, 10, 10);
+            }
         }
 
+//add for others ways
     }
 
     @Override

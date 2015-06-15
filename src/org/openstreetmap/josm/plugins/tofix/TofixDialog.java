@@ -42,7 +42,6 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemSkipController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
-import org.openstreetmap.josm.tools.Geometry;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
