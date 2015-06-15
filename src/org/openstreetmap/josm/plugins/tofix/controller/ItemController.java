@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemKrakatoaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemNycbuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
@@ -79,6 +80,21 @@ public class ItemController {
             itemTigerdeltaBean = gson.fromJson(stringItem, ItemTigerdeltaBean.class);
 
             return itemTigerdeltaBean;
+        } catch (Exception ex) {
+            JOptionPane.showConfirmDialog(null, "null");
+            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public ItemKrakatoaBean getItemKrakatoBean() {
+        ItemKrakatoaBean itemKrakatoaBean = new ItemKrakatoaBean();
+        String stringItem = null;
+        try {
+            stringItem = Request.sendPOST(getUrl());
+            itemKrakatoaBean = gson.fromJson(stringItem, ItemKrakatoaBean.class);
+
+            return itemKrakatoaBean;
         } catch (Exception ex) {
             JOptionPane.showConfirmDialog(null, "null");
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);

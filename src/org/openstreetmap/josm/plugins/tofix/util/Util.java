@@ -1,14 +1,11 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
-import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.openstreetmap.josm.data.coor.CachedLatLon;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.data.osm.Way;
-import org.openstreetmap.josm.tools.Geometry;
+//import java.awt.geom;
 
 /**
  *
@@ -68,20 +65,10 @@ public class Util {
             list.add(l);
 
         }
-
-//        for (List<Double[]> l : list) {
-//            for (Double[] s : l) {
-//                Util.print(s[0] + " , " + s[1]);
-//            }
-//        }
-
-//:"MULTILINESTRING((-95.434784 30.066343,-95.434784 30.066349),(-95.434814 30.066545,-95.434845 30.066711),(-95.43486 30.06678,-95.434906 30.067045,-95.434952 30.067226))"}}
-//"MULTILINESTRING((-83.312073 35.471603,-83.3125 35.471741,-83.312843 35.471855))"}}
-//        Double lat = Double.parseDouble(list[2]);
-//        Double lon = Double.parseDouble(list[1]);
-        // LatLon coor = new LatLon(4, 6);
-        // Util.print(coor);
         return list;
 
     }
+    
+//      public static List geom_Krakatoa(String geom) {
+//      };
 }

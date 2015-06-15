@@ -29,6 +29,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.AttributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemKrakatoaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemNycbuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
@@ -224,6 +225,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             get_item_nycbuildings();
             edit();
         }
+        if (accessTaskBean.getTask_source().equals("krakatoa")) {
+            get_item_krakatoa();
+            //edit();
+        }
     }
 
     private void get_item_keepright() {
@@ -288,7 +293,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         ItemTigerdeltaBean itemTigerdeltaBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
         itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
-        Util.print(accessTaskBean.getTask_url());
         if (itemTigerdeltaBean != null) {
             accessTaskBean.setAccess(true);
             accessTaskBean.setOsm_obj_id(itemTigerdeltaBean.getValue().getWay());
@@ -304,4 +308,22 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
 
     }
+    private void get_item_krakatoa() {
+        ItemKrakatoaBean itemKrakatoaBean = null;
+        itemController.setUrl(accessTaskBean.getTask_url());
+        itemKrakatoaBean = itemController.getItemKrakatoBean();
+        if (itemKrakatoaBean != null) {
+            accessTaskBean.setAccess(true);
+            accessTaskBean.setKey(itemKrakatoaBean.getKey());
+            Util.print(itemKrakatoaBean.getValue().getGeom());
+            List<Node> list = itemKrakatoaBean.getValue().get_coordinates();
+            LatLon latLon = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
+            bounds = new Bounds(latLon.toBBox(0.002).toRectangle());
+            TofixDraw.draw_nodes(tofixLayer, latLon, list);
+        } else {
+            accessTaskBean.setAccess(false);
+            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+        }
+    }
+
 }

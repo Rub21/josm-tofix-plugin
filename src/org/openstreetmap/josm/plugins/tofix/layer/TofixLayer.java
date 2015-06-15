@@ -69,6 +69,14 @@ public class TofixLayer extends Layer implements ActionListener {
 
     }
 
+//    public void add_Nodes(List<Node> list_nodes) {
+//        //listcoordinates.add(coordinate);
+//        isnode = false;
+//        this.list_nodes = list_nodes;
+//        Main.map.mapView.repaint();
+//
+//    }
+
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
         g.setColor(new Color(254, 30, 123));

@@ -28,8 +28,7 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        //double ex = 0.0001; = 2.34 m
-        //double ex = 0.0007;// 16.7 m       
+   
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
@@ -60,4 +59,23 @@ public class TofixDraw {
         }
     }
 
+    public static void draw_nodes(final TofixLayer tofixLayer, LatLon latLon, List<Node> list_nodes) {
+        MapView mv = Main.map.mapView;
+        Bounds bounds = null;
+        if (latLon.isOutSideWorld()) {
+            JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
+            return;
+        }
+        BoundingXYVisitor v = new BoundingXYVisitor();
+        //double ex = 0.0001; = 2.34 m
+        //double ex = 0.0007;// 16.7 m       
+        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        Main.map.mapView.zoomTo(v);
+        if (!Main.map.mapView.hasLayer(tofixLayer)) {
+            mv.addLayer(tofixLayer);
+            //tofixLayer.add_Line(list_nodes);
+        } else {
+            //tofixLayer.add_Line(list_nodes);
+        }
+    }
 }
