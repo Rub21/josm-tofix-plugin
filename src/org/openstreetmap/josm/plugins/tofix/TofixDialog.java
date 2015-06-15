@@ -17,7 +17,9 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.openstreetmap.josm.Main;
+
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
+import org.openstreetmap.josm.data.APIDataSet;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
@@ -25,6 +27,8 @@ import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import org.openstreetmap.josm.io.OnlineResource;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.AtributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
@@ -55,6 +59,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     // private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
+    private final SideButton uploadButton;
 
     //Tofix host 
     AccessTaskBean accessTaskBean = null;
@@ -114,6 +119,23 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
         fixedButton.setEnabled(false);
+
+        uploadButton = new SideButton(new AbstractAction() {
+            {
+                putValue(NAME, tr("Upload"));
+                putValue(SMALL_ICON, ImageProvider.get("mapmode", "fixed.png"));
+                putValue(SHORT_DESCRIPTION, tr("upload data"));
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UploadAction uploadAction = new UploadAction();
+                uploadAction.uploadData((OsmDataLayer) Main.main.getActiveLayer(), new APIDataSet(Main.main.getCurrentDataSet().allModifiedPrimitives()));
+               // uploadAction.click();
+
+            }
+        });
+
         // Panels
         valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jcontenpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -133,7 +155,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         valuePanel.add(jcomboBox);
         jcomboBox.addActionListener(this);
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
-            skipButton, fixedButton
+            skipButton, fixedButton, uploadButton
         }));
         jcontenpanel.add(valuePanel);
 
