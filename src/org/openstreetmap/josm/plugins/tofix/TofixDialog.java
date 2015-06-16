@@ -2,7 +2,6 @@ package org.openstreetmap.josm.plugins.tofix;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -226,7 +225,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         if (accessTaskBean.getTask_source().equals("krakatoa")) {
             get_item_krakatoa();
-            //edit();
+            edit();
         }
     }
 
@@ -234,7 +233,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         ItemKeeprightBean itemKeeprightBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
         itemKeeprightBean = itemController.getItemKeeprightBean();
-        Util.print(itemKeeprightBean.getKey());
         if (itemKeeprightBean != null) {
             accessTaskBean.setAccess(true);
             accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
@@ -272,13 +270,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         ItemNycbuildingsBean itemNycbuildingsBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
         itemNycbuildingsBean = itemController.getItemNycbuildingsBean();
-        Util.print(accessTaskBean.getTask_url());
         if (itemNycbuildingsBean != null) {
             accessTaskBean.setAccess(true);
             accessTaskBean.setOsm_obj_id(Util.format_Elems_Nycbuildings(itemNycbuildingsBean.getValue().getElems()));
             accessTaskBean.setKey(itemNycbuildingsBean.getKey());
             LatLon latLon = new LatLon(itemNycbuildingsBean.getValue().getLat(), itemNycbuildingsBean.getValue().getLon());
-            Util.print(latLon);
             bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
@@ -296,7 +292,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setAccess(true);
             accessTaskBean.setOsm_obj_id(itemTigerdeltaBean.getValue().getWay());
             accessTaskBean.setKey(itemTigerdeltaBean.getKey());
-            List<List<Node>> list = Util.format_st_astext_Tigerdelta(itemTigerdeltaBean.getValue().getSt_astext());
+            List<List<Node>> list = itemTigerdeltaBean.getValue().get_coordinates();
             LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
             bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
             TofixDraw.draw_line(tofixLayer, latLon, list);
@@ -321,7 +317,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             TofixDraw.draw_nodes(tofixLayer, latLon, list);
         } else {
             accessTaskBean.setAccess(false);
-            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+           
         }
     }
 

@@ -25,7 +25,6 @@ public class ItemEditController {
     public void sendTrackBean() {
         Gson gson = new Gson();
         String string_obj = gson.toJson(trackBean).toString();
-        Util.print(string_obj);
         try {
             Request.sendPOST_Json(url, string_obj);
 

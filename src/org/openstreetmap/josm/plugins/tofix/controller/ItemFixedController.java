@@ -25,7 +25,6 @@ public class ItemFixedController {
     public void sendTrackBean() {
         Gson gson = new Gson();
         String string_obj = gson.toJson(itemFixedBean).toString();
-        Util.print(string_obj);
         try {
             Request.sendPOST_Json(url, string_obj);
 

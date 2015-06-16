@@ -14,7 +14,6 @@ import java.net.URL;
 public class Request {
 
     public static String sendPOST(String url) throws Exception {
-        Util.print(url);
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
@@ -34,7 +33,6 @@ public class Request {
                 response.append(inputLine);
             }
             in.close();
-            Util.print(response.toString());
             return response.toString();
 
         } else {
@@ -55,7 +53,6 @@ public class Request {
         os.write(outputBytes);
         os.close();
         int responseCode = con.getResponseCode();
-        Util.print(responseCode);
     }
 
     public static String sendGET(String url) throws IOException {
