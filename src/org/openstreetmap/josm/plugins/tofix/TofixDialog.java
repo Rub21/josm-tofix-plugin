@@ -54,7 +54,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     // private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
-    private Shortcut backspaceShortcut;
+    private Shortcut skipShortcut;
     // To-Fix host
     AccessTaskBean accessTaskBean = null;
     // Task list
@@ -141,8 +141,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
         }
-//        backspaceShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip to task"), KeyEvent.VK_9, Shortcut.ALT);
-//        Main.registerActionShortcut(new Skip_key_Action(), backspaceShortcut);
+//        skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip to task"), KeyEvent.VK_9, Shortcut.ALT);
+//        Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
     }
 
 //    public class Skip_key_Action extends AbstractAction {
