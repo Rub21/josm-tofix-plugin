@@ -94,7 +94,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 skip();
-                get_new_item();
             }
         });
         skipButton.setEnabled(false);
@@ -243,7 +242,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
-            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+            Util.error_request_data();
         }
     }
 
@@ -262,7 +261,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
-            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+            Util.error_request_data();
         }
     }
 
@@ -279,7 +278,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
-            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+            Util.error_request_data();
         }
 
     }
@@ -299,10 +298,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         } else {
             accessTaskBean.setAccess(false);
-            JOptionPane.showMessageDialog(Main.parent, "Something went wrong on Server!, Please change the Task or try to again");
+            Util.error_request_data();
         }
 
     }
+
     private void get_item_krakatoa() {
         ItemKrakatoaBean itemKrakatoaBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
@@ -317,7 +317,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             TofixDraw.draw_nodes(tofixLayer, latLon, list);
         } else {
             accessTaskBean.setAccess(false);
-           
+            Util.error_request_data();
         }
     }
 
