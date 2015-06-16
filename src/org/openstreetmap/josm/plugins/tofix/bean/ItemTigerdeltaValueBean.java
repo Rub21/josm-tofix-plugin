@@ -39,7 +39,7 @@ public class ItemTigerdeltaValueBean {
         this.st_astext = st_astext;
     }
 
-    public List get_coordinates() {
+    public List<List<Node>> get_coordinates() {
         String geostring = getSt_astext();
         geostring = geostring.replace("MULTILINESTRING(", "").replace("))", ")");
         Double[][] cordinates;

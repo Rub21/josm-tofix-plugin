@@ -15,7 +15,6 @@ import static javax.swing.Action.SMALL_ICON;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -44,6 +43,7 @@ import org.openstreetmap.josm.plugins.tofix.util.*;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
+import org.openstreetmap.josm.Main;
 
 /**
  *
@@ -54,7 +54,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     // private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
-
+    private Shortcut backspaceShortcut;
     // To-Fix host
     AccessTaskBean accessTaskBean = null;
     // Task list
@@ -79,7 +79,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
-                        KeyEvent.VK_F, Shortcut.CTRL_SHIFT), 75);
+                        KeyEvent.VK_T, Shortcut.CTRL_SHIFT), 75);
 
         // Request data
         accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);
@@ -97,6 +97,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
         skipButton.setEnabled(false);
+
         // "Fixed" button
         fixedButton = new SideButton(new AbstractAction() {
             {
@@ -110,6 +111,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 fixed();
             }
         });
+
         fixedButton.setEnabled(false);
         // Panels
         valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -139,8 +141,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
         }
+//        backspaceShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip to task"), KeyEvent.VK_9, Shortcut.ALT);
+//        Main.registerActionShortcut(new Skip_key_Action(), backspaceShortcut);
     }
 
+//    public class Skip_key_Action extends AbstractAction {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            skipButton.doClick();
+//        }
+//    }
     @Override
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
