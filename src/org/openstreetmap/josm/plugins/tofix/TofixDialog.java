@@ -181,10 +181,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         //Shortcuts
         skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
         Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
-        
+
         fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
         Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
-        
+
         noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
         Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
     }
@@ -293,12 +293,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             edit();
         }
         if (accessTaskBean.getTask_source().equals("unconnected")) {
-            //if (accessTaskBean.getTask().equals("unconnected_minor1")) {
-            JOptionPane.showConfirmDialog(Main.panel, "Not implemented yet");
-            // } else {
-            // get_item_unconnected();
-            // edit();
-            // }
+            if (accessTaskBean.getTask().equals("unconnected_minor1")) {
+                JOptionPane.showConfirmDialog(Main.panel, "Not implemented yet");
+            } else {
+                get_item_unconnected();
+                edit();
+            }
         }
         if (accessTaskBean.getTask_source().equals("tigerdelta")) {
             get_item_tigerdelta();
@@ -339,8 +339,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setAccess(true);
             accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
             accessTaskBean.setKey(itemUnconnectedBean.getKey());
+            Node node = itemUnconnectedBean.getValue().get_coordinates();
             // itemUnconnectedBean.
-            LatLon latLon = new LatLon(itemUnconnectedBean.getValue().getY(), itemUnconnectedBean.getValue().getX());
+            LatLon latLon = new LatLon(node.getCoor().lat(), node.getCoor().lon());
             bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
@@ -395,8 +396,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setAccess(true);
             accessTaskBean.setOsm_obj_id(0x0L);//porque no existe el id de objetos e este task
             accessTaskBean.setKey(itemKrakatoaBean.getKey());
-
-            Util.print(itemKrakatoaBean.getValue().getGeom());
             List<Node> list = itemKrakatoaBean.getValue().get_coordinates();
             LatLon latLon = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
             bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
