@@ -6,18 +6,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
- *
- * @author ruben
+ * Using for track skips and noterror actions
  */
-public class ItemSkipController {
+public class ItemTrackController {
 
     private String url;
     private TrackBean trackBean;
 
-    public ItemSkipController(String url, TrackBean trackBean) {
+    public ItemTrackController(String url, TrackBean trackBean) {
         this.url = url;
         this.trackBean = trackBean;
     }
