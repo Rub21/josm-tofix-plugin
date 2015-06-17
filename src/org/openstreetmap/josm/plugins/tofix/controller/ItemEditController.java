@@ -27,7 +27,6 @@ public class ItemEditController {
         String string_obj = gson.toJson(trackBean).toString();
         try {
             Request.sendPOST_Json(url, string_obj);
-
         } catch (IOException ex) {
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }

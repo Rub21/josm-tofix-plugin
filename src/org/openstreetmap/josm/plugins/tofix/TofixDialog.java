@@ -54,7 +54,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     // private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
-    private Shortcut skipShortcut;
+    private Shortcut skipShortcut = null;
+    private Shortcut fixedShortcut = null;
     // To-Fix host
     AccessTaskBean accessTaskBean = null;
     // Task list
@@ -74,6 +75,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jcontenpanel = new JPanel(new GridLayout(1, 0));
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
+
+    private final double size_bounds = 0.001;
 
     public TofixDialog() {
 
@@ -124,11 +127,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                 tasksList.add(listTaskBean.getTasks().get(i).getTitle());
             }
-
         }
 
         JComboBox jcomboBox = new JComboBox(tasksList.toArray());
-
         valuePanel.add(jcomboBox);
         jcomboBox.addActionListener(this);
         createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
@@ -141,17 +142,29 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
         }
-//        skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip to task"), KeyEvent.VK_9, Shortcut.ALT);
-//        Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
+        //Shortcuts
+        skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip task"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
+        Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
+        fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed task"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
+        Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
     }
 
-//    public class Skip_key_Action extends AbstractAction {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            skipButton.doClick();
-//        }
-//    }
+    public class Skip_key_Action extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            skip();
+        }
+    }
+
+    public class Fixed_key_Action extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            fixed();
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
@@ -195,7 +208,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             skipController.sendTrackBean();
         }
         get_new_item();
-
     }
 
     public void fixed() {
@@ -215,20 +227,18 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             get_item_keepright();
             edit();
         }
-
         if (accessTaskBean.getTask_source().equals("unconnected")) {
-            if (accessTaskBean.getTask().equals("unconnected_minor1")) {
-                JOptionPane.showConfirmDialog(Main.panel, "Not implemented yet");
-            } else {
-                get_item_unconnected();
-                edit();
-            }
+            //if (accessTaskBean.getTask().equals("unconnected_minor1")) {
+            JOptionPane.showConfirmDialog(Main.panel, "Not implemented yet");
+           // } else {
+            // get_item_unconnected();
+            // edit();
+            // }
         }
         if (accessTaskBean.getTask_source().equals("tigerdelta")) {
             get_item_tigerdelta();
             edit();
         }
-
         if (accessTaskBean.getTask_source().equals("nycbuildings")) {
             get_item_nycbuildings();
             edit();
@@ -248,8 +258,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
             accessTaskBean.setKey(itemKeeprightBean.getKey());
             LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
-            bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
-
+            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
@@ -266,9 +275,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
             accessTaskBean.setKey(itemUnconnectedBean.getKey());
             // itemUnconnectedBean.
-            //Util.print(itemUnconnectedBean.getValue().getY()+"   o "+itemUnconnectedBean.getValue().getX());
             LatLon latLon = new LatLon(itemUnconnectedBean.getValue().getY(), itemUnconnectedBean.getValue().getX());
-            bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
+            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
@@ -285,7 +293,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             accessTaskBean.setOsm_obj_id(Util.format_Elems_Nycbuildings(itemNycbuildingsBean.getValue().getElems()));
             accessTaskBean.setKey(itemNycbuildingsBean.getKey());
             LatLon latLon = new LatLon(itemNycbuildingsBean.getValue().getLat(), itemNycbuildingsBean.getValue().getLon());
-            bounds = new Bounds(latLon.toBBox(0.0007).toRectangle());
+            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
             TofixDraw.draw_Node(tofixLayer, latLon);
         } else {
             accessTaskBean.setAccess(false);
@@ -300,13 +308,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
         if (itemTigerdeltaBean != null) {
             accessTaskBean.setAccess(true);
-            accessTaskBean.setOsm_obj_id(itemTigerdeltaBean.getValue().getWay());
+            //accessTaskBean.setOsm_obj_id(itemTigerdeltaBean.getValue().getWay());
+            accessTaskBean.setOsm_obj_id(0x0L);//null porque no exixte el id del objeto
             accessTaskBean.setKey(itemTigerdeltaBean.getKey());
             List<List<Node>> list = itemTigerdeltaBean.getValue().get_coordinates();
             LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
-            bounds = new Bounds(latLon.toBBox(0.001).toRectangle());
+            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
             TofixDraw.draw_line(tofixLayer, latLon, list);
-
         } else {
             accessTaskBean.setAccess(false);
             Util.error_request_data();
@@ -320,11 +328,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         itemKrakatoaBean = itemController.getItemKrakatoBean();
         if (itemKrakatoaBean != null) {
             accessTaskBean.setAccess(true);
+            accessTaskBean.setOsm_obj_id(0x0L);//porque no existe el id de objetos e este task
             accessTaskBean.setKey(itemKrakatoaBean.getKey());
+
             Util.print(itemKrakatoaBean.getValue().getGeom());
             List<Node> list = itemKrakatoaBean.getValue().get_coordinates();
             LatLon latLon = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
-            bounds = new Bounds(latLon.toBBox(0.002).toRectangle());
+            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
             TofixDraw.draw_nodes(tofixLayer, latLon, list);
         } else {
             accessTaskBean.setAccess(false);
