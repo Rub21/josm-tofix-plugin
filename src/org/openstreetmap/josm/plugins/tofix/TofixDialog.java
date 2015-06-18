@@ -157,36 +157,33 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                 tasksList.add(listTaskBean.getTasks().get(i).getTitle());
             }
+            JComboBox jcomboBox = new JComboBox(tasksList.toArray());
+            valuePanel.add(jcomboBox);
+            jcomboBox.addActionListener(this);
+            createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
+                skipButton, noterrorButton, fixedButton
+            }));
+            jcontenpanel.add(valuePanel);
+
+            if (!Status.server()) {
+                jcomboBox.setEnabled(false);
+                skipButton.setEnabled(false);
+                fixedButton.setEnabled(false);
+                noterrorButton.setEnabled(false);
+            } else {
+                // Request data
+                accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);//start mixedlayer task by default
+                //Shortcuts
+                skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
+                Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
+
+                fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
+                Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
+
+                noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
+                Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
+            }
         }
-
-        JComboBox jcomboBox = new JComboBox(tasksList.toArray());
-
-        valuePanel.add(jcomboBox);
-        jcomboBox.addActionListener(this);
-        createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
-            skipButton, noterrorButton, fixedButton
-        }));
-        jcontenpanel.add(valuePanel);
-
-        if (!Status.server()) {
-            jcomboBox.setEnabled(false);
-            skipButton.setEnabled(false);
-            fixedButton.setEnabled(false);
-            noterrorButton.setEnabled(false);
-        } else {
-            // Request data
-            accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);//start mixedlayer task by default
-            //Shortcuts
-            skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
-            Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
-
-            fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
-            Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
-
-            noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
-            Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
-        }
-
     }
 
     public class Skip_key_Action extends AbstractAction {
