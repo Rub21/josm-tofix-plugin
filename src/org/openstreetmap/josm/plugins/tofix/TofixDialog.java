@@ -83,8 +83,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public TofixDialog() {
 
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
-                Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
-                        KeyEvent.VK_T, Shortcut.CTRL_SHIFT), 75);
+                Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
+                        KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 70);
 
         // "Skip" button
         skipButton = new SideButton(new AbstractAction() {

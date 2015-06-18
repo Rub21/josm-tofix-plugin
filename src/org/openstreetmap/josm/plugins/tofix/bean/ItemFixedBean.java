@@ -24,6 +24,5 @@ public class ItemFixedBean {
     public void setKey(String key) {
         this.key = key;
     }
-
     
 }
