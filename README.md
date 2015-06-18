@@ -30,9 +30,9 @@ Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challen
 
 Default shortcuts:
 
-- **Skip button: ** CTRL + SHIFT + S
-- **Not a error button : ** CTRL + SHIFT + N
-- **Fixed button : ** CTRL + SHIFT + F
+- **Skip button:** CTRL + SHIFT + S
+- **Not a error button :** CTRL + SHIFT + N
+- **Fixed button :** CTRL + SHIFT + F
 
 Example to configure your own shortcuts:
 
