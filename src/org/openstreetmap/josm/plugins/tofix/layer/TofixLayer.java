@@ -30,6 +30,7 @@ public class TofixLayer extends Layer implements ActionListener {
     List<List<Node>> list_list_nodes;
     List<Node> list_nodes;
     String type = "";
+
     public TofixLayer(String name) {
         super(name);
     }

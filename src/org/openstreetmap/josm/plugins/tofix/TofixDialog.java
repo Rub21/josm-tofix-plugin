@@ -82,7 +82,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
-    private final double size_bounds = 0.001;
+    private final double size_bounds = 0.003;
 
     public TofixDialog() {
 
@@ -92,7 +92,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         // Request data
         accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);
-
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
@@ -294,7 +293,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         if (accessTaskBean.getTask_source().equals("unconnected")) {
             if (accessTaskBean.getTask().equals("unconnected_minor1")) {
-                JOptionPane.showConfirmDialog(Main.panel, "Not implemented yet");
+                
+                JOptionPane.showMessageDialog(Main.panel, "Task is completed");
             } else {
                 get_item_unconnected();
                 edit();
