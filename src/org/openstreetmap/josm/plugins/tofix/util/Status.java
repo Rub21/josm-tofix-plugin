@@ -3,9 +3,6 @@ package org.openstreetmap.josm.plugins.tofix.util;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.UnknownHostException;
-import javax.swing.JOptionPane;
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
 
 /**

@@ -27,10 +27,7 @@ public class StatusController {
         } catch (Exception ex) {
             Logger.getLogger(StatusController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         statusBean = gson.fromJson(stringStatusBean, StatusBean.class);
-        //statusBean.sumary();
-        
         return statusBean;
     }
 }

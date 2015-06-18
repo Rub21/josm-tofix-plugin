@@ -1,11 +1,8 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.Node;
 //import java.awt.geom;
 
 /**
@@ -14,8 +11,8 @@ import org.openstreetmap.josm.data.osm.Node;
  */
 public class Util {
 
-        public static void alert(Object object) {
-            JOptionPane.showMessageDialog(null, object);
+    public static void alert(Object object) {
+        JOptionPane.showMessageDialog(null, object);
     }
 
     public static void print(Object object) {

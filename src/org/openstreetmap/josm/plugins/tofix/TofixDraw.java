@@ -16,6 +16,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  *
  * @author ruben
  */
+//double ex = 0.0001; = 2.34 m
+//double ex = 0.0007;// 16.7 m 
 public class TofixDraw {
 
     ItemUnconnectedBean itemBean = null;
@@ -28,7 +30,7 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-   
+
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
@@ -47,8 +49,6 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        //double ex = 0.0001; = 2.34 m
-        //double ex = 0.0007;// 16.7 m       
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
@@ -67,8 +67,6 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        //double ex = 0.0001; = 2.34 m
-        //double ex = 0.0007;// 16.7 m       
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
         Main.map.mapView.zoomTo(v);
         if (!Main.map.mapView.hasLayer(tofixLayer)) {

@@ -19,18 +19,6 @@ public class TofixPlugin extends Plugin {
     public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
         if (newFrame != null) {
             newFrame.addToggleDialog(tofixDialog = new TofixDialog());
-            //mode = new TofixMode(newFrame, "To-Fix", tr("To-fix mode"));
-//            btn = new IconToggleButton(mode);
-//            btn.setVisible(true);
-//            newFrame.addMapMode(btn);
-
         }
-//        else {
-//            btn = null;
-//            mode = null;
-//            tofixDialog = null;
-//            //Rub21
-//        }
-
     }
 }
