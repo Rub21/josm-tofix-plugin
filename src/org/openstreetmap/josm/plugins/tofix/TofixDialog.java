@@ -27,6 +27,7 @@ import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.io.OnlineResource;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.AttributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
@@ -62,12 +63,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut skipShortcut = null;
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
-    // To-Fix host
+    private final double size_bounds = 0.003;//extent to download
     AccessTaskBean accessTaskBean = null;
     // Task list
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
-
     ItemController itemController = new ItemController();
 
     Bounds bounds = null;
@@ -79,10 +79,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     JPanel valuePanel = new JPanel(new GridLayout(1, 1));
     JPanel jcontenpanel = new JPanel(new GridLayout(1, 2));
-
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
-
-    private final double size_bounds = 0.003;
 
     public TofixDialog() {
 
@@ -90,8 +87,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Shortcut.registerShortcut("tool:to-fix", tr("Toggle: {0}", tr("To-fix")),
                         KeyEvent.VK_T, Shortcut.CTRL_SHIFT), 75);
 
-        // Request data
-        accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);
+        // "Skip" button
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
@@ -155,6 +151,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<String>();
         tasksList.add("Select a task ...");
+
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
@@ -176,16 +173,20 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
             noterrorButton.setEnabled(false);
+        } else {
+            // Request data
+            accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);//start mixedlayer task by default
+            //Shortcuts
+            skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
+            Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
+
+            fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
+            Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
+
+            noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
+            Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
         }
-        //Shortcuts
-        skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
-        Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
 
-        fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
-        Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
-
-        noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
-        Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
     }
 
     public class Skip_key_Action extends AbstractAction {
@@ -293,7 +294,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         if (accessTaskBean.getTask_source().equals("unconnected")) {
             if (accessTaskBean.getTask().equals("unconnected_minor1")) {
-                
+
                 JOptionPane.showMessageDialog(Main.panel, "Task is completed");
             } else {
                 get_item_unconnected();
@@ -374,7 +375,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
         if (itemTigerdeltaBean != null) {
             accessTaskBean.setAccess(true);
-            //accessTaskBean.setOsm_obj_id(itemTigerdeltaBean.getValue().getWay());
             accessTaskBean.setOsm_obj_id(0x0L);//null porque no exixte el id del objeto
             accessTaskBean.setKey(itemTigerdeltaBean.getKey());
             List<List<Node>> list = itemTigerdeltaBean.getValue().get_coordinates();

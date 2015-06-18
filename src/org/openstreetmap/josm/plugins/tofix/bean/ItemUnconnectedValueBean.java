@@ -1,9 +1,7 @@
 package org.openstreetmap.josm.plugins.tofix.bean;
 
-import java.util.List;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -41,8 +39,6 @@ public class ItemUnconnectedValueBean {
 
     public Node get_coordinates() {
         String geoString = getSt_astext();
-        
-        Util.print(geoString);
         geoString = geoString.replace("POINT(", "").replace(")", "");
         String[] array = geoString.split(" ");
         LatLon latLon = new LatLon(Double.parseDouble(array[1]), Double.parseDouble(array[0]));

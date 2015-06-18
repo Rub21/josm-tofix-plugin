@@ -1,10 +1,14 @@
 package org.openstreetmap.josm.plugins.tofix.controller;
 
 import com.google.gson.Gson;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.stream.JsonParser;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -24,6 +28,14 @@ public class ListTaskController {
         String stringListTaskBean = null;
         try {
             stringListTaskBean = Request.sendGET(url);
+//
+//            StringReader reader = new StringReader(stringListTaskBean);
+//            Util.print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//            Util.print(reader);
+//            JsonParser parser = Json.createParser(reader);
+//            Util.print(parser);
+//            Util.print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
         } catch (Exception ex) {
             Logger.getLogger(StatusController.class.getName()).log(Level.SEVERE, null, ex);
         }

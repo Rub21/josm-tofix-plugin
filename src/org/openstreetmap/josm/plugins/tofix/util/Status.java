@@ -17,31 +17,25 @@ public class Status {
     final static String host = "http://54.147.184.23:8000/status";
 
     public static boolean server() {
-        StatusController statusController = new StatusController(host);       
+        StatusController statusController = new StatusController(host);
         if (statusController.getStatusBean().getStatus().equals("a ok")) {
             return true;
-        } else {
-            JOptionPane.showConfirmDialog(Main.parent, "The server is on maintenance!");
+        } else {            
             return false;
         }
-
     }
-
+    
     public static boolean isInternetReachable() {
+        HttpURLConnection activeConnection = null;
         try {
             URL url = new URL("http://www.openstreetmap.org");
-            HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
-            //is no connection, this line will fail
-            Object objData = urlConnect.getContent();
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            return false;
+            activeConnection = (HttpURLConnection) url.openConnection();
+            activeConnection.connect();
+            return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Couldn't connect to the osm server. Please check your internet connection.");
             return false;
         }
-        return true;
     }
 
 }
