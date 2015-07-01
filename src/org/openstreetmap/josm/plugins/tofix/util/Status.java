@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
  */
 public class Status {
 
-    final static String host = "http://54.147.184.23:8000/status";
+    final static String host = "http://54.165.131.155:8000/status";
 
     public static boolean server() {
         StatusController statusController = new StatusController(host);
