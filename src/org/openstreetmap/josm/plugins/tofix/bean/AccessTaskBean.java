@@ -1,12 +1,14 @@
 package org.openstreetmap.josm.plugins.tofix.bean;
 
+import org.openstreetmap.josm.plugins.tofix.util.Config;
+
 /**
  *
  * @author ruben
  */
 public class AccessTaskBean {
 
-    private String host = "http://54.165.131.155:8000";
+    private String host = Config.host;
     private String task;
     private String task_source;
     private boolean access;
@@ -28,7 +30,7 @@ public class AccessTaskBean {
     }
 
     public String getTask_url() {
-        String url = this.getHost() + "/task/" + this.getTask();
+        String url = this.getHost() + "task/" + this.getTask();
         return url;
     }
 
@@ -57,11 +59,11 @@ public class AccessTaskBean {
     }
 
     public String getTrack_url() {
-        return getHost() + "/track/" + getTask();
+        return getHost() + "track/" + getTask();
     }
 
     public String getFixed_url() {
-        return getHost() + "/fixed/" + getTask();
+        return getHost() + "fixed/" + getTask();
     }
 
     public Long getOsm_obj_id() {

@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import org.openstreetmap.josm.plugins.tofix.util.Config;
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -140,7 +141,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         jLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                OpenBrowser.displayUrl("http://osmlab.github.io/to-fix/");
+                OpenBrowser.displayUrl(Config.url_tofix);
             }
         });
         jcontenpanel.add(jLabel);

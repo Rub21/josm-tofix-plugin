@@ -11,21 +11,21 @@ import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
  */
 public class Status {
 
-    final static String host = "http://54.165.131.155:8000/status";
+    final static String host = Config.host + "status";
 
     public static boolean server() {
         StatusController statusController = new StatusController(host);
         if (statusController.getStatusBean().getStatus().equals("a ok")) {
             return true;
-        } else {            
+        } else {
             return false;
         }
     }
-    
+
     public static boolean isInternetReachable() {
         HttpURLConnection activeConnection = null;
         try {
-            URL url = new URL("http://www.openstreetmap.org");
+            URL url = new URL(Config.url_osm);
             activeConnection = (HttpURLConnection) url.openConnection();
             activeConnection.connect();
             return true;
