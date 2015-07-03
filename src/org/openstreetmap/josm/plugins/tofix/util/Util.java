@@ -27,10 +27,7 @@ public class Util {
         return coor;
     }
 
-    public static Long format_Elems_Nycbuildings(String elems) {
-        String[] arr = elems.replace("way", "").split("_");
-        return Long.valueOf(arr[0]);
-    }
+  
 
     public static void error_request_data() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
