@@ -82,8 +82,6 @@ public class TaskCompleteBean {
         this.statusCode = statusCode;
     }
 
-
-
     public String getError() {
         return error;
     }

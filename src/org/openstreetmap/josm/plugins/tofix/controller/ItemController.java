@@ -13,7 +13,6 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -38,8 +37,9 @@ public class ItemController {
     public Item getItem() {
 
         try {
-            responseBean = Request.sendPOST(accessToTask.getTask_url());
+            responseBean = Request.sendPOST(accessToTask.getTask_url());            
             item.setStatus(responseBean.getStatus());
+            
             switch (responseBean.getStatus()) {
                 case 200:
                     if (accessToTask.getTask_source().equals("unconnected")) {
@@ -60,8 +60,11 @@ public class ItemController {
                     break;
                 case 410:
                     item.setTaskCompleteBean(gson.fromJson(responseBean.getValue().replace("\\","").replace("\"{", "{").replace("}\"", "}"), TaskCompleteBean.class));
-                    break;            
-            }
+                    break;
+                case 503:
+                  //Servidor en mantenimiento
+                    break; 
+               }
 
         } catch (Exception ex) {
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);

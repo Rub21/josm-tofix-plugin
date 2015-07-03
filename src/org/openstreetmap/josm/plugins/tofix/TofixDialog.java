@@ -18,8 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
-import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
@@ -57,10 +55,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     // Task list
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
-    ItemController itemController = new ItemController();
 
-    Bounds bounds = null;
-    DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
+    //Item
+    Item item = new Item();
+    ItemController itemController = new ItemController();
 
     // To-Fix layer
     MapView mv = Main.map.mapView;
@@ -178,10 +176,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
-    private void TofixTask(Item item) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     public class Skip_key_Action extends AbstractAction {
 
         @Override
@@ -262,7 +256,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void noterror() {
         if (mainAccessToTask.isAccess()) {
-    
+
             FixedBean NoterrorBean = new FixedBean();
             NoterrorBean.setUser(josmUserIdentityManager.getUserName());
             NoterrorBean.setKey(mainAccessToTask.getKey());
@@ -273,8 +267,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void get_new_item() {
+        item.setStatus(0);
         itemController.setAccessToTask(mainAccessToTask);
-        Item item = itemController.getItem();
+        item = itemController.getItem();
         switch (item.getStatus()) {
             case 200:
                 mainAccessToTask.setAccess(true);
@@ -285,15 +280,14 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 mainAccessToTask.setAccess(false);
                 tofixTask.task_complete(item, mainAccessToTask);
                 break;
-
-            case 404:
+            case 503:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, "Maitenace server");
+                JOptionPane.showMessageDialog(Main.panel, tr("Maintenance server"));
                 break;
 
             default:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, "Somethig when wrong in server");
+                JOptionPane.showMessageDialog(Main.panel, tr("Somethig when wrong , try to again"));
         }
     }
 

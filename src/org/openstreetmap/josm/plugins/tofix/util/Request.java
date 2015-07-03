@@ -55,10 +55,11 @@ public class Request {
             responseBean.setValue(response_error.toString());// agregar respuesta de complete task
 
         } else {
+
             responseBean.setValue("error");
 
         }
-
+        con.disconnect();
         return responseBean;
     }
 
