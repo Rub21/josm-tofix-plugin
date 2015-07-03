@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.tofix.bean;
+package org.openstreetmap.josm.plugins.tofix.bean.items;
 
 /**
  *
@@ -24,9 +24,5 @@ public class ItemKrakatoaBean {
     public void setValue(ItemKrakatoaValueBean value) {
         this.value = value;
     }
-    
-    
-
-
-    
+        
 }

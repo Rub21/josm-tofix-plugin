@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import org.openstreetmap.josm.plugins.tofix.util.Config;
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -28,16 +27,18 @@ import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.plugins.tofix.bean.AccessTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.AttributesBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemKeeprightBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemKrakatoaBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemNycbuildingsBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemTigerdeltaBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemUnconnectedBean;
+import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemEditController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
@@ -45,10 +46,11 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
+import org.openstreetmap.josm.plugins.tofix.util.Config;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.Shortcut;
 import org.openstreetmap.josm.tools.OpenBrowser;
+import org.openstreetmap.josm.tools.Shortcut;
 
 /**
  *
@@ -64,7 +66,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
     private final double size_bounds = 0.003;//extent to download
-    AccessTaskBean accessTaskBean = null;
+    AccessToTask accessTaskBean = null;
     // Task list
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
@@ -80,6 +82,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel valuePanel = new JPanel(new GridLayout(1, 1));
     JPanel jcontenpanel = new JPanel(new GridLayout(1, 2));
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
+
+    TofixTask tofixTask = new TofixTask();
 
     public TofixDialog() {
 
@@ -172,7 +176,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButton.setEnabled(false);
             } else {
                 // Request data
-                accessTaskBean = new AccessTaskBean("mixedlayer", "keepright", false);//start mixedlayer task by default
+                accessTaskBean = new AccessToTask("mixedlayer", "keepright", false);//start mixedlayer task by default
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
@@ -259,7 +263,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void fixed() {
         if (accessTaskBean.isAccess()) {
-            ItemFixedBean itemFixedBean = new ItemFixedBean();
+            FixedBean itemFixedBean = new FixedBean();
             itemFixedBean.setUser(josmUserIdentityManager.getUserName());
             itemFixedBean.setKey(accessTaskBean.getKey());
             //itemFixedBean.setEditor("josm");
@@ -285,122 +289,135 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void get_new_item() {
-        if (accessTaskBean.getTask_source().equals("keepright")) {
-            get_item_keepright();
-            edit();
-        }
+
+        
+        
+        
         if (accessTaskBean.getTask_source().equals("unconnected")) {
-            if (accessTaskBean.getTask().equals("unconnected_minor1")) {
-
-                JOptionPane.showMessageDialog(Main.panel, "Task is completed");
-            } else {
-                get_item_unconnected();
-                edit();
-            }
-        }
-        if (accessTaskBean.getTask_source().equals("tigerdelta")) {
-            get_item_tigerdelta();
+//            if (accessTaskBean.getTask().equals("unconnected_minor1")) {
+//
+//                JOptionPane.showMessageDialog(Main.panel, "Task is completed");
+//            } else {
+            get_item_unconnected();
             edit();
+            // }
         }
-        if (accessTaskBean.getTask_source().equals("nycbuildings")) {
-            get_item_nycbuildings();
-            edit();
-        }
-        if (accessTaskBean.getTask_source().equals("krakatoa")) {
-            get_item_krakatoa();
-            edit();
-        }
+//        if (accessTaskBean.getTask_source().equals("keepright")) {
+//            get_item_keepright();
+//            edit();
+//        }
+//        if (accessTaskBean.getTask_source().equals("tigerdelta")) {
+//            get_item_tigerdelta();
+//            edit();
+//        }
+//        if (accessTaskBean.getTask_source().equals("nycbuildings")) {
+//            get_item_nycbuildings();
+//            edit();
+//        }
+//        if (accessTaskBean.getTask_source().equals("krakatoa")) {
+//            get_item_krakatoa();
+//            edit();
+//        }
     }
 
-    private void get_item_keepright() {
-        ItemKeeprightBean itemKeeprightBean = null;
-        itemController.setUrl(accessTaskBean.getTask_url());
-        itemKeeprightBean = itemController.getItemKeeprightBean();
-        if (itemKeeprightBean != null) {
-            accessTaskBean.setAccess(true);
-            accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
-            accessTaskBean.setKey(itemKeeprightBean.getKey());
-            LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
-            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-            TofixDraw.draw_Node(tofixLayer, latLon);
-        } else {
-            accessTaskBean.setAccess(false);
-            Util.error_request_data();
-        }
-    }
-
+//    private void get_item_keepright() {
+//        ItemKeeprightBean itemKeeprightBean = null;
+//        itemController.setUrl(accessTaskBean.getTask_url());
+//        itemKeeprightBean = itemController.getItemKeeprightBean();
+//        if (itemKeeprightBean != null) {
+//            accessTaskBean.setAccess(true);
+//            accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
+//            accessTaskBean.setKey(itemKeeprightBean.getKey());
+//            LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
+//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
+//            TofixDraw.draw_Node(tofixLayer, latLon);
+//        } else {
+//            accessTaskBean.setAccess(false);
+//            Util.error_request_data();
+//        }
+//    }
     private void get_item_unconnected() {
-        ItemUnconnectedBean itemUnconnectedBean = null;
         itemController.setUrl(accessTaskBean.getTask_url());
-        itemUnconnectedBean = itemController.getItemBean();
-        if (itemUnconnectedBean != null) {
-            accessTaskBean.setAccess(true);
-            accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
-            accessTaskBean.setKey(itemUnconnectedBean.getKey());
-            Node node = itemUnconnectedBean.getValue().get_coordinates();
-            // itemUnconnectedBean.
-            LatLon latLon = new LatLon(node.getCoor().lat(), node.getCoor().lon());
-            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-            TofixDraw.draw_Node(tofixLayer, latLon);
-        } else {
-            accessTaskBean.setAccess(false);
-            Util.error_request_data();
-        }
-    }
+        Item item = itemController.getItemUnconnectedBean();
+        ItemUnconnectedBean itemUnconnectedBean = item.getItemUnconnectedBean();
 
-    private void get_item_nycbuildings() {
-        ItemNycbuildingsBean itemNycbuildingsBean = null;
-        itemController.setUrl(accessTaskBean.getTask_url());
-        itemNycbuildingsBean = itemController.getItemNycbuildingsBean();
-        if (itemNycbuildingsBean != null) {
-            accessTaskBean.setAccess(true);
-            accessTaskBean.setOsm_obj_id(Util.format_Elems_Nycbuildings(itemNycbuildingsBean.getValue().getElems()));
-            accessTaskBean.setKey(itemNycbuildingsBean.getKey());
-            LatLon latLon = new LatLon(itemNycbuildingsBean.getValue().getLat(), itemNycbuildingsBean.getValue().getLon());
-            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-            TofixDraw.draw_Node(tofixLayer, latLon);
-        } else {
-            accessTaskBean.setAccess(false);
-            Util.error_request_data();
+        switch (item.getStatus()) {
+            case 200:
+                accessTaskBean.setAccess(true);
+                accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
+                accessTaskBean.setKey(itemUnconnectedBean.getKey());
+                Node node = itemUnconnectedBean.getValue().get_coordinates();
+                // itemUnconnectedBean.
+                LatLon latLon = new LatLon(node.getCoor().lat(), node.getCoor().lon());
+                bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
+                TofixDraw.draw_Node(tofixLayer, latLon);
+                break;
+            case 410:
+                accessTaskBean.setAccess(false);
+                JOptionPane.showMessageDialog(jcontenpanel, "Task  completo");
+                break;
+
+            case 404:
+                accessTaskBean.setAccess(false);
+                JOptionPane.showMessageDialog(jcontenpanel, "Task  completo");
+                break;
+
+            default:
+                accessTaskBean.setAccess(false);
+                JOptionPane.showMessageDialog(jcontenpanel, "Somethig when wrong in server");
         }
 
     }
-
-    private void get_item_tigerdelta() {
-        ItemTigerdeltaBean itemTigerdeltaBean = null;
-        itemController.setUrl(accessTaskBean.getTask_url());
-        itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
-        if (itemTigerdeltaBean != null) {
-            accessTaskBean.setAccess(true);
-            accessTaskBean.setOsm_obj_id(0x0L);//null porque no exixte el id del objeto
-            accessTaskBean.setKey(itemTigerdeltaBean.getKey());
-            List<List<Node>> list = itemTigerdeltaBean.getValue().get_coordinates();
-            LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
-            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-            TofixDraw.draw_line(tofixLayer, latLon, list);
-        } else {
-            accessTaskBean.setAccess(false);
-            Util.error_request_data();
-        }
-
-    }
-
-    private void get_item_krakatoa() {
-        ItemKrakatoaBean itemKrakatoaBean = null;
-        itemController.setUrl(accessTaskBean.getTask_url());
-        itemKrakatoaBean = itemController.getItemKrakatoBean();
-        if (itemKrakatoaBean != null) {
-            accessTaskBean.setAccess(true);
-            accessTaskBean.setOsm_obj_id(0x0L);//porque no existe el id de objetos e este task
-            accessTaskBean.setKey(itemKrakatoaBean.getKey());
-            List<Node> list = itemKrakatoaBean.getValue().get_coordinates();
-            LatLon latLon = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
-            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-            TofixDraw.draw_nodes(tofixLayer, latLon, list);
-        } else {
-            accessTaskBean.setAccess(false);
-            Util.error_request_data();
-        }
-    }
-
+//    private void get_item_nycbuildings() {
+//        ItemNycbuildingsBean itemNycbuildingsBean = null;
+//        itemController.setUrl(accessTaskBean.getTask_url());
+//        itemNycbuildingsBean = itemController.getItemNycbuildingsBean();
+//        if (itemNycbuildingsBean != null) {
+//            accessTaskBean.setAccess(true);
+//            accessTaskBean.setOsm_obj_id(Util.format_Elems_Nycbuildings(itemNycbuildingsBean.getValue().getElems()));
+//            accessTaskBean.setKey(itemNycbuildingsBean.getKey());
+//            LatLon latLon = new LatLon(itemNycbuildingsBean.getValue().getLat(), itemNycbuildingsBean.getValue().getLon());
+//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
+//            TofixDraw.draw_Node(tofixLayer, latLon);
+//        } else {
+//            accessTaskBean.setAccess(false);
+//            Util.error_request_data();
+//        }
+//
+//    }
+//    private void get_item_tigerdelta() {
+//        ItemTigerdeltaBean itemTigerdeltaBean = null;
+//        itemController.setUrl(accessTaskBean.getTask_url());
+//        itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
+//        if (itemTigerdeltaBean != null) {
+//            accessTaskBean.setAccess(true);
+//            accessTaskBean.setOsm_obj_id(0x0L);//null porque no exixte el id del objeto
+//            accessTaskBean.setKey(itemTigerdeltaBean.getKey());
+//            List<List<Node>> list = itemTigerdeltaBean.getValue().get_coordinates();
+//            LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
+//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
+//            TofixDraw.draw_line(tofixLayer, latLon, list);
+//        } else {
+//            accessTaskBean.setAccess(false);
+//            Util.error_request_data();
+//        }
+//
+//    }
+//    private void get_item_krakatoa() {
+//        ItemKrakatoaBean itemKrakatoaBean = null;
+//        itemController.setUrl(accessTaskBean.getTask_url());
+//        itemKrakatoaBean = itemController.getItemKrakatoBean();
+//        if (itemKrakatoaBean != null) {
+//            accessTaskBean.setAccess(true);
+//            accessTaskBean.setOsm_obj_id(0x0L);//porque no existe el id de objetos e este task
+//            accessTaskBean.setKey(itemKrakatoaBean.getKey());
+//            List<Node> list = itemKrakatoaBean.getValue().get_coordinates();
+//            LatLon latLon = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
+//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
+//            TofixDraw.draw_nodes(tofixLayer, latLon, list);
+//        } else {
+//            accessTaskBean.setAccess(false);
+//            Util.error_request_data();
+//        }
+//    }
 }

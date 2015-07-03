@@ -4,7 +4,7 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  *
  * @author ruben
  */
-public class ItemFixedBean {
+public class FixedBean {
     private String user;
     private String key;
     //private String editor;

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openstreetmap.josm.plugins.tofix.bean.ItemFixedBean;
+import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
 /**
@@ -14,8 +14,8 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
 public class ItemFixedController {
 
     private String url;
-    private ItemFixedBean itemFixedBean;
-    public ItemFixedController(String url, ItemFixedBean itemFixedBean) {
+    private FixedBean itemFixedBean;
+    public ItemFixedController(String url, FixedBean itemFixedBean) {
         this.url = url;
         this.itemFixedBean = itemFixedBean;
     }

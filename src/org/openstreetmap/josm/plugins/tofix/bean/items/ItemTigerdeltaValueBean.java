@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.tofix.bean;
+package org.openstreetmap.josm.plugins.tofix.bean.items;
 
 import java.util.LinkedList;
 import java.util.List;

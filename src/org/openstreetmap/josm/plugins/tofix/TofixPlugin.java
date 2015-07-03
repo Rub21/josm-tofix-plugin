@@ -9,8 +9,7 @@ public class TofixPlugin extends Plugin {
 
     private IconToggleButton btn;
     protected static TofixDialog tofixDialog;
-    private TofixMode mode;
-
+ 
     public TofixPlugin(PluginInformation info) {
         super(info);
     }

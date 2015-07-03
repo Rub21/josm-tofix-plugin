@@ -3,10 +3,10 @@ package org.openstreetmap.josm.plugins.tofix.bean;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 
 /**
- *
+ * 
  * @author ruben
  */
-public class AccessTaskBean {
+public class AccessToTask {
 
     private String host = Config.host;
     private String task;
@@ -15,7 +15,7 @@ public class AccessTaskBean {
     private Long osm_obj_id;
     private String key;
 
-    public AccessTaskBean(String task, String task_source, boolean access) {
+    public AccessToTask(String task, String task_source, boolean access) {
         this.task = task;
         this.task_source = task_source;
         this.access = access;

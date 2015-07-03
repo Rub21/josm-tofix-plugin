@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.tofix.bean;
+package org.openstreetmap.josm.plugins.tofix.bean.items;
 
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
