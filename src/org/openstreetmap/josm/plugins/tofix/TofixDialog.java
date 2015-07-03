@@ -71,22 +71,22 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
     ItemController itemController = new ItemController();
-    
+
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
 
     // To-Fix layer
     MapView mv = Main.map.mapView;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
-    
+
     JPanel valuePanel = new JPanel(new GridLayout(1, 1));
     JPanel jcontenpanel = new JPanel(new GridLayout(1, 2));
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
-    
+
     TofixTask tofixTask = new TofixTask();
-    
+
     public TofixDialog() {
-        
+
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 70);
@@ -98,7 +98,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "skip.png"));
                 putValue(SHORT_DESCRIPTION, tr("Skip Error"));
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 skip();
@@ -113,13 +113,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "fixed.png"));
                 putValue(SHORT_DESCRIPTION, tr("Fixed Error"));
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 fixed();
             }
         });
-        
+
         fixedButton.setEnabled(false);
 
         // "Not a error" button
@@ -129,13 +129,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "noterror.png"));
                 putValue(SHORT_DESCRIPTION, tr("Not a error"));
             }
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 noterror();
             }
         });
-        
+
         noterrorButton.setEnabled(false);
 
         //add tittle for To-fix task
@@ -155,7 +155,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<String>();
         tasksList.add("Select a task ...");
-        
+
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
@@ -168,7 +168,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 skipButton, noterrorButton, fixedButton
             }));
             jcontenpanel.add(valuePanel);
-            
+
             if (!Status.server()) {
                 jcomboBox.setEnabled(false);
                 skipButton.setEnabled(false);
@@ -180,49 +180,48 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
-                
+
                 fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
-                
+
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
             }
         }
     }
-    
+
     private void TofixTask(Item item) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public class Skip_key_Action extends AbstractAction {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             skip();
         }
     }
-    
+
     public class Fixed_key_Action extends AbstractAction {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             fixed();
         }
     }
-    
+
     public class NotError_key_Action extends AbstractAction {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             noterror();
         }
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            
             mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getTitle());
             mainAccessToTask.setTask_id(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
             mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
@@ -236,7 +235,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             noterrorButton.setEnabled(false);
         }
     }
-    
+
     public void edit() {
         if (mainAccessToTask.isAccess()) {
             Util.print("Mandado a Edition");
@@ -253,7 +252,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             itemEditController.sendTrackBean();
         }
     }
-    
+
     public void skip() {
         if (mainAccessToTask.isAccess()) {
             Util.print("Skipt");
@@ -271,7 +270,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         get_new_item();
     }
-    
+
     public void fixed() {
         if (mainAccessToTask.isAccess()) {
             Util.print("Arreglado");
@@ -286,7 +285,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         get_new_item();
     }
-    
+
     public void noterror() {
         if (mainAccessToTask.isAccess()) {
             Util.print("No es un Error");
@@ -304,7 +303,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         get_new_item();
     }
-    
+
     private void get_new_item() {
         itemController.setAccessToTask(mainAccessToTask);
         Item item = itemController.getItem();
@@ -319,18 +318,18 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             case 410:
                 mainAccessToTask.setAccess(false);
-                tofixTask.task_complete(item, mainAccessToTask);                
+                tofixTask.task_complete(item, mainAccessToTask);
                 break;
-            
+
             case 404:
                 mainAccessToTask.setAccess(false);
                 JOptionPane.showMessageDialog(Main.panel, "Maitenace server");
                 break;
-            
+
             default:
                 mainAccessToTask.setAccess(false);
                 JOptionPane.showMessageDialog(Main.panel, "Somethig when wrong in server");
         }
     }
-    
+
 }
