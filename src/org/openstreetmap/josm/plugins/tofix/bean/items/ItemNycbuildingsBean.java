@@ -64,8 +64,7 @@ public class ItemNycbuildingsBean {
         }
         public Node get_node(){
             Node node = new Node(new LatLon(getLat(),getLon()));
-            return  node;
-            
+            return  node;       
         }        
 
     }

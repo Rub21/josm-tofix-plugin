@@ -30,7 +30,6 @@ import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
-//import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.util.*;

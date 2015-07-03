@@ -16,8 +16,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  *
  * @author ruben
  */
-//double ex = 0.0001; = 2.34 m
-//double ex = 0.0007;// 16.7 m 
+
 public class TofixDraw {
 
     ItemUnconnectedBean itemBean = null;
