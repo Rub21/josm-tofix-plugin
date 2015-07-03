@@ -20,43 +20,41 @@ import org.openstreetmap.josm.plugins.tofix.util.Download;
  */
 public class TofixTask {
 
-    //Main clases 
-    Item item = new Item();
     ItemController itemController = new ItemController();
 
-    private final double size_bounds = Config.bounds;
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
 
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public void fetch_item_unconnected(AccessToTask accessTaskBean) {
-        itemController.setUrl(accessTaskBean.getTask_url());
-        Item item = itemController.getItemUnconnectedBean();
-        ItemUnconnectedBean itemUnconnectedBean = item.getItemUnconnectedBean();
+    public AccessToTask work(Item item, AccessToTask accessToTask) {
 
-        switch (item.getStatus()) {
-            case 200:
-                accessTaskBean.setAccess(true);
-                accessTaskBean.setKey(itemUnconnectedBean.getKey());
-                accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
-                Node node = itemUnconnectedBean.getValue().get_coordinates();
-                // itemUnconnectedBean.
-                LatLon latLon = new LatLon(node.getCoor().lat(), node.getCoor().lon());
-                bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-                TofixDraw.draw_Node(tofixLayer, latLon);//draw in layer
-                Download.Download(downloadOsmTask, bounds, accessTaskBean.getOsm_obj_id());//Download data
-                break;
-
-            case 410:
-                accessTaskBean.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, "Task  completo");
-                break;
-            default:
-                accessTaskBean.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, "Somethig when wrong in server");
+        if (accessToTask.getTask_source().equals("unconnected")) {
+            accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask);
         }
+        if (accessToTask.getTask_source().equals("keepright")) {
 
+        }
+        if (accessToTask.getTask_source().equals("tigerdelta")) {
+
+        }
+        if (accessToTask.getTask_source().equals("nycbuildings")) {
+
+        }
+        if (accessToTask.getTask_source().equals("krakatoa")) {
+
+        }
+        return accessToTask;
+    }
+
+    private AccessToTask work_unconnected(ItemUnconnectedBean itemUnconnectedBean, AccessToTask accessToTask) {
+        accessToTask.setKey(itemUnconnectedBean.getKey());
+        Node node = itemUnconnectedBean.getValue().get_coordinates();
+        LatLon latLon = new LatLon(node.getCoor().lat(), node.getCoor().lon());
+        bounds = new Bounds(latLon.toBBox(Config.bounds).toRectangle());
+        TofixDraw.draw_Node(tofixLayer, latLon);
+        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getValue().getNode_id());
+        return accessToTask;
     }
 
 }

@@ -66,27 +66,27 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
     private final double size_bounds = 0.003;//extent to download
-    AccessToTask accessTaskBean = null;
+    AccessToTask mainAccessToTask = null;
     // Task list
     ListTaskBean listTaskBean = null;
     ListTaskController listTaskController = new ListTaskController();
     ItemController itemController = new ItemController();
-
+    
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
 
     // To-Fix layer
     MapView mv = Main.map.mapView;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
-
+    
     JPanel valuePanel = new JPanel(new GridLayout(1, 1));
     JPanel jcontenpanel = new JPanel(new GridLayout(1, 2));
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
-
+    
     TofixTask tofixTask = new TofixTask();
-
+    
     public TofixDialog() {
-
+        
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 70);
@@ -98,7 +98,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "skip.png"));
                 putValue(SHORT_DESCRIPTION, tr("Skip Error"));
             }
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 skip();
@@ -113,13 +113,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "fixed.png"));
                 putValue(SHORT_DESCRIPTION, tr("Fixed Error"));
             }
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 fixed();
             }
         });
-
+        
         fixedButton.setEnabled(false);
 
         // "Not a error" button
@@ -129,13 +129,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "noterror.png"));
                 putValue(SHORT_DESCRIPTION, tr("Not a error"));
             }
-
+            
             @Override
             public void actionPerformed(ActionEvent e) {
                 noterror();
             }
         });
-
+        
         noterrorButton.setEnabled(false);
 
         //add tittle for To-fix task
@@ -155,7 +155,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<String>();
         tasksList.add("Select a task ...");
-
+        
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
@@ -168,7 +168,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 skipButton, noterrorButton, fixedButton
             }));
             jcontenpanel.add(valuePanel);
-
+            
             if (!Status.server()) {
                 jcomboBox.setEnabled(false);
                 skipButton.setEnabled(false);
@@ -176,50 +176,54 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButton.setEnabled(false);
             } else {
                 // Request data
-                accessTaskBean = new AccessToTask("mixedlayer", "keepright", false);//start mixedlayer task by default
+                mainAccessToTask = new AccessToTask("mixedlayer", "keepright", false);//start mixedlayer task by default
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
-
+                
                 fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
-
+                
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
             }
         }
     }
-
+    
+    private void TofixTask(Item item) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public class Skip_key_Action extends AbstractAction {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             skip();
         }
     }
-
+    
     public class Fixed_key_Action extends AbstractAction {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             fixed();
         }
     }
-
+    
     public class NotError_key_Action extends AbstractAction {
-
+        
         @Override
         public void actionPerformed(ActionEvent e) {
             noterror();
         }
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            accessTaskBean.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
-            accessTaskBean.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
+            mainAccessToTask.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
+            mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
             get_new_item();
             skipButton.setEnabled(true);
             fixedButton.setEnabled(true);
@@ -230,194 +234,90 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             noterrorButton.setEnabled(false);
         }
     }
-
+    
     public void edit() {
-        if (accessTaskBean.isAccess()) {
-            Download.Download(downloadOsmTask, bounds, accessTaskBean.getOsm_obj_id());
+        if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
             AttributesBean attributesBean = new AttributesBean();
             attributesBean.setAction("edit");
             attributesBean.setEditor("josm");
             attributesBean.setUser(josmUserIdentityManager.getUserName());
-            attributesBean.setKey(accessTaskBean.getKey());
+            attributesBean.setKey(mainAccessToTask.getKey());
             trackBean.setAttributes(attributesBean);
-            ItemEditController itemEditController = new ItemEditController(accessTaskBean.getTrack_url(), trackBean);
+            ItemEditController itemEditController = new ItemEditController(mainAccessToTask.getTrack_url(), trackBean);
             itemEditController.sendTrackBean();
         }
     }
-
+    
     public void skip() {
-        if (accessTaskBean.isAccess()) {
+        if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
             AttributesBean attributesBean = new AttributesBean();
             attributesBean.setAction("skip");
             attributesBean.setEditor("josm");
             attributesBean.setUser(josmUserIdentityManager.getUserName());
-            attributesBean.setKey(accessTaskBean.getKey());
+            attributesBean.setKey(mainAccessToTask.getKey());
             trackBean.setAttributes(attributesBean);
-            ItemTrackController skipController = new ItemTrackController(accessTaskBean.getTrack_url(), trackBean);
+            ItemTrackController skipController = new ItemTrackController(mainAccessToTask.getTrack_url(), trackBean);
             skipController.sendTrackBean();
         }
         get_new_item();
     }
-
+    
     public void fixed() {
-        if (accessTaskBean.isAccess()) {
+        if (mainAccessToTask.isAccess()) {
             FixedBean itemFixedBean = new FixedBean();
             itemFixedBean.setUser(josmUserIdentityManager.getUserName());
-            itemFixedBean.setKey(accessTaskBean.getKey());
+            itemFixedBean.setKey(mainAccessToTask.getKey());
             //itemFixedBean.setEditor("josm");
-            ItemFixedController itemFixedController = new ItemFixedController(accessTaskBean.getFixed_url(), itemFixedBean);
+            ItemFixedController itemFixedController = new ItemFixedController(mainAccessToTask.getFixed_url(), itemFixedBean);
             itemFixedController.sendTrackBean();
         }
         get_new_item();
     }
-
+    
     public void noterror() {
-        if (accessTaskBean.isAccess()) {
+        if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
             AttributesBean attributesBean = new AttributesBean();
             attributesBean.setAction("noterror");
             attributesBean.setEditor("josm");
             attributesBean.setUser(josmUserIdentityManager.getUserName());
-            attributesBean.setKey(accessTaskBean.getKey());
+            attributesBean.setKey(mainAccessToTask.getKey());
             trackBean.setAttributes(attributesBean);
-            ItemTrackController notaerrorController = new ItemTrackController(accessTaskBean.getTrack_url(), trackBean);
+            ItemTrackController notaerrorController = new ItemTrackController(mainAccessToTask.getTrack_url(), trackBean);
             notaerrorController.sendTrackBean();
         }
         get_new_item();
     }
-
+    
     private void get_new_item() {
-
-        
-        
-        
-        if (accessTaskBean.getTask_source().equals("unconnected")) {
-//            if (accessTaskBean.getTask().equals("unconnected_minor1")) {
-//
-//                JOptionPane.showMessageDialog(Main.panel, "Task is completed");
-//            } else {
-            get_item_unconnected();
-            edit();
-            // }
-        }
-//        if (accessTaskBean.getTask_source().equals("keepright")) {
-//            get_item_keepright();
-//            edit();
-//        }
-//        if (accessTaskBean.getTask_source().equals("tigerdelta")) {
-//            get_item_tigerdelta();
-//            edit();
-//        }
-//        if (accessTaskBean.getTask_source().equals("nycbuildings")) {
-//            get_item_nycbuildings();
-//            edit();
-//        }
-//        if (accessTaskBean.getTask_source().equals("krakatoa")) {
-//            get_item_krakatoa();
-//            edit();
-//        }
-    }
-
-//    private void get_item_keepright() {
-//        ItemKeeprightBean itemKeeprightBean = null;
-//        itemController.setUrl(accessTaskBean.getTask_url());
-//        itemKeeprightBean = itemController.getItemKeeprightBean();
-//        if (itemKeeprightBean != null) {
-//            accessTaskBean.setAccess(true);
-//            accessTaskBean.setOsm_obj_id(itemKeeprightBean.getValue().getObject_id());
-//            accessTaskBean.setKey(itemKeeprightBean.getKey());
-//            LatLon latLon = Util.format_St_astext_Keepright(itemKeeprightBean.getValue().getSt_astext());
-//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-//            TofixDraw.draw_Node(tofixLayer, latLon);
-//        } else {
-//            accessTaskBean.setAccess(false);
-//            Util.error_request_data();
-//        }
-//    }
-    private void get_item_unconnected() {
-        itemController.setUrl(accessTaskBean.getTask_url());
-        Item item = itemController.getItemUnconnectedBean();
-        ItemUnconnectedBean itemUnconnectedBean = item.getItemUnconnectedBean();
-
+        itemController.setAccessToTask(mainAccessToTask);
+        Item item = itemController.getItem();
         switch (item.getStatus()) {
             case 200:
-                accessTaskBean.setAccess(true);
-                accessTaskBean.setOsm_obj_id(itemUnconnectedBean.getValue().getNode_id());
-                accessTaskBean.setKey(itemUnconnectedBean.getKey());
-                Node node = itemUnconnectedBean.getValue().get_coordinates();
-                // itemUnconnectedBean.
-                LatLon latLon = new LatLon(node.getCoor().lat(), node.getCoor().lon());
-                bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-                TofixDraw.draw_Node(tofixLayer, latLon);
+                mainAccessToTask.setAccess(true);
+                mainAccessToTask = tofixTask.work(item, mainAccessToTask);
+                Util.print("ya sido descargado");
+                Util.print(mainAccessToTask.getTask_url());
+                Util.print(mainAccessToTask.getKey());
+                edit();
+                //JOptionPane.showMessageDialog(Main.panel, "Good Request");
                 break;
             case 410:
-                accessTaskBean.setAccess(false);
-                JOptionPane.showMessageDialog(jcontenpanel, "Task  completo");
+                mainAccessToTask.setAccess(false);
+                JOptionPane.showMessageDialog(Main.panel, "Task  completo");
                 break;
-
+            
             case 404:
-                accessTaskBean.setAccess(false);
-                JOptionPane.showMessageDialog(jcontenpanel, "Task  completo");
+                mainAccessToTask.setAccess(false);
+                JOptionPane.showMessageDialog(Main.panel, "Maitenace server");
                 break;
-
+            
             default:
-                accessTaskBean.setAccess(false);
-                JOptionPane.showMessageDialog(jcontenpanel, "Somethig when wrong in server");
+                mainAccessToTask.setAccess(false);
+                JOptionPane.showMessageDialog(Main.panel, "Somethig when wrong in server");
         }
-
     }
-//    private void get_item_nycbuildings() {
-//        ItemNycbuildingsBean itemNycbuildingsBean = null;
-//        itemController.setUrl(accessTaskBean.getTask_url());
-//        itemNycbuildingsBean = itemController.getItemNycbuildingsBean();
-//        if (itemNycbuildingsBean != null) {
-//            accessTaskBean.setAccess(true);
-//            accessTaskBean.setOsm_obj_id(Util.format_Elems_Nycbuildings(itemNycbuildingsBean.getValue().getElems()));
-//            accessTaskBean.setKey(itemNycbuildingsBean.getKey());
-//            LatLon latLon = new LatLon(itemNycbuildingsBean.getValue().getLat(), itemNycbuildingsBean.getValue().getLon());
-//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-//            TofixDraw.draw_Node(tofixLayer, latLon);
-//        } else {
-//            accessTaskBean.setAccess(false);
-//            Util.error_request_data();
-//        }
-//
-//    }
-//    private void get_item_tigerdelta() {
-//        ItemTigerdeltaBean itemTigerdeltaBean = null;
-//        itemController.setUrl(accessTaskBean.getTask_url());
-//        itemTigerdeltaBean = itemController.getItemTigerdeltaBean();
-//        if (itemTigerdeltaBean != null) {
-//            accessTaskBean.setAccess(true);
-//            accessTaskBean.setOsm_obj_id(0x0L);//null porque no exixte el id del objeto
-//            accessTaskBean.setKey(itemTigerdeltaBean.getKey());
-//            List<List<Node>> list = itemTigerdeltaBean.getValue().get_coordinates();
-//            LatLon latLon = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());//  Util.print(latLon);
-//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-//            TofixDraw.draw_line(tofixLayer, latLon, list);
-//        } else {
-//            accessTaskBean.setAccess(false);
-//            Util.error_request_data();
-//        }
-//
-//    }
-//    private void get_item_krakatoa() {
-//        ItemKrakatoaBean itemKrakatoaBean = null;
-//        itemController.setUrl(accessTaskBean.getTask_url());
-//        itemKrakatoaBean = itemController.getItemKrakatoBean();
-//        if (itemKrakatoaBean != null) {
-//            accessTaskBean.setAccess(true);
-//            accessTaskBean.setOsm_obj_id(0x0L);//porque no existe el id de objetos e este task
-//            accessTaskBean.setKey(itemKrakatoaBean.getKey());
-//            List<Node> list = itemKrakatoaBean.getValue().get_coordinates();
-//            LatLon latLon = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
-//            bounds = new Bounds(latLon.toBBox(size_bounds).toRectangle());
-//            TofixDraw.draw_nodes(tofixLayer, latLon, list);
-//        } else {
-//            accessTaskBean.setAccess(false);
-//            Util.error_request_data();
-//        }
-//    }
+    
 }
