@@ -13,6 +13,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -34,26 +35,6 @@ public class ItemController {
         this.accessToTask = accessToTask;
     }
 
-//    public Item getItemUnconnectedBean() {
-//        ResponseBean responseBean = new ResponseBean();
-//        Item item = new Item();
-//        try {
-//            responseBean = Request.sendPOST(accessToTask.getTask_url());
-//            item.setStatus(responseBean.getStatus());
-//            switch (responseBean.getStatus()) {
-//                case 200:
-//                    item.setItemUnconnectedBean(gson.fromJson(responseBean.getValue(), ItemUnconnectedBean.class));
-//                    break;
-//                case 410:
-//                    item.setTaskCompleteBean(gson.fromJson(responseBean.getValue(), TaskCompleteBean.class));
-//                    break;
-//            }
-//
-//        } catch (Exception ex) {
-//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return item;
-//    }
     public Item getItem() {
 
         try {
@@ -61,6 +42,7 @@ public class ItemController {
             item.setStatus(responseBean.getStatus());
             switch (responseBean.getStatus()) {
                 case 200:
+                    Util.print(responseBean.getValue());
                     if (accessToTask.getTask_source().equals("unconnected")) {
                         item.setItemUnconnectedBean(gson.fromJson(responseBean.getValue(), ItemUnconnectedBean.class));
                     }
@@ -78,7 +60,9 @@ public class ItemController {
                     }
                     break;
                 case 410:
-                    item.setTaskCompleteBean(gson.fromJson(responseBean.getValue(), TaskCompleteBean.class));
+                    Util.print(responseBean.getValue());
+                    Util.print(responseBean.getValue().replace("\\","").replace("\"{", "{").replace("}\"", "}"));
+                    item.setTaskCompleteBean(gson.fromJson(responseBean.getValue().replace("\\","").replace("\"{", "{").replace("}\"", "}"), TaskCompleteBean.class));
                     break;            
             }
 
@@ -87,67 +71,4 @@ public class ItemController {
         }
         return item;
     }
-
-//    public ItemKeeprightBean getItemKeeprightBean() {
-//        ItemKeeprightBean itemKeeprightBean = new ItemKeeprightBean();
-//        String stringItem = null;
-//        try {
-//            stringItem = Request.sendPOST(getUrl());
-//            itemKeeprightBean = gson.fromJson(stringItem, ItemKeeprightBean.class);
-//            return itemKeeprightBean;
-//        } catch (Exception ex) {
-//
-//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
-//
-//    public ItemNycbuildingsBean getItemNycbuildingsBean() {
-//        ItemNycbuildingsBean itemNycbuildingsBean = new ItemNycbuildingsBean();
-//        String stringItem = null;
-//        try {
-//            stringItem = Request.sendPOST(getUrl());
-//            itemNycbuildingsBean = gson.fromJson(stringItem, ItemNycbuildingsBean.class);
-//
-//            return itemNycbuildingsBean;
-//        } catch (Exception ex) {
-//
-//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
-//
-//    public ItemTigerdeltaBean getItemTigerdeltaBean() {
-//        ItemTigerdeltaBean itemTigerdeltaBean = new ItemTigerdeltaBean();
-//        String stringItem = null;
-//        try {
-//            stringItem = Request.sendPOST(getUrl());
-//            itemTigerdeltaBean = gson.fromJson(stringItem, ItemTigerdeltaBean.class);
-//
-//            return itemTigerdeltaBean;
-//        } catch (Exception ex) {
-//
-//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
-//
-//    public ResponseBean getItemKrakatoBean() {
-//        ResponseBean item = new ResponseBean();
-//
-//        ItemKrakatoaBean itemKrakatoaBean = new ItemKrakatoaBean();
-//
-//        ResponseBean responseBean = null;
-//
-//        try {
-//            responseBean = Request.sendPOST(getUrl());
-//            gson.fromJson(stringItem, ItemKrakatoaBean.class);
-//
-//            return itemKrakatoaBean;
-//        } catch (Exception ex) {
-//
-//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
 }

@@ -222,7 +222,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JComboBox cb = (JComboBox) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            mainAccessToTask.setTask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
+            
+            mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getTitle());
+            mainAccessToTask.setTask_id(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
             mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
             get_new_item();
             skipButton.setEnabled(true);
@@ -237,6 +239,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     
     public void edit() {
         if (mainAccessToTask.isAccess()) {
+            Util.print("Mandado a Edition");
+            Util.print(mainAccessToTask.getTask_url());
+            Util.print(mainAccessToTask.getKey());
             TrackBean trackBean = new TrackBean();
             AttributesBean attributesBean = new AttributesBean();
             attributesBean.setAction("edit");
@@ -251,6 +256,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     
     public void skip() {
         if (mainAccessToTask.isAccess()) {
+            Util.print("Skipt");
+            Util.print(mainAccessToTask.getTask_url());
+            Util.print(mainAccessToTask.getKey());
             TrackBean trackBean = new TrackBean();
             AttributesBean attributesBean = new AttributesBean();
             attributesBean.setAction("skip");
@@ -266,6 +274,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     
     public void fixed() {
         if (mainAccessToTask.isAccess()) {
+            Util.print("Arreglado");
+            Util.print(mainAccessToTask.getTask_url());
+            Util.print(mainAccessToTask.getKey());
             FixedBean itemFixedBean = new FixedBean();
             itemFixedBean.setUser(josmUserIdentityManager.getUserName());
             itemFixedBean.setKey(mainAccessToTask.getKey());
@@ -278,6 +289,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     
     public void noterror() {
         if (mainAccessToTask.isAccess()) {
+            Util.print("No es un Error");
+            Util.print(mainAccessToTask.getTask_url());
+            Util.print(mainAccessToTask.getKey());
             TrackBean trackBean = new TrackBean();
             AttributesBean attributesBean = new AttributesBean();
             attributesBean.setAction("noterror");
@@ -302,11 +316,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Util.print(mainAccessToTask.getTask_url());
                 Util.print(mainAccessToTask.getKey());
                 edit();
-                //JOptionPane.showMessageDialog(Main.panel, "Good Request");
                 break;
             case 410:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, "Task  completo");
+                tofixTask.task_complete(item, mainAccessToTask);                
                 break;
             
             case 404:

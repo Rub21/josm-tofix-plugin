@@ -13,6 +13,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
+import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  *
@@ -55,6 +56,15 @@ public class TofixTask {
         TofixDraw.draw_Node(tofixLayer, latLon);
         Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getValue().getNode_id());
         return accessToTask;
+    }
+
+    public void task_complete(Item item, AccessToTask accessToTask) {
+        String message = "Task : " + accessToTask.getTask_name().toString() + " was completed\n"
+                + "Total items : " + item.getTaskCompleteBean().getMessage().getValue().getTotal();
+              //  + "Fixed : " + item.getTaskCompleteBean().getMessage().getValue().getFix() + "\n"
+        //  + "Not Error : " + item.getTaskCompleteBean().getMessage().getValue().getNoterror() + "\n"
+        //  + "Skip : " + item.getTaskCompleteBean().getMessage().getValue().getSkip() + "\n";
+        JOptionPane.showMessageDialog(Main.panel, tr(message));
     }
 
 }

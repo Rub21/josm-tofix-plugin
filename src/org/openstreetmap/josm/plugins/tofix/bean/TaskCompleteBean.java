@@ -1,4 +1,3 @@
-
 package org.openstreetmap.josm.plugins.tofix.bean;
 
 /**
@@ -7,26 +6,35 @@ package org.openstreetmap.josm.plugins.tofix.bean;
  */
 public class TaskCompleteBean {
 
-    String key;
-    Value value;
+    int statusCode;
+    String error;
+    Message message;
+    
+    public class Message {
 
-    public String getKey() {
-        return key;
-    }
+        String key;
+        Value value;
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+        public String getKey() {
+            return key;
+        }
 
-    public Value getValue() {
-        return value;
-    }
+        public void setKey(String key) {
+            this.key = key;
+        }
 
-    public void setValue(Value value) {
-        this.value = value;
+        public Value getValue() {
+            return value;
+        }
+
+        public void setValue(Value value) {
+            this.value = value;
+        }
+
     }
 
     public class Value {
+
         int skip;
         int noterror;
         int fix;
@@ -63,7 +71,34 @@ public class TaskCompleteBean {
         public void setTotal(int total) {
             this.total = total;
         }
-
+   
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+    
+    
 }
