@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -21,30 +20,19 @@ import javax.swing.JPanel;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
-import org.openstreetmap.josm.plugins.tofix.bean.AttributesBean;
 import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
-import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
-import org.openstreetmap.josm.plugins.tofix.controller.ItemEditController;
-import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
+//import org.openstreetmap.josm.plugins.tofix.controller.ItemFixedController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
-import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.*;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -65,7 +53,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut skipShortcut = null;
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
-    private final double size_bounds = 0.003;//extent to download
+
     AccessToTask mainAccessToTask = null;
     // Task list
     ListTaskBean listTaskBean = null;
@@ -77,7 +65,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     // To-Fix layer
     MapView mv = Main.map.mapView;
-    TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
+
+    ItemTrackController itemTrackController = new ItemTrackController();
 
     JPanel valuePanel = new JPanel(new GridLayout(1, 1));
     JPanel jcontenpanel = new JPanel(new GridLayout(1, 2));
@@ -238,68 +227,48 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void edit() {
         if (mainAccessToTask.isAccess()) {
-            Util.print("Mandado a Edition");
-            Util.print(mainAccessToTask.getTask_url());
-            Util.print(mainAccessToTask.getKey());
             TrackBean trackBean = new TrackBean();
-            AttributesBean attributesBean = new AttributesBean();
-            attributesBean.setAction("edit");
-            attributesBean.setEditor("josm");
-            attributesBean.setUser(josmUserIdentityManager.getUserName());
-            attributesBean.setKey(mainAccessToTask.getKey());
-            trackBean.setAttributes(attributesBean);
-            ItemEditController itemEditController = new ItemEditController(mainAccessToTask.getTrack_url(), trackBean);
-            itemEditController.sendTrackBean();
+            trackBean.getAttributes().setAction("edit");
+            trackBean.getAttributes().setEditor("josm");
+            trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
+            trackBean.getAttributes().setKey(mainAccessToTask.getKey());
+            itemTrackController.send_track_edit(mainAccessToTask.getTrack_url(), trackBean);
         }
     }
 
     public void skip() {
         if (mainAccessToTask.isAccess()) {
-            Util.print("Skipt");
-            Util.print(mainAccessToTask.getTask_url());
-            Util.print(mainAccessToTask.getKey());
             TrackBean trackBean = new TrackBean();
-            AttributesBean attributesBean = new AttributesBean();
-            attributesBean.setAction("skip");
-            attributesBean.setEditor("josm");
-            attributesBean.setUser(josmUserIdentityManager.getUserName());
-            attributesBean.setKey(mainAccessToTask.getKey());
-            trackBean.setAttributes(attributesBean);
-            ItemTrackController skipController = new ItemTrackController(mainAccessToTask.getTrack_url(), trackBean);
-            skipController.sendTrackBean();
+            trackBean.getAttributes().setAction("skip");
+            trackBean.getAttributes().setEditor("josm");
+            trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
+            trackBean.getAttributes().setKey(mainAccessToTask.getKey());
+            itemTrackController.send_track_skip(mainAccessToTask.getTrack_url(), trackBean);
         }
         get_new_item();
     }
 
     public void fixed() {
         if (mainAccessToTask.isAccess()) {
-            Util.print("Arreglado");
-            Util.print(mainAccessToTask.getTask_url());
+
+            Util.print(mainAccessToTask.getFixed_url());
             Util.print(mainAccessToTask.getKey());
-            FixedBean itemFixedBean = new FixedBean();
-            itemFixedBean.setUser(josmUserIdentityManager.getUserName());
-            itemFixedBean.setKey(mainAccessToTask.getKey());
-            //itemFixedBean.setEditor("josm");
-            ItemFixedController itemFixedController = new ItemFixedController(mainAccessToTask.getFixed_url(), itemFixedBean);
-            itemFixedController.sendTrackBean();
+            FixedBean fixedBean = new FixedBean();
+            fixedBean.setUser(josmUserIdentityManager.getUserName());
+            fixedBean.setKey(mainAccessToTask.getKey());
+            itemTrackController.send_track_fix(mainAccessToTask.getFixed_url(), fixedBean);
         }
         get_new_item();
     }
 
     public void noterror() {
         if (mainAccessToTask.isAccess()) {
-            Util.print("No es un Error");
-            Util.print(mainAccessToTask.getTask_url());
-            Util.print(mainAccessToTask.getKey());
-            TrackBean trackBean = new TrackBean();
-            AttributesBean attributesBean = new AttributesBean();
-            attributesBean.setAction("noterror");
-            attributesBean.setEditor("josm");
-            attributesBean.setUser(josmUserIdentityManager.getUserName());
-            attributesBean.setKey(mainAccessToTask.getKey());
-            trackBean.setAttributes(attributesBean);
-            ItemTrackController notaerrorController = new ItemTrackController(mainAccessToTask.getTrack_url(), trackBean);
-            notaerrorController.sendTrackBean();
+    
+            FixedBean NoterrorBean = new FixedBean();
+            NoterrorBean.setUser(josmUserIdentityManager.getUserName());
+            NoterrorBean.setKey(mainAccessToTask.getKey());
+            itemTrackController.send_track_noterror(mainAccessToTask.getNoterror_url(), NoterrorBean);
+
         }
         get_new_item();
     }
@@ -311,9 +280,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             case 200:
                 mainAccessToTask.setAccess(true);
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask);
-                Util.print("ya sido descargado");
-                Util.print(mainAccessToTask.getTask_url());
-                Util.print(mainAccessToTask.getKey());
                 edit();
                 break;
             case 410:

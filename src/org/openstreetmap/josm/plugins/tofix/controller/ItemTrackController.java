@@ -4,30 +4,53 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 
-/**
- * Using for track skips and noterror actions
- */
+
 public class ItemTrackController {
-
-    private String url;
-    private TrackBean trackBean;
-
-    public ItemTrackController(String url, TrackBean trackBean) {
-        this.url = url;
-        this.trackBean = trackBean;
-    }
-
-    public void sendTrackBean() {
+    public void send_track_edit(String url, TrackBean trackBean) {
         Gson gson = new Gson();
-        String string_obj = gson.toJson(trackBean).toString();
+        String string_obj = gson.toJson(trackBean);
         try {
             Request.sendPOST_Json(url, string_obj);
-
         } catch (IOException ex) {
-            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void send_track_skip(String url, TrackBean trackBean) {
+        Gson gson = new Gson();
+        String string_obj = gson.toJson(trackBean);
+        try {
+            Request.sendPOST_Json(url, string_obj);
+        } catch (IOException ex) {
+            Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void send_track_fix(String url, FixedBean fixedBean) {
+        Gson gson = new Gson();
+        String string_obj = gson.toJson(fixedBean);
+        try {
+            Util.print(url);
+            Util.print(string_obj);
+            Request.sendPOST_Json(url, string_obj);
+        } catch (IOException ex) {
+            Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void send_track_noterror(String url, FixedBean NoterrorBean) {
+        Gson gson = new Gson();
+        String string_obj = gson.toJson(NoterrorBean);
+        try {
+            Request.sendPOST_Json(url, string_obj);
+        } catch (IOException ex) {
+            Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 }

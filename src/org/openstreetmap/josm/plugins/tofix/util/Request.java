@@ -15,7 +15,6 @@ import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 public class Request {
 
     public static ResponseBean sendPOST(String url) throws Exception {
-        Util.print(url);
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
@@ -75,6 +74,7 @@ public class Request {
         os.write(outputBytes);
         os.close();
         int responseCode = con.getResponseCode();
+
     }
 
     public static String sendGET(String url) throws IOException {

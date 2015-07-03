@@ -42,7 +42,6 @@ public class ItemController {
             item.setStatus(responseBean.getStatus());
             switch (responseBean.getStatus()) {
                 case 200:
-                    Util.print(responseBean.getValue());
                     if (accessToTask.getTask_source().equals("unconnected")) {
                         item.setItemUnconnectedBean(gson.fromJson(responseBean.getValue(), ItemUnconnectedBean.class));
                     }
@@ -60,8 +59,6 @@ public class ItemController {
                     }
                     break;
                 case 410:
-                    Util.print(responseBean.getValue());
-                    Util.print(responseBean.getValue().replace("\\","").replace("\"{", "{").replace("}\"", "}"));
                     item.setTaskCompleteBean(gson.fromJson(responseBean.getValue().replace("\\","").replace("\"{", "{").replace("}\"", "}"), TaskCompleteBean.class));
                     break;            
             }

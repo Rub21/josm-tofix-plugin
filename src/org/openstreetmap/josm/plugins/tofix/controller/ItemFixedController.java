@@ -11,23 +11,23 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
  *
  * @author ruben
  */
-public class ItemFixedController {
-
-    private String url;
-    private FixedBean itemFixedBean;
-    public ItemFixedController(String url, FixedBean itemFixedBean) {
-        this.url = url;
-        this.itemFixedBean = itemFixedBean;
-    }
-
-    public void sendTrackBean() {
-        Gson gson = new Gson();
-        String string_obj = gson.toJson(itemFixedBean).toString();
-        try {
-            Request.sendPOST_Json(url, string_obj);
-
-        } catch (IOException ex) {
-            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-}
+//public class ItemFixedController {
+//
+//    private String url;
+//    private FixedBean itemFixedBean;
+//    public ItemFixedController(String url, FixedBean itemFixedBean) {
+//        this.url = url;
+//        this.itemFixedBean = itemFixedBean;
+//    }
+//
+//    public void sendTrackBean() {
+//        Gson gson = new Gson();
+//        String string_obj = gson.toJson(itemFixedBean).toString();
+//        try {
+//            Request.sendPOST_Json(url, string_obj);
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
+//}

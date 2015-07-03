@@ -3,7 +3,7 @@ package org.openstreetmap.josm.plugins.tofix.bean;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 
 /**
- * 
+ *
  * @author ruben
  */
 public class AccessToTask {
@@ -67,6 +67,10 @@ public class AccessToTask {
         return getHost() + "fixed/" + getTask_id();
     }
 
+    public String getNoterror_url() {
+        return getHost() + "noterror/" + getTask_id();
+    }
+
     public Long getOsm_obj_id() {
         return osm_obj_id;
     }
@@ -90,7 +94,5 @@ public class AccessToTask {
     public void setTask_name(String task_name) {
         this.task_name = task_name;
     }
-    
-    
 
 }

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
+import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
 /**
@@ -16,7 +18,7 @@ public class ListTaskController {
     private String url;
 
     public ListTaskController() {
-        this.url = "http://osmlab.github.io/to-fix/src/data/tasks.json";
+        this.url = Config.url_tasks;
     }
 
     public ListTaskBean getListTasksBean() {
