@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -34,7 +35,7 @@ public class ItemTigerdeltaBean {
 
         private String name;
         private Long way;
-        private String st_astext;
+        private String geom;
 
         public String getName() {
             return name;
@@ -53,26 +54,29 @@ public class ItemTigerdeltaBean {
         }
 
         public String getSt_astext() {
-            return st_astext;
+            return geom;
         }
 
         public void setSt_astext(String st_astext) {
-            this.st_astext = st_astext;
+            this.geom = st_astext;
         }
 
         public List<List<Node>> get_nodes() {
             String geostring = getSt_astext();
-            geostring = geostring.replace("MULTILINESTRING(", "").replace("))", ")");
+            geostring = geostring.replace("MULTILINESTRING (", "").replace("))", ")").replace(", ", ",");
+            geostring = geostring.replace("LINESTRING (", "(");
+            Util.print(geostring);
             Double[][] cordinates;
 
             List<List<Node>> list = new LinkedList<List<Node>>();
             String[] array;
-            if (geostring.contains("),(")) {
+            if (geostring.contains("), (")) {
                 geostring = geostring.replace(")", "").replace("(", "");
                 array = geostring.split(",\\(");
                 for (int i = 0; i < array.length; i++) {
                     List<Node> l = new LinkedList<Node>();
                     String[] a = array[i].split(",");
+                    Util.print(a);
                     for (int j = 0; j < a.length; j++) {
                         LatLon latLon = new LatLon(Double.parseDouble(a[j].split(" ")[1]), Double.parseDouble(a[j].split(" ")[0]));
                         Node node = new Node(latLon);
