@@ -9,5 +9,5 @@ public class Config {
     public static final String url_tasks = "http://osmlab.github.io/to-fix/src/data/tasks.json";
     public static final String url_tofix = "http://osmlab.github.io/to-fix/";
     public static final String url_osm = "http://www.openstreetmap.org";
-    public static final double bounds = 0.0007;//bounds(bbox) to download
+    public static final double bounds = 0.0009;//bounds(bbox) to download
 }
