@@ -1,7 +1,10 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -9,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -17,6 +21,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
@@ -50,6 +56,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut skipShortcut = null;
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
+    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 10, 9);
+
+    //size to download
+    double zise = 0.01; //per default
 
     AccessToTask mainAccessToTask = null;
     // Task list
@@ -65,8 +75,14 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     ItemTrackController itemTrackController = new ItemTrackController();
 
+    JTabbedPane TabbedPanel = new javax.swing.JTabbedPane();
+
+    JPanel jcontenTasks = new JPanel(new GridLayout(2, 1));
     JPanel valuePanel = new JPanel(new GridLayout(1, 1));
-    JPanel jcontenpanel = new JPanel(new GridLayout(1, 2));
+
+    JPanel jcontenConfig = new JPanel(new GridLayout(2, 1));
+    JPanel panelslide = new JPanel(new GridLayout(1, 1));
+
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
@@ -75,7 +91,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
-                        KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 70);
+                        KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
 
         // "Skip" button
         skipButton = new SideButton(new AbstractAction() {
@@ -111,9 +127,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         // "Not a error" button
         noterrorButton = new SideButton(new AbstractAction() {
             {
-                putValue(NAME, tr("Not a error"));
+                putValue(NAME, tr("Not an error"));
                 putValue(SMALL_ICON, ImageProvider.get("mapmode", "noterror.png"));
-                putValue(SHORT_DESCRIPTION, tr("Not a error"));
+                putValue(SHORT_DESCRIPTION, tr("Not an error"));
             }
 
             @Override
@@ -125,19 +141,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         noterrorButton.setEnabled(false);
 
         //add tittle for To-fix task
-        JLabel jLabel = new javax.swing.JLabel();
-        jLabel.setText("<html><a href=\"\">List of To-fix tasks:</a></html>");
-        jLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        jLabel.addMouseListener(new MouseAdapter() {
+        JLabel title_tasks = new javax.swing.JLabel();
+        title_tasks.setText("<html><a href=\"\">List of To-fix tasks:</a></html>");
+        title_tasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        title_tasks.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 OpenBrowser.displayUrl(Config.url_tofix);
             }
         });
-        jcontenpanel.add(jLabel);
-        // Panels
-        valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jcontenpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jcontenTasks.add(title_tasks);
+
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<String>();
         tasksList.add("Select a task ...");
@@ -150,10 +164,46 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             JComboBox jcomboBox = new JComboBox(tasksList.toArray());
             valuePanel.add(jcomboBox);
             jcomboBox.addActionListener(this);
-            createLayout(jcontenpanel, false, Arrays.asList(new SideButton[]{
+
+            jcontenTasks.add(valuePanel);
+
+            //add title to download
+            jcontenConfig.add(new Label(tr("Size to download in Sq.m")));
+
+            //Add Slider to download
+            slider.setMinorTickSpacing(2);
+            slider.setMajorTickSpacing(5);
+            slider.setPaintTicks(true);
+            slider.setPaintLabels(true);
+            //slider.setLabelTable((slider.createStandardLabels(1)));
+            Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
+            table.put(1, new JLabel(tr("~.02")));
+            table.put(5, new JLabel("~.40"));
+            table.put(10, new JLabel("~1.8"));
+            slider.setLabelTable(table);
+
+            slider.addChangeListener(new javax.swing.event.ChangeListener() {
+                public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                    zise = (slider.getValue() * 0.001);
+                    Util.print(slider.getValue());
+                    Util.print(zise);
+                }
+            });
+            panelslide.add(slider);
+            jcontenConfig.add(panelslide);
+
+            //PANEL TASKS
+            valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            //jcontenTasks.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+            TabbedPanel.addTab("Tasks", jcontenTasks);
+            TabbedPanel.addTab("Config", jcontenConfig);
+
+            //add panels in JOSM
+            createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
                 skipButton, noterrorButton, fixedButton
             }));
-            jcontenpanel.add(valuePanel);
 
             if (!Status.server()) {
                 jcomboBox.setEnabled(false);
@@ -273,7 +323,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         switch (item.getStatus()) {
             case 200:
                 mainAccessToTask.setAccess(true);
-                mainAccessToTask = tofixTask.work(item, mainAccessToTask);
+                mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
                 edit();
                 break;
             case 410:
@@ -287,7 +337,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             default:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, tr("Somethig when wrong , try to again"));
+                JOptionPane.showMessageDialog(Main.panel, tr("Somethig went wrong, try to again"));
         }
     }
 

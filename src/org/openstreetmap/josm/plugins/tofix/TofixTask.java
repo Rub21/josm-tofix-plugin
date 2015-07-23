@@ -18,6 +18,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
@@ -32,69 +33,69 @@ public class TofixTask {
     Node node = null;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToTask work(Item item, AccessToTask accessToTask) {
+    public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download
 
         if (accessToTask.getTask_source().equals("unconnected")) {
-            accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask);
+            accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask, size);
         }
         if (accessToTask.getTask_source().equals("keepright")) {
-            accessToTask = work_keepright(item.getItemKeeprightBean(), accessToTask);
+            accessToTask = work_keepright(item.getItemKeeprightBean(), accessToTask, size);
         }
         if (accessToTask.getTask_source().equals("tigerdelta")) {
-            accessToTask = work_tigerdelta(item.getItemTigerdeltaBean(), accessToTask);
+            accessToTask = work_tigerdelta(item.getItemTigerdeltaBean(), accessToTask, size);
         }
         if (accessToTask.getTask_source().equals("nycbuildings")) {
-            accessToTask = work_nycbuildings(item.getItemNycbuildingsBean(), accessToTask);
+            accessToTask = work_nycbuildings(item.getItemNycbuildingsBean(), accessToTask, size);
         }
         if (accessToTask.getTask_source().equals("krakatoa")) {
-            accessToTask = work_krakatoa(item.getItemKrakatoaBean(), accessToTask);
+            accessToTask = work_krakatoa(item.getItemKrakatoaBean(), accessToTask, size);
         }
         return accessToTask;
     }
 
-    private AccessToTask work_unconnected(ItemUnconnectedBean itemUnconnectedBean, AccessToTask accessToTask) {
+    private AccessToTask work_unconnected(ItemUnconnectedBean itemUnconnectedBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemUnconnectedBean.getKey());
         node = itemUnconnectedBean.getValue().get_node();
-        bounds = new Bounds(node.getCoor().toBBox(Config.bounds).toRectangle());
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getValue().getNode_id());
         return accessToTask;
     }
 
-    private AccessToTask work_keepright(ItemKeeprightBean itemKeeprightBean, AccessToTask accessToTask) {
+    private AccessToTask work_keepright(ItemKeeprightBean itemKeeprightBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemKeeprightBean.getKey());
         node = itemKeeprightBean.getValue().get_node();
-        bounds = new Bounds(node.getCoor().toBBox(Config.bounds).toRectangle());
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemKeeprightBean.getValue().getObject_id());
         return accessToTask;
 
     }
 
-    private AccessToTask work_nycbuildings(ItemNycbuildingsBean itemNycbuildingsBean, AccessToTask accessToTask) {
+    private AccessToTask work_nycbuildings(ItemNycbuildingsBean itemNycbuildingsBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemNycbuildingsBean.getKey());
         node = itemNycbuildingsBean.getValue().get_node();
-        bounds = new Bounds(node.getCoor().toBBox(Config.bounds).toRectangle());
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemNycbuildingsBean.getValue().osm_obj_id());
         return accessToTask;
     }
 
-    private AccessToTask work_tigerdelta(ItemTigerdeltaBean itemTigerdeltaBean, AccessToTask accessToTask) {
+    private AccessToTask work_tigerdelta(ItemTigerdeltaBean itemTigerdeltaBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemTigerdeltaBean.getKey());
         List<List<Node>> list = itemTigerdeltaBean.getValue().get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
-        bounds = new Bounds(node.getCoor().toBBox(Config.bounds).toRectangle());
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
     }
 
-    private AccessToTask work_krakatoa(ItemKrakatoaBean itemkrakatoaBean, AccessToTask accessToTask) {
+    private AccessToTask work_krakatoa(ItemKrakatoaBean itemkrakatoaBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemkrakatoaBean.getKey());
         List<Node> list = itemkrakatoaBean.getValue().get_nodes();
         node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
-        bounds = new Bounds(node.getCoor().toBBox(Config.bounds).toRectangle());
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
