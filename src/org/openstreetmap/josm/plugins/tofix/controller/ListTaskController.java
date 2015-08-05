@@ -18,7 +18,7 @@ public class ListTaskController {
     private String url;
 
     public ListTaskController() {
-        this.url = Config.url_tasks;
+        this.url = Config.host+"tasks";
     }
 
     public ListTaskBean getListTasksBean() {
