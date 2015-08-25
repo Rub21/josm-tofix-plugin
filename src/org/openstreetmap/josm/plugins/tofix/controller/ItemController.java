@@ -10,6 +10,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
@@ -56,6 +57,9 @@ public class ItemController {
                     }
                     if (accessToTask.getTask_source().equals("krakatoa")) {
                         item.setItemKrakatoaBean(gson.fromJson(responseBean.getValue(), ItemKrakatoaBean.class));
+                    }
+                    if (accessToTask.getTask_source().equals("strava")) {
+                        item.setItemStrava(gson.fromJson(responseBean.getValue(), ItemStrava.class));
                     }
                     break;
                 case 410:

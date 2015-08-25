@@ -15,6 +15,7 @@ public class Item {
     private ItemTigerdeltaBean itemTigerdeltaBean;
     private ItemUnconnectedBean itemUnconnectedBean;
     private TaskCompleteBean taskCompleteBean;
+    private ItemStrava itemStrava;
 
     public int getStatus() {
         return status;
@@ -70,5 +71,13 @@ public class Item {
 
     public void setTaskCompleteBean(TaskCompleteBean taskCompleteBean) {
         this.taskCompleteBean = taskCompleteBean;
+    }
+
+    public ItemStrava getItemStrava() {
+        return itemStrava;
+    }
+
+    public void setItemStrava(ItemStrava itemStrava) {
+        this.itemStrava = itemStrava;
     }
 }

@@ -12,6 +12,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
@@ -49,6 +50,9 @@ public class TofixTask {
         }
         if (accessToTask.getTask_source().equals("krakatoa")) {
             accessToTask = work_krakatoa(item.getItemKrakatoaBean(), accessToTask, size);
+        }
+        if (accessToTask.getTask_source().equals("strava")) {
+            accessToTask = work_strava(item.getItemStrava(), accessToTask, size);
         }
         return accessToTask;
     }
@@ -98,6 +102,15 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
+        return accessToTask;
+    }
+
+    private AccessToTask work_strava(ItemStrava itemStrava, AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemStrava.getKey());
+        node = itemStrava.getValue().get_node();
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        TofixDraw.draw_Node(tofixLayer, node.getCoor());
+        Download.Download(downloadOsmTask, bounds, 0x0L);
         return accessToTask;
     }
 
