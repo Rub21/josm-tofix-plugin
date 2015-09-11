@@ -10,6 +10,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
@@ -38,9 +39,9 @@ public class ItemController {
     public Item getItem() {
 
         try {
-            responseBean = Request.sendPOST(accessToTask.getTask_url());            
+            responseBean = Request.sendPOST(accessToTask.getTask_url());
             item.setStatus(responseBean.getStatus());
-            
+
             switch (responseBean.getStatus()) {
                 case 200:
                     if (accessToTask.getTask_source().equals("unconnected")) {
@@ -61,14 +62,17 @@ public class ItemController {
                     if (accessToTask.getTask_source().equals("strava")) {
                         item.setItemStrava(gson.fromJson(responseBean.getValue(), ItemStrava.class));
                     }
+                    if (accessToTask.getTask_source().equals("components")) {
+                        item.setItemSmallcomponents(gson.fromJson(responseBean.getValue(), ItemSmallcomponents.class));
+                    }
                     break;
                 case 410:
-                    item.setTaskCompleteBean(gson.fromJson(responseBean.getValue().replace("\\","").replace("\"{", "{").replace("}\"", "}"), TaskCompleteBean.class));
+                    item.setTaskCompleteBean(gson.fromJson(responseBean.getValue().replace("\\", "").replace("\"{", "{").replace("}\"", "}"), TaskCompleteBean.class));
                     break;
                 case 503:
-                  //Servidor en mantenimiento
-                    break; 
-               }
+                    //Servidor en mantenimiento
+                    break;
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);

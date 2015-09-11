@@ -12,14 +12,13 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
-import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
@@ -53,6 +52,9 @@ public class TofixTask {
         }
         if (accessToTask.getTask_source().equals("strava")) {
             accessToTask = work_strava(item.getItemStrava(), accessToTask, size);
+        }
+        if (accessToTask.getTask_source().equals("components")) {
+            accessToTask = work_smallcomponents(item.getItemSmallcomponents(), accessToTask, size);
         }
         return accessToTask;
     }
@@ -111,6 +113,16 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, 0x0L);
+        return accessToTask;
+    }
+
+    private AccessToTask work_smallcomponents(ItemSmallcomponents itemSmallcomponents, AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemSmallcomponents.getKey());
+         List<List<Node>> list = itemSmallcomponents.getValue().get_nodes();
+        node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
+        Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
     }
 

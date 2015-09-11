@@ -16,6 +16,7 @@ public class Item {
     private ItemUnconnectedBean itemUnconnectedBean;
     private TaskCompleteBean taskCompleteBean;
     private ItemStrava itemStrava;
+    private ItemSmallcomponents itemSmallcomponents;
 
     public int getStatus() {
         return status;
@@ -80,4 +81,13 @@ public class Item {
     public void setItemStrava(ItemStrava itemStrava) {
         this.itemStrava = itemStrava;
     }
+    
+    public ItemSmallcomponents getItemSmallcomponents() {
+        return itemSmallcomponents;
+    }
+
+    public void setItemSmallcomponents(ItemSmallcomponents itemSmallcomponents) {
+        this.itemSmallcomponents = itemSmallcomponents;
+    }
+
 }
