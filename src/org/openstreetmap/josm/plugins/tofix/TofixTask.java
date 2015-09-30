@@ -7,6 +7,7 @@ import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
@@ -56,6 +57,8 @@ public class TofixTask {
         if (accessToTask.getTask_source().equals("components")) {
             accessToTask = work_smallcomponents(item.getItemSmallcomponents(), accessToTask, size);
         }
+        
+  UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
         return accessToTask;
     }
 
