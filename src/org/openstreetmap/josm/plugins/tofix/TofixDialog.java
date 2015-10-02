@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
@@ -56,7 +58,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut skipShortcut = null;
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
-    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 10, 9);
+    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 3);
 
     //size to download
     double zise = 0.01; //per default
@@ -86,6 +88,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
+    JosmAction upload = new UploadAction();
 
     public TofixDialog() {
 
@@ -118,6 +121,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                upload.actionPerformed(e);
                 fixed();
             }
         });
@@ -178,15 +182,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             //slider.setLabelTable((slider.createStandardLabels(1)));
             Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
             table.put(1, new JLabel(tr("~.02")));
-            table.put(5, new JLabel("~.40"));
-            table.put(10, new JLabel("~1.8"));
+            table.put(3, new JLabel("~.20"));
+            table.put(5, new JLabel("~.04"));
             slider.setLabelTable(table);
 
             slider.addChangeListener(new javax.swing.event.ChangeListener() {
                 public void stateChanged(javax.swing.event.ChangeEvent evt) {
                     zise = (slider.getValue() * 0.001);
-                    Util.print(slider.getValue());
-                    Util.print(zise);
                 }
             });
             panelslide.add(slider);
@@ -238,6 +240,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            upload.actionPerformed(e);
             fixed();
         }
     }
