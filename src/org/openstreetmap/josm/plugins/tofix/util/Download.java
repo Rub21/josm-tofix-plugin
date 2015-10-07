@@ -46,7 +46,6 @@ public class Download {
                         //make selection ob objects
                         Main.main.getCurrentDataSet().setSelected(selection);
                     }
-
                 } catch (InterruptedException ex) {
                     Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {

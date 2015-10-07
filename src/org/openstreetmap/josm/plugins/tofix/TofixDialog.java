@@ -1,8 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
@@ -24,8 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
@@ -58,10 +54,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut skipShortcut = null;
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
-    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 3);
+    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
 
     //size to download
-    double zise = 0.01; //per default
+    double zise = 0.001; //per default
 
     AccessToTask mainAccessToTask = null;
     // Task list
@@ -88,7 +84,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
-    JosmAction upload = new UploadAction();
+    UploadAction upload = new UploadAction();
 
     public TofixDialog() {
 
@@ -121,6 +117,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                upload.setCustomized_comment("#to-fix:"+mainAccessToTask.getTask_id());
                 upload.actionPerformed(e);
                 fixed();
             }
@@ -183,7 +180,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
             table.put(1, new JLabel(tr("~.02")));
             table.put(3, new JLabel("~.20"));
-            table.put(5, new JLabel("~.04"));
+            table.put(5, new JLabel("~.40"));
             slider.setLabelTable(table);
 
             slider.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -296,9 +293,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void fixed() {
         if (mainAccessToTask.isAccess()) {
-
-            Util.print(mainAccessToTask.getFixed_url());
-            Util.print(mainAccessToTask.getKey());
             FixedBean fixedBean = new FixedBean();
             fixedBean.setUser(josmUserIdentityManager.getUserName());
             fixedBean.setKey(mainAccessToTask.getKey());
