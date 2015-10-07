@@ -1,8 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
@@ -12,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
@@ -25,7 +24,6 @@ import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.JosmAction;
-import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
@@ -58,7 +56,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private Shortcut skipShortcut = null;
     private Shortcut fixedShortcut = null;
     private Shortcut noterrorButtonShortcut = null;
-    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 3);
+    JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
 
     //size to download
     double zise = 0.01; //per default
@@ -88,7 +86,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
-    JosmAction upload = new UploadAction();
+    UploadA upload = new UploadA();
 
     public TofixDialog() {
 
@@ -121,7 +119,37 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+
+//                HashMap<String, String> tags = new HashMap<>(Main.main.getEditLayer().data.getChangeSetTags());
+//
+//                tags.put("source", Main.map.mapView.getLayerInformationForSourceTag());
+//
+//                tags.put("comment", "New Test");
+
+                upload.setCustomized_comment("#to-fix:"+mainAccessToTask.getTask_id());
                 upload.actionPerformed(e);
+                //Upload upload_local = new Upload();
+
+                //UploadDialog.getUploadDialog().setDefaultChangesetTags(tags);
+
+//                Util.print(UploadDialog.getUploadDialog().getDefaultChangesetTags());
+                //OsmDataLayer layer = Main.main.getEditLayer();
+               // APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
+                
+               // upload_local.uploadData(layer, apiData);
+
+//                UploadDialog uploadDialog=new UploadDialog();
+//                uploadDialog.setDefaultChangesetTags(null);
+                //upload.actionPerformed(e);
+//                UploadStrategySpecification spec = new UploadStrategySpecification();
+//                spec.setStrategy(UploadStrategy.SINGLE_REQUEST_STRATEGY);
+
+               // Main.worker.execute(new UploadPrimitivesTask(spec, layer, apiData, UploadDialog.getUploadDialog().getChangeset()));
+               
+               // UploadAction uploadAction= new UploadAction();
+              //  uploadAction.uploadData(layer, apiData);
+                
+                
                 fixed();
             }
         });
