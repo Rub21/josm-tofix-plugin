@@ -34,18 +34,19 @@ import org.openstreetmap.josm.tools.Shortcut;
 /**
  * Action that opens a connection to the osm server and uploads all changes.
  *
- * An dialog is displayed asking the user to specify a rectangle to grab.
- * The url and account settings from the preferences are used.
+ * An dialog is displayed asking the user to specify a rectangle to grab. The
+ * url and account settings from the preferences are used.
  *
  * If the upload fails this action offers various options to resolve conflicts.
  *
  * @author imi
  */
-public class UploadAction extends JosmAction{
+public class UploadAction extends JosmAction {
+
     /**
      * The list of upload hooks. These hooks will be called one after the other
-     * when the user wants to upload data. Plugins can insert their own hooks here
-     * if they want to be able to veto an upload.
+     * when the user wants to upload data. Plugins can insert their own hooks
+     * here if they want to be able to veto an upload.
      *
      * Be default, the standard upload dialog is the only element in the list.
      * Plugins should normally insert their code before that, so that the upload
@@ -83,7 +84,8 @@ public class UploadAction extends JosmAction{
     }
 
     /**
-     * Registers an upload hook. Adds the hook at the first position of the upload hooks.
+     * Registers an upload hook. Adds the hook at the first position of the
+     * upload hooks.
      *
      * @param hook the upload hook. Ignored if null.
      */
@@ -92,7 +94,8 @@ public class UploadAction extends JosmAction{
     }
 
     /**
-     * Registers an upload hook. Adds the hook at the first position of the upload hooks.
+     * Registers an upload hook. Adds the hook at the first position of the
+     * upload hooks.
      *
      * @param hook the upload hook. Ignored if null.
      * @param late true, if the hook should be executed after the upload dialog
@@ -100,7 +103,9 @@ public class UploadAction extends JosmAction{
      * abort the upload.
      */
     public static void registerUploadHook(UploadHook hook, boolean late) {
-        if (hook == null) return;
+        if (hook == null) {
+            return;
+        }
         if (late) {
             if (!lateUploadHooks.contains(hook)) {
                 lateUploadHooks.add(0, hook);
@@ -113,12 +118,15 @@ public class UploadAction extends JosmAction{
     }
 
     /**
-     * Unregisters an upload hook. Removes the hook from the list of upload hooks.
+     * Unregisters an upload hook. Removes the hook from the list of upload
+     * hooks.
      *
      * @param hook the upload hook. Ignored if null.
      */
     public static void unregisterUploadHook(UploadHook hook) {
-        if (hook == null) return;
+        if (hook == null) {
+            return;
+        }
         if (uploadHooks.contains(hook)) {
             uploadHooks.remove(hook);
         }
@@ -126,7 +134,7 @@ public class UploadAction extends JosmAction{
             lateUploadHooks.remove(hook);
         }
     }
-    
+
     private String customized_comment;
 
     public UploadAction() {
@@ -162,24 +170,24 @@ public class UploadAction extends JosmAction{
     }
 
     /**
-     * returns true if the user wants to cancel, false if they
-     * want to continue
+     * returns true if the user wants to cancel, false if they want to continue
      */
     public static boolean warnUploadDiscouraged(AbstractModifiableLayer layer) {
         return GuiHelper.warnUser(tr("Upload discouraged"),
-                "<html>" +
-                tr("You are about to upload data from the layer ''{0}''.<br /><br />"+
-                    "Sending data from this layer is <b>strongly discouraged</b>. If you continue,<br />"+
-                    "it may require you subsequently have to revert your changes, or force other contributors to.<br /><br />"+
-                    "Are you sure you want to continue?", layer.getName())+
-                "</html>",
+                "<html>"
+                + tr("You are about to upload data from the layer ''{0}''.<br /><br />"
+                        + "Sending data from this layer is <b>strongly discouraged</b>. If you continue,<br />"
+                        + "it may require you subsequently have to revert your changes, or force other contributors to.<br /><br />"
+                        + "Are you sure you want to continue?", layer.getName())
+                + "</html>",
                 ImageProvider.get("upload"), tr("Ignore this hint and upload anyway"));
     }
 
     /**
-     * Check whether the preconditions are met to upload data in <code>apiData</code>.
-     * Makes sure upload is allowed, primitives in <code>apiData</code> don't participate in conflicts and
-     * runs the installed {@link UploadHook}s.
+     * Check whether the preconditions are met to upload data in
+     * <code>apiData</code>. Makes sure upload is allowed, primitives in
+     * <code>apiData</code> don't participate in conflicts and runs the
+     * installed {@link UploadHook}s.
      *
      * @param layer the source layer of the data to be uploaded
      * @param apiData the data to be uploaded
@@ -204,8 +212,9 @@ public class UploadAction extends JosmAction{
         //
         if (apiData != null) {
             for (UploadHook hook : uploadHooks) {
-                if (!hook.checkUpload(apiData))
+                if (!hook.checkUpload(apiData)) {
                     return false;
+                }
             }
         }
 
@@ -228,8 +237,9 @@ public class UploadAction extends JosmAction{
             );
             return;
         }
-        if (!checkPreUploadConditions(layer, apiData))
+        if (!checkPreUploadConditions(layer, apiData)) {
             return;
+        }
 
         final UploadDialog dialog = UploadDialog.getUploadDialog();
         // If we simply set the changeset comment here, it would be
@@ -245,21 +255,27 @@ public class UploadAction extends JosmAction{
                     tags.put("source", dialog.getLastChangesetSourceFromHistory());
                 }
                 if (!tags.containsKey("comment")) {
-                    tags.put("comment", getCustomized_comment());
+                    String comment = dialog.getLastChangesetCommentFromHistory();
+                    if (!comment.contains(getCustomized_comment())) {
+                        comment = getCustomized_comment();
+                    }
+                    tags.put("comment", comment);
                 }
-                
+
                 dialog.setDefaultChangesetTags(tags);
             }
         });
         dialog.setUploadedPrimitives(apiData);
         dialog.setVisible(true);
-        if (dialog.isCanceled())
+        if (dialog.isCanceled()) {
             return;
+        }
         dialog.rememberUserInput();
 
         for (UploadHook hook : lateUploadHooks) {
-            if (!hook.checkUpload(apiData))
+            if (!hook.checkUpload(apiData)) {
                 return;
+            }
         }
 
         Main.worker.execute(
@@ -274,8 +290,9 @@ public class UploadAction extends JosmAction{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!isEnabled())
+        if (!isEnabled()) {
             return;
+        }
         if (Main.map == null) {
             JOptionPane.showMessageDialog(
                     Main.parent,
@@ -288,7 +305,7 @@ public class UploadAction extends JosmAction{
         APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
         uploadData(Main.main.getEditLayer(), apiData);
     }
-    
+
     public String getCustomized_comment() {
         return customized_comment;
     }
