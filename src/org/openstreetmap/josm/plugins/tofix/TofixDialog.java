@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Hashtable;
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
@@ -23,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
@@ -59,7 +57,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
 
     //size to download
-    double zise = 0.01; //per default
+    double zise = 0.001; //per default
 
     AccessToTask mainAccessToTask = null;
     // Task list
@@ -86,7 +84,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
-    UploadA upload = new UploadA();
+    UploadAction upload = new UploadAction();
 
     public TofixDialog() {
 
@@ -119,37 +117,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-//                HashMap<String, String> tags = new HashMap<>(Main.main.getEditLayer().data.getChangeSetTags());
-//
-//                tags.put("source", Main.map.mapView.getLayerInformationForSourceTag());
-//
-//                tags.put("comment", "New Test");
-
                 upload.setCustomized_comment("#to-fix:"+mainAccessToTask.getTask_id());
                 upload.actionPerformed(e);
-                //Upload upload_local = new Upload();
-
-                //UploadDialog.getUploadDialog().setDefaultChangesetTags(tags);
-
-//                Util.print(UploadDialog.getUploadDialog().getDefaultChangesetTags());
-                //OsmDataLayer layer = Main.main.getEditLayer();
-               // APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
-                
-               // upload_local.uploadData(layer, apiData);
-
-//                UploadDialog uploadDialog=new UploadDialog();
-//                uploadDialog.setDefaultChangesetTags(null);
-                //upload.actionPerformed(e);
-//                UploadStrategySpecification spec = new UploadStrategySpecification();
-//                spec.setStrategy(UploadStrategy.SINGLE_REQUEST_STRATEGY);
-
-               // Main.worker.execute(new UploadPrimitivesTask(spec, layer, apiData, UploadDialog.getUploadDialog().getChangeset()));
-               
-               // UploadAction uploadAction= new UploadAction();
-              //  uploadAction.uploadData(layer, apiData);
-                
-                
                 fixed();
             }
         });
@@ -211,7 +180,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
             table.put(1, new JLabel(tr("~.02")));
             table.put(3, new JLabel("~.20"));
-            table.put(5, new JLabel("~.04"));
+            table.put(5, new JLabel("~.40"));
             slider.setLabelTable(table);
 
             slider.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -324,9 +293,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void fixed() {
         if (mainAccessToTask.isAccess()) {
-
-            Util.print(mainAccessToTask.getFixed_url());
-            Util.print(mainAccessToTask.getKey());
             FixedBean fixedBean = new FixedBean();
             fixedBean.setUser(josmUserIdentityManager.getUserName());
             fixedBean.setKey(mainAccessToTask.getKey());

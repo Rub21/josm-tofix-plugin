@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
-
 
 public class ItemTrackController {
     public void send_track_edit(String url, TrackBean trackBean) {
@@ -35,8 +33,6 @@ public class ItemTrackController {
         Gson gson = new Gson();
         String string_obj = gson.toJson(fixedBean);
         try {
-            Util.print(url);
-            Util.print(string_obj);
             Request.sendPOST_Json(url, string_obj);
         } catch (IOException ex) {
             Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);

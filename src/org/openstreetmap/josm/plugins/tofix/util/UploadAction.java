@@ -41,7 +41,7 @@ import org.openstreetmap.josm.tools.Shortcut;
  *
  * @author imi
  */
-public class UploadA extends JosmAction{
+public class UploadAction extends JosmAction{
     /**
      * The list of upload hooks. These hooks will be called one after the other
      * when the user wants to upload data. Plugins can insert their own hooks here
@@ -129,7 +129,7 @@ public class UploadA extends JosmAction{
     
     private String customized_comment;
 
-    public UploadA() {
+    public UploadAction() {
         super(tr("Upload data"), "upload", tr("Upload all changes in the active data layer to the OSM server"),
                 Shortcut.registerShortcut("file:upload", tr("File: {0}", tr("Upload data")), KeyEvent.VK_UP, Shortcut.CTRL_SHIFT), true);
         putValue("help", ht("/Action/Upload"));
