@@ -64,10 +64,10 @@ public class TofixTask {
 
     private AccessToTask work_unconnected(ItemUnconnectedBean itemUnconnectedBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemUnconnectedBean.getKey());
-        node = itemUnconnectedBean.getValue().get_node();
+        node = itemUnconnectedBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getValue().getNode_id());
+        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getNode_id());
         return accessToTask;
     }
 

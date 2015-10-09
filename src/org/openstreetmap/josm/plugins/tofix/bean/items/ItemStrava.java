@@ -5,6 +5,7 @@ import org.openstreetmap.josm.data.osm.Node;
 
 public class ItemStrava {
     private String key;
+       private Value value  = new Value();
 
     public String getKey() {
         return key;
@@ -21,7 +22,7 @@ public class ItemStrava {
     public void setValue(Value value) {
         this.value = value;
     }
-    private Value value;
+ 
     
     public class Value {
 

@@ -8,7 +8,7 @@ import org.openstreetmap.josm.plugins.tofix.util.Config;
  */
 public class AccessToTask {
 
-    private String host = Config.host;
+    private String host = Config.HOST;
     private String task_id;
     private String task_source;
     private String task_name;

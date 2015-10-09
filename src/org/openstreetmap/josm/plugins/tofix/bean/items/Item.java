@@ -26,6 +26,14 @@ public class Item {
         this.status = status;
     }
 
+    public TaskCompleteBean getTaskCompleteBean() {
+        return taskCompleteBean;
+    }
+
+    public void setTaskCompleteBean(TaskCompleteBean taskCompleteBean) {
+        this.taskCompleteBean = taskCompleteBean;
+    }
+
     public ItemKeeprightBean getItemKeeprightBean() {
         return itemKeeprightBean;
     }
@@ -66,14 +74,6 @@ public class Item {
         this.itemUnconnectedBean = itemUnconnectedBean;
     }
 
-    public TaskCompleteBean getTaskCompleteBean() {
-        return taskCompleteBean;
-    }
-
-    public void setTaskCompleteBean(TaskCompleteBean taskCompleteBean) {
-        this.taskCompleteBean = taskCompleteBean;
-    }
-
     public ItemStrava getItemStrava() {
         return itemStrava;
     }
@@ -81,7 +81,7 @@ public class Item {
     public void setItemStrava(ItemStrava itemStrava) {
         this.itemStrava = itemStrava;
     }
-    
+
     public ItemSmallcomponents getItemSmallcomponents() {
         return itemSmallcomponents;
     }

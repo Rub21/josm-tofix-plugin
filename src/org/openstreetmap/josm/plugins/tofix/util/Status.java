@@ -11,7 +11,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
  */
 public class Status {
 
-    final static String host = Config.host + "status";
+    final static String host = Config.HOST + "status";
 
     public static boolean server() {
         StatusController statusController = new StatusController(host);
@@ -25,7 +25,7 @@ public class Status {
     public static boolean isInternetReachable() {
         HttpURLConnection activeConnection = null;
         try {
-            URL url = new URL(Config.url_osm);
+            URL url = new URL(Config.URL_OSM);
             activeConnection = (HttpURLConnection) url.openConnection();
             activeConnection.connect();
             return true;

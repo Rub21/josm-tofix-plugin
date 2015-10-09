@@ -11,7 +11,7 @@ import org.openstreetmap.josm.data.osm.Node;
 public class ItemTigerdeltaBean {
 
     private String key;
-    private Value value;
+    private Value value = new Value();
 
     public String getKey() {
         return key;

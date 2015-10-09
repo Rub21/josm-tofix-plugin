@@ -117,7 +117,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                upload.setCustomized_comment("#to-fix:"+mainAccessToTask.getTask_id());
+                upload.setCustomized_comment("#to-fix:" + mainAccessToTask.getTask_id());
                 upload.actionPerformed(e);
                 fixed();
             }
@@ -148,7 +148,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         title_tasks.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                OpenBrowser.displayUrl(Config.url_tofix);
+                OpenBrowser.displayUrl(Config.URL_TOFIX);
             }
         });
         jcontenTasks.add(title_tasks);
@@ -329,12 +329,24 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             case 503:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, tr("Maintenance server"));
+                JOptionPane.showMessageDialog(Main.panel, tr("Maintenance server"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 break;
-
+            case 520:
+                mainAccessToTask.setAccess(false);
+                JLabel text = new javax.swing.JLabel();
+                text.setText(tr("<html>Somethig went wrong, please update Tofix plugin  or open a ticket in <a href=\"\">josm-tofix-plugin/issues</a></html>"));
+                text.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                text.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        OpenBrowser.displayUrl(Config.URL_TOFIX_ISSUES);
+                    }
+                });
+                JOptionPane.showMessageDialog(Main.panel, text, tr("Warning"), JOptionPane.WARNING_MESSAGE);
+                break;
             default:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, tr("Somethig went wrong, try to again"));
+                JOptionPane.showMessageDialog(Main.panel, tr("Somethig went wrong, try to again.,"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
