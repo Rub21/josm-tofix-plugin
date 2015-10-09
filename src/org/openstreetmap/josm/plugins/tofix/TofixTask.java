@@ -12,7 +12,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemNycbuildingsBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUsaBuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
@@ -46,7 +46,7 @@ public class TofixTask {
             accessToTask = work_tigerdelta(item.getItemTigerdeltaBean(), accessToTask, size);
         }
         if (accessToTask.getTask_source().equals("nycbuildings")) {
-            accessToTask = work_nycbuildings(item.getItemNycbuildingsBean(), accessToTask, size);
+            accessToTask = work_nycbuildings(item.getItemUsabuildingsBean(), accessToTask, size);
         }
         if (accessToTask.getTask_source().equals("krakatoa")) {
             accessToTask = work_krakatoa(item.getItemKrakatoaBean(), accessToTask, size);
@@ -81,18 +81,18 @@ public class TofixTask {
 
     }
 
-    private AccessToTask work_nycbuildings(ItemNycbuildingsBean itemNycbuildingsBean, AccessToTask accessToTask, double size) {
+    private AccessToTask work_nycbuildings(ItemUsaBuildingsBean itemNycbuildingsBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemNycbuildingsBean.getKey());
-        node = itemNycbuildingsBean.getValue().get_node();
+        node = itemNycbuildingsBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.Download(downloadOsmTask, bounds, itemNycbuildingsBean.getValue().osm_obj_id());
+        Download.Download(downloadOsmTask, bounds, itemNycbuildingsBean.osm_obj_id());
         return accessToTask;
     }
 
     private AccessToTask work_tigerdelta(ItemTigerdeltaBean itemTigerdeltaBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemTigerdeltaBean.getKey());
-        List<List<Node>> list = itemTigerdeltaBean.getValue().get_nodes();
+        List<List<Node>> list = itemTigerdeltaBean.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);

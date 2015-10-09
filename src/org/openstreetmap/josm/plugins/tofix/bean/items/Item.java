@@ -11,7 +11,7 @@ public class Item {
     private int status;
     private ItemKeeprightBean itemKeeprightBean;
     private ItemKrakatoaBean itemKrakatoaBean;
-    private ItemNycbuildingsBean itemNycbuildingsBean;
+    private ItemUsaBuildingsBean itemUsabuildingsBean;
     private ItemTigerdeltaBean itemTigerdeltaBean;
     private ItemUnconnectedBean itemUnconnectedBean;
     private TaskCompleteBean taskCompleteBean;
@@ -50,12 +50,12 @@ public class Item {
         this.itemKrakatoaBean = itemKrakatoaBean;
     }
 
-    public ItemNycbuildingsBean getItemNycbuildingsBean() {
-        return itemNycbuildingsBean;
+    public ItemUsaBuildingsBean getItemUsabuildingsBean() {
+        return itemUsabuildingsBean;
     }
 
-    public void setItemNycbuildingsBean(ItemNycbuildingsBean itemNycbuildingsBean) {
-        this.itemNycbuildingsBean = itemNycbuildingsBean;
+    public void setItemUsabuildingsBean(ItemUsaBuildingsBean itemNycbuildingsBean) {
+        this.itemUsabuildingsBean = itemNycbuildingsBean;
     }
 
     public ItemTigerdeltaBean getItemTigerdeltaBean() {
