@@ -3,47 +3,25 @@ package org.openstreetmap.josm.plugins.tofix.bean.items;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 
-public class ItemStrava {
-    private String key;
-       private Value value  = new Value();
+public class ItemStrava extends ItemTask {
 
-    public String getKey() {
-        return key;
+    private String geom;
+
+    public String getGeom() {
+        return geom;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setGeom(String geom) {
+        this.geom = geom;
     }
 
-    public Value getValue() {
-        return value;
+    public Node get_node() {
+        String geoString = getGeom();
+        geoString = geoString.replace("POINT(", "").replace(")", "");
+        String[] array = geoString.split(" ");
+        LatLon latLon = new LatLon(Double.parseDouble(array[1]), Double.parseDouble(array[0]));
+        Node node = new Node(latLon);
+        return node;
     }
 
-    public void setValue(Value value) {
-        this.value = value;
-    }
- 
-    
-    public class Value {
-
-        private String geom;
-
-        public String getGeom() {
-            return geom;
-        }
-
-        public void setGeom(String geom) {
-            this.geom = geom;
-        }
-
-        public Node get_node() {
-            String geoString = getGeom();
-            geoString = geoString.replace("POINT(", "").replace(")", "");
-            String[] array = geoString.split(" ");
-            LatLon latLon = new LatLon(Double.parseDouble(array[1]), Double.parseDouble(array[0]));
-            Node node = new Node(latLon);
-            return node;
-        }
-
-    }
 }

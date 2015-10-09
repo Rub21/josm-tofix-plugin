@@ -1,16 +1,12 @@
 package org.openstreetmap.josm.plugins.tofix.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
-import com.kitfox.svg.A;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.swing.JOptionPane;
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
@@ -51,13 +47,14 @@ public class ItemController {
         try {
             responseBean = Request.sendPOST(accessToTask.getTask_url());
             item.setStatus(responseBean.getStatus());
-
+            Util.print(responseBean.getValue());
+            JsonReader reader = Json.createReader(new StringReader(responseBean.getValue()));
+            JsonObject object = reader.readObject();
+            //if the structure change , we need to customize this site, to easy resolve , but we need to standardize the source in each task.
             switch (responseBean.getStatus()) {
                 case 200:
                     if (accessToTask.getTask_source().equals("unconnected")) {
                         //https://github.com/osmlab/to-fix/wiki/Task%20sources#unconnected-minor
-                        JsonReader reader = Json.createReader(new StringReader(responseBean.getValue()));
-                        JsonObject object = reader.readObject();
                         ItemUnconnectedBean iub = new ItemUnconnectedBean();
                         iub.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
@@ -76,16 +73,23 @@ public class ItemController {
                         } else {
                             item.setStatus(520);// response 520 Unknown Error                            
                         }
-                        //TODO
-                        //if the structure change , we need to customize this site, to easy resolve , but we need to standardize the source in each task.
                     }
                     if (accessToTask.getTask_source().equals("keepright")) {
-
+                        //https://github.com/osmlab/to-fix/wiki/Task%20sources#broken-polygons
+                        ItemKeeprightBean ikb = new ItemKeeprightBean();
+                        ikb.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("object_type") && value.containsKey("object_id") && value.containsKey("st_astext")) {
+                            ikb.setObject_id(Long.parseLong(value.getString("object_id")));
+                            ikb.setObject_type(value.getString("object_type"));
+                            ikb.setSt_astext(value.getString("st_astext"));
+                            item.setItemKeeprightBean(ikb);
+                        } else {
+                            item.setStatus(520);
+                        }
                     }
                     if (accessToTask.getTask_source().equals("tigerdelta")) {
                         //https://github.com/osmlab/to-fix/wiki/Task%20sources#tiger-delta
-                        JsonReader reader = Json.createReader(new StringReader(responseBean.getValue()));
-                        JsonObject object = reader.readObject();
                         ItemTigerdeltaBean itb = new ItemTigerdeltaBean();
                         itb.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
@@ -95,12 +99,9 @@ public class ItemController {
                         } else {
                             item.setStatus(520);
                         }
-
                     }
                     if (accessToTask.getTask_source().equals("nycbuildings")) {
                         //https://github.com/osmlab/to-fix/wiki/Task%20sources#usa-overlapping-buildings
-                        JsonReader reader = Json.createReader(new StringReader(responseBean.getValue()));
-                        JsonObject object = reader.readObject();
                         ItemUsaBuildingsBean inb = new ItemUsaBuildingsBean();
                         inb.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
@@ -114,15 +115,41 @@ public class ItemController {
                         }
                     }
                     if (accessToTask.getTask_source().equals("krakatoa")) {
-                        item.setItemKrakatoaBean(gson.fromJson(responseBean.getValue(), ItemKrakatoaBean.class));
+                        //https://github.com/osmlab/to-fix/wiki/Task%20sources#krakatoa
+                        ItemKrakatoaBean ikb = new ItemKrakatoaBean();
+                        ikb.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("geom")) {
+                            ikb.setGeom(value.getString("geom"));
+                            item.setItemKrakatoaBean(ikb);
+                        } else {
+                            item.setStatus(520);
+                        }
                     }
                     if (accessToTask.getTask_source().equals("strava")) {
-                        item.setItemStrava(gson.fromJson(responseBean.getValue(), ItemStrava.class));
+                        //https://github.com/osmlab/to-fix/wiki/Task%20sources#strava
+                        ItemStrava istrava = new ItemStrava();
+                        istrava.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("geom")) {
+                            istrava.setGeom(value.getString("geom"));
+                            item.setItemStrava(istrava);
+                        } else {
+                            item.setStatus(520);
+                        }
                     }
                     if (accessToTask.getTask_source().equals("components")) {
                         //https://github.com/osmlab/to-fix/wiki/Task%20sources#small-components
-                        
-                        item.setItemSmallcomponents(gson.fromJson(responseBean.getValue(), ItemSmallcomponents.class));
+                        ItemSmallcomponents isc = new ItemSmallcomponents();
+                        isc.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("nothing") && value.containsKey("geom")) {
+                            isc.setGeom(value.getString("geom"));
+                            isc.setNothing(value.getString("nothing"));
+                            item.setItemSmallcomponents(isc);
+                        } else {
+                            item.setStatus(520);
+                        }
                     }
                     break;
                 case 410:

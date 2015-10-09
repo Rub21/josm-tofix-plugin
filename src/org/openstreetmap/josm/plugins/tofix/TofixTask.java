@@ -73,10 +73,10 @@ public class TofixTask {
 
     private AccessToTask work_keepright(ItemKeeprightBean itemKeeprightBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemKeeprightBean.getKey());
-        node = itemKeeprightBean.getValue().get_node();
+        node = itemKeeprightBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.Download(downloadOsmTask, bounds, itemKeeprightBean.getValue().getObject_id());
+        Download.Download(downloadOsmTask, bounds, itemKeeprightBean.getObject_id());
         return accessToTask;
 
     }
@@ -102,7 +102,7 @@ public class TofixTask {
 
     private AccessToTask work_krakatoa(ItemKrakatoaBean itemkrakatoaBean, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemkrakatoaBean.getKey());
-        List<Node> list = itemkrakatoaBean.getValue().get_nodes();
+        List<Node> list = itemkrakatoaBean.get_nodes();
         node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
@@ -112,7 +112,7 @@ public class TofixTask {
 
     private AccessToTask work_strava(ItemStrava itemStrava, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemStrava.getKey());
-        node = itemStrava.getValue().get_node();
+        node = itemStrava.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, 0x0L);
@@ -121,7 +121,7 @@ public class TofixTask {
 
     private AccessToTask work_smallcomponents(ItemSmallcomponents itemSmallcomponents, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemSmallcomponents.getKey());
-         List<List<Node>> list = itemSmallcomponents.getValue().get_nodes();
+         List<List<Node>> list = itemSmallcomponents.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
