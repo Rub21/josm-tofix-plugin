@@ -1,8 +1,12 @@
 package org.openstreetmap.josm.plugins.tofix.controller;
 
 import com.google.gson.Gson;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
@@ -15,6 +19,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -45,7 +50,19 @@ public class ItemController {
             switch (responseBean.getStatus()) {
                 case 200:
                     if (accessToTask.getTask_source().equals("unconnected")) {
+
                         item.setItemUnconnectedBean(gson.fromJson(responseBean.getValue(), ItemUnconnectedBean.class));
+
+                        JsonReader reader = Json.createReader(new StringReader(responseBean.getValue()));
+                        JsonObject object = reader.readObject();
+                        
+                        Util.print(object.getString("key"));
+                        Util.print(object.getJsonObject("value"));
+                        
+                        
+
+                        
+
                     }
                     if (accessToTask.getTask_source().equals("keepright")) {
                         item.setItemKeeprightBean(gson.fromJson(responseBean.getValue(), ItemKeeprightBean.class));
@@ -75,6 +92,7 @@ public class ItemController {
             }
 
         } catch (Exception ex) {
+            Util.alert(ex);
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return item;

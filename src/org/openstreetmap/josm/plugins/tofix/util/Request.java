@@ -40,7 +40,7 @@ public class Request {
                 response.append(inputLine);
             }
             in.close();
-            Util.print(response.toString());
+            //Util.print(response.toString());
             responseBean.setValue(response.toString());//agrega el valor de la respuesta
 
         } else if (responseCode == HttpURLConnection.HTTP_GONE) {
