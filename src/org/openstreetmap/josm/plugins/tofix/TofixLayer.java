@@ -1,4 +1,4 @@
-package org.openstreetmap.josm.plugins.tofix.layer;
+package org.openstreetmap.josm.plugins.tofix;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

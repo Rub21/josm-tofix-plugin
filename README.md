@@ -22,7 +22,7 @@ Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challen
 
 ![image](https://cloud.githubusercontent.com/assets/1152236/8236632/3e4e4352-15af-11e5-88d3-e348b78b62d2.png)
 
-![screenshot from 2015-06-18 12 10 14](https://cloud.githubusercontent.com/assets/1152236/8237186/21689c2a-15b3-11e5-9a8e-29278468347d.png)
+![screenshot from 2015-10-12 11 33 04](https://cloud.githubusercontent.com/assets/1152236/10433104/2f8df796-70d5-11e5-8f77-43b18a01d96e.png)
 
 ## Configuration
 
