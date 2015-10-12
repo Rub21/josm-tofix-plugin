@@ -153,7 +153,13 @@ public class ItemController {
                     }
                     break;
                 case 410:
-                    item.setTaskCompleteBean(gson.fromJson(responseBean.getValue().replace("\\", "").replace("\"{", "{").replace("}\"", "}"), TaskCompleteBean.class));
+                    TaskCompleteBean taskCompleteBean = new TaskCompleteBean();
+                    taskCompleteBean.setTotal(0);                   
+                    String total = responseBean.getValue().replaceAll("[^0-9]+", " ");
+                    if (total.trim().split(" ")[1] != null) {
+                        taskCompleteBean.setTotal(Integer.parseInt(total.trim().split(" ")[1]));
+                    }
+                     item.setTaskCompleteBean(taskCompleteBean);
                     break;
                 case 503:
                     //Servidor en mantenimiento

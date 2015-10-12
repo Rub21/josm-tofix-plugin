@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
@@ -12,11 +13,11 @@ import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUsaBuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUsaBuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.layer.TofixLayer;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
@@ -57,8 +58,8 @@ public class TofixTask {
         if (accessToTask.getTask_source().equals("components")) {
             accessToTask = work_smallcomponents(item.getItemSmallcomponents(), accessToTask, size);
         }
-        
-  UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
+
+        UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
         return accessToTask;
     }
 
@@ -121,7 +122,7 @@ public class TofixTask {
 
     private AccessToTask work_smallcomponents(ItemSmallcomponents itemSmallcomponents, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemSmallcomponents.getKey());
-         List<List<Node>> list = itemSmallcomponents.get_nodes();
+        List<List<Node>> list = itemSmallcomponents.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
@@ -130,8 +131,10 @@ public class TofixTask {
     }
 
     public void task_complete(Item item, AccessToTask accessToTask) {
+        DecimalFormat myFormatter = new DecimalFormat("#,###");
+        String num = myFormatter.format(item.getTaskCompleteBean().getTotal());
         String message = "Task : " + accessToTask.getTask_name() + " was completed\n"
-                + "Total items : " + item.getTaskCompleteBean().getMessage().getValue().getTotal();
+                + "Total items : " + num;
         JOptionPane.showMessageDialog(Main.panel, tr(message));
     }
 
