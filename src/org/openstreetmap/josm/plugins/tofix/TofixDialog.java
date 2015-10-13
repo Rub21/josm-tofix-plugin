@@ -346,7 +346,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             default:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, tr("Somethig went wrong, try to again.,"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(Main.panel, tr("Something went wrong, try again"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
