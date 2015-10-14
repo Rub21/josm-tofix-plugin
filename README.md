@@ -19,7 +19,12 @@ Instead of picking new tasks and confirming accomplished tasks through the web i
 
 - Select "To-fix" from "Windows", the To-fix window will appear as a panel on your screen (at least one layer must be enabled to select options within Windows)
 - Select a task from the drop down.
-- Use "Skip" to skip through tasks, "not an error" to mark tasks as not needing work and "Fixed" if you saved and fixed something. **Note: it is still your responsibility to upload changes.** The plugin will not automatically upload changes for you. 
+
+## Working with the plugin
+
+- **Skip:** Click to select a new task at any time.
+- **Not an error:** Click if a task does not require any editing.
+- **Fixed:** click when you are done editing on a task. This will automatically start the upload process. Fill in a comment like `#to-fix:tigerdelta`. After uploading the plugin will download the next task.
 
 ## Shortcuts
 
