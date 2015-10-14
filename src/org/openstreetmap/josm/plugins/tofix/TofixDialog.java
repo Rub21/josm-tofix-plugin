@@ -169,7 +169,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             jcontenTasks.add(valuePanel);
 
             //add title to download
-            jcontenConfig.add(new Label(tr("Size to download in Sq.m")));
+            jcontenConfig.add(new Label(tr("Set download area (m²)")));
 
             //Add Slider to download
             slider.setMinorTickSpacing(2);
