@@ -2,7 +2,7 @@
 
 Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challenges available in [JOSM](http://josm.openstreetmap.de/) editor.
 
-![image](https://cloud.githubusercontent.com/assets/1152236/10458022/6a816f7c-718e-11e5-999b-c741b682c86a.png)
+![tofix-wor2k](https://cloud.githubusercontent.com/assets/1152236/10491901/9b17bf5c-726e-11e5-9575-3c62d0412140.gif)
 
 ## Installation
 
