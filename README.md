@@ -17,7 +17,7 @@ Default shortcuts:
 
 - **Skip button:** ALT + SHIFT + S
 - **Not a error button :** ALT + SHIFT + N
-- **Fixed button :** ALT + SHIFT + S
+- **Fixed button :** ALT + SHIFT + F
 
 Example to configure your own shortcuts:
 
