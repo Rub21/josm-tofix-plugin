@@ -1,4 +1,3 @@
-// License: GPL. For details, see LICENSE file.
 package org.openstreetmap.josm.plugins.tofix.util;
 
 import java.awt.event.ActionEvent;
@@ -32,34 +31,15 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
- * Action that opens a connection to the osm server and uploads all changes.
- *
- * An dialog is displayed asking the user to specify a rectangle to grab. The
- * url and account settings from the preferences are used.
- *
- * If the upload fails this action offers various options to resolve conflicts.
- *
- * @author imi
+ * Customize from UploadAction
  */
-public class UploadAction extends JosmAction {
+public class Upload extends JosmAction {
 
-    /**
-     * The list of upload hooks. These hooks will be called one after the other
-     * when the user wants to upload data. Plugins can insert their own hooks
-     * here if they want to be able to veto an upload.
-     *
-     * Be default, the standard upload dialog is the only element in the list.
-     * Plugins should normally insert their code before that, so that the upload
-     * dialog is the last thing shown before upload really starts; on occasion
-     * however, a plugin might also want to insert something after that.
-     */
     private static final List<UploadHook> uploadHooks = new LinkedList<>();
     private static final List<UploadHook> lateUploadHooks = new LinkedList<>();
 
     static {
-        /**
-         * Calls validator before upload.
-         */
+
         uploadHooks.add(new ValidateUploadHook());
 
         /**
@@ -93,15 +73,6 @@ public class UploadAction extends JosmAction {
         registerUploadHook(hook, false);
     }
 
-    /**
-     * Registers an upload hook. Adds the hook at the first position of the
-     * upload hooks.
-     *
-     * @param hook the upload hook. Ignored if null.
-     * @param late true, if the hook should be executed after the upload dialog
-     * has been confirmed. Late upload hooks should in general succeed and not
-     * abort the upload.
-     */
     public static void registerUploadHook(UploadHook hook, boolean late) {
         if (hook == null) {
             return;
@@ -137,7 +108,7 @@ public class UploadAction extends JosmAction {
 
     private String customized_comment;
 
-    public UploadAction() {
+    public Upload() {
         super(tr("Upload data"), "upload", tr("Upload all changes in the active data layer to the OSM server"),
                 Shortcut.registerShortcut("file:upload", tr("File: {0}", tr("Upload data")), KeyEvent.VK_UP, Shortcut.CTRL_SHIFT), true);
         putValue("help", ht("/Action/Upload"));
@@ -183,16 +154,6 @@ public class UploadAction extends JosmAction {
                 ImageProvider.get("upload"), tr("Ignore this hint and upload anyway"));
     }
 
-    /**
-     * Check whether the preconditions are met to upload data in
-     * <code>apiData</code>. Makes sure upload is allowed, primitives in
-     * <code>apiData</code> don't participate in conflicts and runs the
-     * installed {@link UploadHook}s.
-     *
-     * @param layer the source layer of the data to be uploaded
-     * @param apiData the data to be uploaded
-     * @return true, if the preconditions are met; false, otherwise
-     */
     public static boolean checkPreUploadConditions(AbstractModifiableLayer layer, APIDataSet apiData) {
         if (layer.isUploadDiscouraged()) {
             if (warnUploadDiscouraged(layer)) {

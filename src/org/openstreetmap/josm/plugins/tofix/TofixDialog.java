@@ -84,7 +84,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
-    UploadAction upload = new UploadAction();
+    Upload upload = new Upload();
 
     public TofixDialog() {
 
