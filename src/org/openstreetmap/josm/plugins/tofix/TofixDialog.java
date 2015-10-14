@@ -334,7 +334,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             case 520:
                 mainAccessToTask.setAccess(false);
                 JLabel text = new javax.swing.JLabel();
-                text.setText(tr("<html>Somethig went wrong, please update Tofix plugin  or open a ticket in <a href=\"\">josm-tofix-plugin/issues</a></html>"));
+                text.setText(tr("<html>Something went wrong, please update Tofix plugin  or open a ticket in <a href=\"\">josm-tofix-plugin/issues</a></html>"));
                 text.setCursor(new Cursor(Cursor.HAND_CURSOR));
                 text.addMouseListener(new MouseAdapter() {
                     @Override
