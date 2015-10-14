@@ -143,7 +143,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         //add tittle for To-fix task
         JLabel title_tasks = new javax.swing.JLabel();
-        title_tasks.setText("<html><a href=\"\">List of To-fix tasks</a></html>");
+        title_tasks.setText("<html><a href=\"\">List of tasks</a></html>");
         title_tasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
         title_tasks.addMouseListener(new MouseAdapter() {
             @Override
