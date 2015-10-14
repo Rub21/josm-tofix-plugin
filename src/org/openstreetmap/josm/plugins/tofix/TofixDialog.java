@@ -237,6 +237,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            upload.setCustomized_comment("#to-fix:" + mainAccessToTask.getTask_id());
             upload.actionPerformed(e);
             fixed();
         }
