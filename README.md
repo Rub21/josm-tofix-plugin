@@ -1,13 +1,14 @@
-# Tofix Plugin
+# To-Fix Plugin
 
-Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challenges available in [JOSM](http://josm.openstreetmap.de/) editor.
+This plugin makes [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challenges available directly from within the [JOSM](http://josm.openstreetmap.de/) editor.
+
+Instead of picking new tasks and confirming accomplished tasks through the web interface of To-Fix on [http://osmlab.github.io/to-fix](http://osmlab.github.io/to-fix) this plugin allows you to work with To-Fix tasks without ever having to switch out of JOSM.
 
 ![tofix-wor2k](https://cloud.githubusercontent.com/assets/1152236/10491901/9b17bf5c-726e-11e5-9575-3c62d0412140.gif)
 
 ## Installation
 
 ![tofix](https://cloud.githubusercontent.com/assets/1152236/10457988/417882b4-718e-11e5-94b5-6ecf4a30eb43.gif)
-
 
 ## Configuration
 
