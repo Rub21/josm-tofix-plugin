@@ -1,4 +1,4 @@
-# JOSM To-Fix Plugin
+# Tofix Plugin
 
 Make [To-Fix](http://osmlab.github.io/to-fix) OpenStreetMap microtasking challenges available in [JOSM](http://josm.openstreetmap.de/) editor.
 
