@@ -24,7 +24,7 @@ public class TofixDraw {
         MapView mv = Main.map.mapView;
         Bounds bounds = null;
         if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
+            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
@@ -43,7 +43,7 @@ public class TofixDraw {
         MapView mv = Main.map.mapView;
         Bounds bounds = null;
         if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
+            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
@@ -61,7 +61,7 @@ public class TofixDraw {
         MapView mv = Main.map.mapView;
         Bounds bounds = null;
         if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Can not find outside of the world."));
+            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
