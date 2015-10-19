@@ -8,6 +8,6 @@
     <property name="plugin.class" value="org.openstreetmap.josm.plugins.tofix.TofixPlugin"/>
     <property name="plugin.description" value="Integrate to-fix http://osmlab.github.io/to-fix/ into JOSM to repair errors in OpenStreetMap"/>
     <property name="plugin.icon" value="images/icontofix.png"/>
-    <property name="plugin.link" value="https://github.com/osmlab/tofix-plugin"/>
+    <property name="plugin.link" value="https://github.com/JOSM/tofix-plugin"/>
     <import file="../build-common.xml"/>
 </project>
