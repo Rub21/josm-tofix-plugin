@@ -1,9 +1,18 @@
 package org.openstreetmap.josm.plugins.tofix.controller;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
@@ -13,7 +22,7 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
  */
 public class ListTaskController {
 
-    private ListTaskBean listTasksBean = null;
+    private ListTaskBean listTasksBean = new ListTaskBean();
     private String url;
 
     public ListTaskController() {
@@ -21,17 +30,27 @@ public class ListTaskController {
     }
 
     public ListTaskBean getListTasksBean() {
-        Gson gson = new Gson();
+        List<TaskBean> tasks = new LinkedList<>();
         String stringListTaskBean = null;
         try {
             stringListTaskBean = Request.sendGET(url);
-
-        } catch (Exception ex) {
-            Logger.getLogger(StatusController.class.getName()).log(Level.SEVERE, null, ex);
+            JsonReader jsonReader = Json.createReader(new StringReader(stringListTaskBean));
+            JsonObject jsonObject = jsonReader.readObject();
+            JsonArray jsonArray = jsonObject.getJsonArray("tasks");
+            for (JsonValue value : jsonArray) {
+                TaskBean taskBean = new TaskBean();
+                JsonObject jsontask = Json.createReader(new StringReader(value.toString())).readObject();
+                taskBean.setId(jsontask.getString("id"));
+                taskBean.setTitle(jsontask.getString("title"));
+                taskBean.setSource(jsontask.getString("source"));
+                taskBean.setStatus(jsontask.getBoolean("status"));
+                tasks.add(taskBean);
+            }
+            jsonReader.close();
+        } catch (IOException ex) {
+            Logger.getLogger(ListTaskController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        listTasksBean = gson.fromJson(stringListTaskBean, ListTaskBean.class);
+        listTasksBean.setTasks(tasks);
         return listTasksBean;
-
     }
-
 }

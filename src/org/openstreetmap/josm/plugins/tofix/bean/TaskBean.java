@@ -8,6 +8,7 @@ public class TaskBean {
     private String id;
     private String title;
     private String source;
+    private boolean status;
 
     public String getId() {
         return id;
@@ -32,5 +33,15 @@ public class TaskBean {
     public void setSource(String source) {
         this.source = source;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    
+    
 
 }
