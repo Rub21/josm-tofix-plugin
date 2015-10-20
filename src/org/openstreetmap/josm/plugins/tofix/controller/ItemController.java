@@ -164,6 +164,8 @@ public class ItemController {
                     break;
             }
 
+            reader.close();
+
         } catch (Exception ex) {
             Util.alert(ex);
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);

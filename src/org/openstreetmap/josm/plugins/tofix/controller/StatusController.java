@@ -9,7 +9,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import org.openstreetmap.josm.plugins.tofix.bean.StatusBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *
@@ -20,7 +19,6 @@ public class StatusController {
     private final String url;
 
     public StatusController(String url) {
-        Util.print(url);
         this.url = url;
     }
 
@@ -32,10 +30,6 @@ public class StatusController {
         } catch (IOException ex) {
             Logger.getLogger(StatusController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Util.print("==============================================================================================");
-        Util.print(stringStatusBean);
-        Util.print("==============================================================================================");
-
         JsonReader jsonReader = Json.createReader(new StringReader(stringStatusBean));
         JsonObject jsonObject = jsonReader.readObject();
         statusBean.setStatus(jsonObject.getString("status"));
