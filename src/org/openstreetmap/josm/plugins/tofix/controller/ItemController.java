@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.tofix.controller;
 
-import com.google.gson.Gson;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +27,6 @@ import org.openstreetmap.josm.plugins.tofix.util.Util;
  */
 public class ItemController {
 
-    Gson gson = new Gson();
     Item item = new Item();
     ResponseBean responseBean = new ResponseBean();
 
@@ -154,12 +152,12 @@ public class ItemController {
                     break;
                 case 410:
                     TaskCompleteBean taskCompleteBean = new TaskCompleteBean();
-                    taskCompleteBean.setTotal(0);                   
+                    taskCompleteBean.setTotal(0);
                     String total = responseBean.getValue().replaceAll("[^0-9]+", " ");
                     if (total.trim().split(" ")[1] != null) {
                         taskCompleteBean.setTotal(Integer.parseInt(total.trim().split(" ")[1]));
                     }
-                     item.setTaskCompleteBean(taskCompleteBean);
+                    item.setTaskCompleteBean(taskCompleteBean);
                     break;
                 case 503:
                     //Servidor en mantenimiento
