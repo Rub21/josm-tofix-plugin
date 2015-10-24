@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import java.awt.GraphicsEnvironment;
+
 import org.openstreetmap.josm.gui.IconToggleButton;
 import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.plugins.Plugin;
@@ -16,7 +18,7 @@ public class TofixPlugin extends Plugin {
 
     @Override
     public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
-        if (newFrame != null) {
+        if (newFrame != null && !GraphicsEnvironment.isHeadless()) {
             newFrame.addToggleDialog(tofixDialog = new TofixDialog());
         }
     }
