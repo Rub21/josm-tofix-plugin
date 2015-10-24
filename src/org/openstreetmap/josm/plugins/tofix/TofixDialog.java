@@ -163,7 +163,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                 tasksList.add(listTaskBean.getTasks().get(i).getTitle());
             }
-            JComboBox jcomboBox = new JComboBox(tasksList.toArray());
+            JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
             valuePanel.add(jcomboBox);
             jcomboBox.addActionListener(this);
 
