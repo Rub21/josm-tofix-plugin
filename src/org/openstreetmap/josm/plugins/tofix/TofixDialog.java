@@ -22,10 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.UploadAction;
+import org.openstreetmap.josm.data.APIDataSet;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
+import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
@@ -84,7 +87,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
-    Upload upload = new Upload();
+    //Upload upload = new Upload();
+    UploadAction uploadAction = new UploadAction();
 
     public TofixDialog() {
 
@@ -117,8 +121,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                upload.setCustomized_comment("#to-fix:" + mainAccessToTask.getTask_id());
-                upload.actionPerformed(e);
+                APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
+                Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", setup_comment(mainAccessToTask.getTask_id()));
+                uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
                 fixed();
             }
         });
@@ -237,8 +242,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            upload.setCustomized_comment("#to-fix:" + mainAccessToTask.getTask_id());
-            upload.actionPerformed(e);
+            APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
+            Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", setup_comment(mainAccessToTask.getTask_id()));
+            uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
             fixed();
         }
     }
@@ -349,6 +355,14 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 mainAccessToTask.setAccess(false);
                 JOptionPane.showMessageDialog(Main.panel, tr("Something went wrong, try again"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
         }
+    }
+
+    public String setup_comment(String idtask) {
+        String comment = UploadDialog.getUploadDialog().getLastChangesetCommentFromHistory();
+        if (!comment.contains(idtask)) {
+            comment = "#to-fix:" + idtask;
+        }
+        return comment;
     }
 
 }
