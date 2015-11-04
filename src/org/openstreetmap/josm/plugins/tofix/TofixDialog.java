@@ -124,7 +124,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
                 Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", setup_comment(mainAccessToTask.getTask_id()));
                 uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
-                fixed();
+                if (!UploadDialog.getUploadDialog().isCanceled()) {
+                    fixed();
+                }
             }
         });
 
@@ -245,7 +247,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
             Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", setup_comment(mainAccessToTask.getTask_id()));
             uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
-            fixed();
+            if (!UploadDialog.getUploadDialog().isCanceled()) {
+                fixed();
+            }
         }
     }
 
