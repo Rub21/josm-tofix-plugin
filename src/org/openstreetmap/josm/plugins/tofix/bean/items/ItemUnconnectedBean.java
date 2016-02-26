@@ -9,7 +9,7 @@ import org.openstreetmap.josm.data.osm.Node;
  */
 public class ItemUnconnectedBean extends ItemTask {
     Long way_id;
-    Long node_id;
+  //  Long node_id;
     String st_astext;
     
     public Long getWay_id() {
@@ -20,13 +20,13 @@ public class ItemUnconnectedBean extends ItemTask {
         this.way_id = way_id;
     }
 
-    public Long getNode_id() {
-        return node_id;
-    }
-
-    public void setNode_id(Long node_id) {
-        this.node_id = node_id;
-    }
+//    public Long getNode_id() {
+//        return node_id;
+//    }
+//
+//    public void setNode_id(Long node_id) {
+//        this.node_id = node_id;
+//    }
 
     public String getSt_astext() {
         return st_astext;

@@ -67,7 +67,7 @@ public class TofixTask {
         node = itemUnconnectedBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getNode_id());
+        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getWay_id());
         return accessToTask;
     }
 
