@@ -32,18 +32,21 @@ public class Download {
             @Override
             public void run() {
                 try {
-                    future.get();
-                    Node node = new Node(osm_obj_id);
-                    Relation relation = new Relation(osm_obj_id);
-                    Way way = new Way(osm_obj_id);
-                    List<OsmPrimitive> selection = new ArrayList<>();
-                    selection.add(way);
-                    selection.add(node);
-                    selection.add(relation);
-                    Main.main.getCurrentDataSet().setSelected(selection);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                    if (osm_obj_id != 0) {
+                        future.get();
+                        //create object
+                        Node node = new Node(osm_obj_id);
+                        Relation relation = new Relation(osm_obj_id);
+                        Way way = new Way(osm_obj_id);
+                        //create list of objects
+                        List<OsmPrimitive> selection = new ArrayList<>();
+                        selection.add(way);
+                        selection.add(node);
+                        selection.add(relation);
+                        //make selection ob objects
+                        Main.main.getCurrentDataSet().setSelected(selection);
+                    }
+                } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

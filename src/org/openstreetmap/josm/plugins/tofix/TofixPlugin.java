@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import java.awt.GraphicsEnvironment;
+
 import org.openstreetmap.josm.gui.IconToggleButton;
 import org.openstreetmap.josm.gui.MapFrame;
 import org.openstreetmap.josm.plugins.Plugin;
@@ -9,28 +11,15 @@ public class TofixPlugin extends Plugin {
 
     private IconToggleButton btn;
     protected static TofixDialog tofixDialog;
-    private TofixMode mode;
-
+ 
     public TofixPlugin(PluginInformation info) {
         super(info);
     }
 
     @Override
     public void mapFrameInitialized(MapFrame oldFrame, MapFrame newFrame) {
-        if (newFrame != null) {
+        if (newFrame != null && !GraphicsEnvironment.isHeadless()) {
             newFrame.addToggleDialog(tofixDialog = new TofixDialog());
-            //mode = new TofixMode(newFrame, "To-Fix", tr("To-fix mode"));
-//            btn = new IconToggleButton(mode);
-//            btn.setVisible(true);
-//            newFrame.addMapMode(btn);
-
         }
-//        else {
-//            btn = null;
-//            mode = null;
-//            tofixDialog = null;
-//            //Rub21
-//        }
-
     }
 }

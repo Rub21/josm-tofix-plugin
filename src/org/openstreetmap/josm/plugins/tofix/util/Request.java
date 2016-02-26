@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 
 /**
  *
@@ -13,8 +14,7 @@ import java.net.URL;
  */
 public class Request {
 
-    public static String sendPOST(String url) throws Exception {
-        Util.print(url);
+    public static ResponseBean sendPOST(String url) throws Exception {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
@@ -25,22 +25,43 @@ public class Request {
         os.close();
         //POST - END
         int responseCode = con.getResponseCode();
+
+        //Crear un ResponseBean para que regrese el String y el status de la peticion.
+        ResponseBean responseBean = new ResponseBean();
+
+        responseBean.setStatus(responseCode);//agregar el estatus
+
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuffer response = new StringBuffer();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
             in.close();
-            Util.print(response.toString());
-            return response.toString();
+            //Util.print(response.toString());
+            responseBean.setValue(response.toString());//agrega el valor de la respuesta
+
+        } else if (responseCode == HttpURLConnection.HTTP_GONE) {
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            String inputLine;
+            StringBuffer response_error = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response_error.append(inputLine);
+            }
+            in.close();
+
+            responseBean.setValue(response_error.toString());// agregar respuesta de complete task
 
         } else {
-            return null;
+
+            responseBean.setValue("error");
 
         }
+        con.disconnect();
+        return responseBean;
     }
 
     public static void sendPOST_Json(String url, String object) throws IOException {
@@ -55,7 +76,7 @@ public class Request {
         os.write(outputBytes);
         os.close();
         int responseCode = con.getResponseCode();
-        Util.print(responseCode);
+
     }
 
     public static String sendGET(String url) throws IOException {
@@ -73,8 +94,6 @@ public class Request {
                 response.append(inputLine);
             }
             in.close();
-
-            System.out.println(response.toString());
             return response.toString();
 
         } else {
