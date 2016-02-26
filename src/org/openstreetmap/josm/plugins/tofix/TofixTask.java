@@ -9,6 +9,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.io.UploadDialog;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
@@ -35,7 +36,10 @@ public class TofixTask {
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
     public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download
-
+        //Delete the previous layer 
+        if (Main.map != null && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && !Main.main.getEditLayer().isModified()) {
+            Main.main.removeLayer(Main.main.getEditLayer());
+        }
         if (accessToTask.getTask_source().equals("unconnected")) {
             accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask, size);
         }
@@ -67,7 +71,7 @@ public class TofixTask {
         node = itemUnconnectedBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getNode_id());
+        Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getWay_id());
         return accessToTask;
     }
 
@@ -133,7 +137,7 @@ public class TofixTask {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         String num = myFormatter.format(item.getTaskCompleteBean().getTotal());
         String message = "Task " + accessToTask.getTask_name() + " is complete\n"
-                +  num + " issues fixed";
+                + num + " issues fixed";
         JOptionPane.showMessageDialog(Main.panel, tr(message));
     }
 

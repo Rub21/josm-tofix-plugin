@@ -56,15 +56,15 @@ public class ItemController {
                         ItemUnconnectedBean iub = new ItemUnconnectedBean();
                         iub.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
-                        if (value.containsKey("way_id") && value.containsKey("node_id") && value.containsKey("st_astext")) {
-                            iub.setNode_id(Long.parseLong(value.getString("node_id")));
+                        if (value.containsKey("way_id") && value.containsKey("st_astext")) {
+                            //iub.setNode_id(Long.parseLong(value.getString("node_id")));
                             iub.setWay_id(Long.parseLong(value.getString("way_id")));
                             iub.setSt_astext(value.getString("st_astext"));
                             item.setItemUnconnectedBean(iub);
                         } else if (value.containsKey("X") && value.containsKey("Y") && value.containsKey("way_id") && value.containsKey("node_id")) {
                             //Format from Arun https://github.com/osmlab/to-fix/wiki/Task%20sources#unconnected-major                           
                             String st_astext = "POINT(" + value.getString("X") + " " + value.getString("Y") + ")";
-                            iub.setNode_id(Long.parseLong(value.getString("node_id")));
+                           // iub.setNode_id(Long.parseLong(value.getString("node_id")));
                             iub.setWay_id(Long.parseLong(value.getString("way_id")));
                             iub.setSt_astext(st_astext);
                             item.setItemUnconnectedBean(iub);
