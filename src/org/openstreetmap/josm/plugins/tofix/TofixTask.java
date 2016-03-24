@@ -14,6 +14,8 @@ import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintLinestring;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintMultipoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
@@ -62,8 +64,14 @@ public class TofixTask {
         if (accessToTask.getTask_source().equals("components")) {
             accessToTask = work_smallcomponents(item.getItemSmallcomponents(), accessToTask, size);
         }
-         if (accessToTask.getTask_source().equals("osmlint-point")) {
+        if (accessToTask.getTask_source().equals("osmlint-point")) {
             accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
+        }
+        if (accessToTask.getTask_source().equals("osmlint-linestring")) {
+            accessToTask = work_osmlintlinestring(item.getItemOsmlintLinestring(), accessToTask, size);
+        }
+        if (accessToTask.getTask_source().equals("osmlint-multipoint")) {
+            accessToTask = work_osmlintmultipoint(item.getItemOsmlintMultipoint(), accessToTask, size);
         }
 
         UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
@@ -136,7 +144,7 @@ public class TofixTask {
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
     }
-    
+
     private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintPoint.getKey());
         node = itemOsmlintPoint.get_node();
@@ -146,6 +154,26 @@ public class TofixTask {
         return accessToTask;
 
     }
+    
+    private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring , AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemOsmlintLinestring.getKey());
+        List<List<Node>> list = itemOsmlintLinestring.get_nodes();
+        node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
+        Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
+        return accessToTask;
+    }
+    
+     private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemOsmlintMultipoint.getKey());
+        List<Node> list = itemOsmlintMultipoint.get_nodes();
+        node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
+        Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
+        return accessToTask;
+    }
 
     public void task_complete(Item item, AccessToTask accessToTask) {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -154,7 +182,5 @@ public class TofixTask {
                 + num + " issues fixed";
         JOptionPane.showMessageDialog(Main.panel, tr(message));
     }
-    
-    
 
 }

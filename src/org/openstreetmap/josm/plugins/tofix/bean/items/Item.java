@@ -16,8 +16,10 @@ public class Item {
     private ItemUnconnectedBean itemUnconnectedBean;
     private TaskCompleteBean taskCompleteBean;
     private ItemStrava itemStrava;
-    private ItemSmallcomponents itemSmallcomponents;    
+    private ItemSmallcomponents itemSmallcomponents;
     private ItemOsmlintPoint itemOsmlintPoint;
+    private ItemOsmlintMultipoint itemOsmlintMultipoint;
+    private ItemOsmlintLinestring itemOsmlintLinestring;
 
     public int getStatus() {
         return status;
@@ -97,6 +99,22 @@ public class Item {
 
     public void setItemOsmlintPoint(ItemOsmlintPoint itemOsmlintPoint) {
         this.itemOsmlintPoint = itemOsmlintPoint;
+    }
+
+    public ItemOsmlintMultipoint getItemOsmlintMultipoint() {
+        return itemOsmlintMultipoint;
+    }
+
+    public void setItemOsmlintMultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint) {
+        this.itemOsmlintMultipoint = itemOsmlintMultipoint;
+    }
+
+    public ItemOsmlintLinestring getItemOsmlintLinestring() {
+        return itemOsmlintLinestring;
+    }
+
+    public void setItemOsmlintLinestring(ItemOsmlintLinestring itemOsmlintLinestring) {
+        this.itemOsmlintLinestring = itemOsmlintLinestring;
     }
 
 }
