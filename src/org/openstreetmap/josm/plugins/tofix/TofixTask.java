@@ -14,6 +14,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemTigerdeltaBean;
@@ -60,6 +61,9 @@ public class TofixTask {
         }
         if (accessToTask.getTask_source().equals("components")) {
             accessToTask = work_smallcomponents(item.getItemSmallcomponents(), accessToTask, size);
+        }
+         if (accessToTask.getTask_source().equals("osmlint-point")) {
+            accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
         }
 
         UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
@@ -132,6 +136,16 @@ public class TofixTask {
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
     }
+    
+    private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemOsmlintPoint.getKey());
+        node = itemOsmlintPoint.get_node();
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        TofixDraw.draw_Node(tofixLayer, node.getCoor());
+        Download.Download(downloadOsmTask, bounds, itemOsmlintPoint.getWay());
+        return accessToTask;
+
+    }
 
     public void task_complete(Item item, AccessToTask accessToTask) {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -140,5 +154,7 @@ public class TofixTask {
                 + num + " issues fixed";
         JOptionPane.showMessageDialog(Main.panel, tr(message));
     }
+    
+    
 
 }
