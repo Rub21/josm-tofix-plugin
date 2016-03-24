@@ -88,7 +88,7 @@ public class TofixLayer extends Layer implements ActionListener {
         } else if (type.equals("draw_nodes")) {
             for (Node node : list_nodes) {
                 Point pnt = mv.getPoint(node.getCoor());
-                g.drawOval(pnt.x - 5, pnt.y - 5, 10, 10);
+                g.drawOval(pnt.x - 10, pnt.y - 10, 20, 20);
             }
         }
 

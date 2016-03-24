@@ -12,6 +12,8 @@ import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintLinestring;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintMultipoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUsaBuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
@@ -65,7 +67,7 @@ public class ItemController {
                         } else if (value.containsKey("X") && value.containsKey("Y") && value.containsKey("way_id") && value.containsKey("node_id")) {
                             //Format from Arun https://github.com/osmlab/to-fix/wiki/Task%20sources#unconnected-major                           
                             String st_astext = "POINT(" + value.getString("X") + " " + value.getString("Y") + ")";
-                           // iub.setNode_id(Long.parseLong(value.getString("node_id")));
+                            // iub.setNode_id(Long.parseLong(value.getString("node_id")));
                             iub.setWay_id(Long.parseLong(value.getString("way_id")));
                             iub.setSt_astext(st_astext);
                             item.setItemUnconnectedBean(iub);
@@ -150,15 +152,39 @@ public class ItemController {
                             item.setStatus(520);
                         }
                     }
-                     if (accessToTask.getTask_source().equals("osmlint-point")) {
-                        //https://github.com/osmlab/to-fix/wiki/Task%20sources#broken-polygons
+                    if (accessToTask.getTask_source().equals("osmlint-point")) {
+                        //https://github.com/osmlab/to-fix/wiki/Output-formats-osmlint-----osmlint2csv---tofix
                         ItemOsmlintPoint iop = new ItemOsmlintPoint();
                         iop.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
                         if (value.containsKey("way") && value.containsKey("geom")) {
-                            iop.setWay(Long.parseLong(value.getString("way")));                            
+                            iop.setWay(Long.parseLong(value.getString("way")));
                             iop.setGeom(value.getString("geom"));
                             item.setItemOsmlintPoint(iop);
+                        } else {
+                            item.setStatus(520);
+                        }
+                    }
+                    if (accessToTask.getTask_source().equals("osmlint-linestring")) {
+                        //https://github.com/osmlab/to-fix/wiki/Output-formats-osmlint-----osmlint2csv---tofix
+                        ItemOsmlintLinestring iol = new ItemOsmlintLinestring();
+                        iol.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("geom")) {
+                            iol.setGeom(value.getString("geom"));
+                            item.setItemOsmlintLinestring(iol);
+                        } else {
+                            item.setStatus(520);
+                        }
+                    }
+                    if (accessToTask.getTask_source().equals("osmlint-multipoint")) {
+                        //https://github.com/osmlab/to-fix/wiki/Output-formats-osmlint-----osmlint2csv---tofix
+                        ItemOsmlintMultipoint iom = new ItemOsmlintMultipoint();
+                        iom.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("geom")) {
+                            iom.setGeom(value.getString("geom"));
+                            item.setItemOsmlintMultipoint(iom);
                         } else {
                             item.setStatus(520);
                         }

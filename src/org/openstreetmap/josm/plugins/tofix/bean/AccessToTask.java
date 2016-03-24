@@ -12,6 +12,7 @@ public class AccessToTask {
     private String task_id;
     private String task_source;
     private String task_name;
+    private String task_comment;
     private boolean access;
     private Long osm_obj_id;
     private String key;
@@ -93,6 +94,14 @@ public class AccessToTask {
 
     public void setTask_name(String task_name) {
         this.task_name = task_name;
+    }
+
+    public String getTask_comment() {
+        return task_comment;
+    }
+
+    public void setTask_comment(String task_comment) {
+        this.task_comment = task_comment;
     }
 
 }
