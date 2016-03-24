@@ -12,6 +12,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKrakatoaBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUsaBuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemSmallcomponents;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemStrava;
@@ -145,6 +146,19 @@ public class ItemController {
                             isc.setGeom(value.getString("geom"));
                             isc.setNothing(value.getString("nothing"));
                             item.setItemSmallcomponents(isc);
+                        } else {
+                            item.setStatus(520);
+                        }
+                    }
+                     if (accessToTask.getTask_source().equals("osmlint-point")) {
+                        //https://github.com/osmlab/to-fix/wiki/Task%20sources#broken-polygons
+                        ItemOsmlintPoint iop = new ItemOsmlintPoint();
+                        iop.setKey(object.getString("key"));
+                        JsonObject value = object.getJsonObject("value");
+                        if (value.containsKey("way") && value.containsKey("geom")) {
+                            iop.setWay(Long.parseLong(value.getString("way")));                            
+                            iop.setGeom(value.getString("geom"));
+                            item.setItemOsmlintPoint(iop);
                         } else {
                             item.setStatus(520);
                         }

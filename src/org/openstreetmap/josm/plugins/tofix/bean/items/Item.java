@@ -16,7 +16,8 @@ public class Item {
     private ItemUnconnectedBean itemUnconnectedBean;
     private TaskCompleteBean taskCompleteBean;
     private ItemStrava itemStrava;
-    private ItemSmallcomponents itemSmallcomponents;
+    private ItemSmallcomponents itemSmallcomponents;    
+    private ItemOsmlintPoint itemOsmlintPoint;
 
     public int getStatus() {
         return status;
@@ -88,6 +89,14 @@ public class Item {
 
     public void setItemSmallcomponents(ItemSmallcomponents itemSmallcomponents) {
         this.itemSmallcomponents = itemSmallcomponents;
+    }
+
+    public ItemOsmlintPoint getItemOsmlintPoint() {
+        return itemOsmlintPoint;
+    }
+
+    public void setItemOsmlintPoint(ItemOsmlintPoint itemOsmlintPoint) {
+        this.itemOsmlintPoint = itemOsmlintPoint;
     }
 
 }
