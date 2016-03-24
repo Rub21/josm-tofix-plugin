@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.openstreetmap.josm.plugins.tofix.bean.items;
 
 import java.util.LinkedList;
@@ -16,8 +11,16 @@ import org.openstreetmap.josm.data.osm.Node;
  */
 public class ItemOsmlintLinestring extends ItemTask {
 
+    private Long way;
     private String geom;
-    
+
+    public Long getWay() {
+        return way;
+    }
+
+    public void setWay(Long way) {
+        this.way = way;
+    }
 
     public String getGeom() {
         return geom;
@@ -30,7 +33,7 @@ public class ItemOsmlintLinestring extends ItemTask {
     public List<List<Node>> get_nodes() {
         String geostring = getGeom();
         geostring = geostring.replace("MULTILINESTRING (", "").replace("))", ")").replace(", ", ",");
-        geostring = geostring.replace("LINESTRING (", "(");      
+        geostring = geostring.replace("LINESTRING (", "(");
 
         List<List<Node>> list = new LinkedList<List<Node>>();
         String[] array;
@@ -60,4 +63,5 @@ public class ItemOsmlintLinestring extends ItemTask {
         }
         return list;
     }
+
 }

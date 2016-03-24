@@ -161,7 +161,7 @@ public class TofixTask {
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
-        Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
+        Download.Download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
         return accessToTask;
     }
     
@@ -171,7 +171,7 @@ public class TofixTask {
         node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
-        Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
+        Download.Download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay());
         return accessToTask;
     }
 
