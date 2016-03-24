@@ -44,6 +44,7 @@ public class ListTaskController {
                 taskBean.setTitle(jsontask.getString("title"));
                 taskBean.setSource(jsontask.getString("source"));
                 taskBean.setStatus(jsontask.getBoolean("status"));
+                taskBean.setComment(jsontask.getString("changeset_comment"));
                 tasks.add(taskBean);
             }
             jsonReader.close();

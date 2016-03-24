@@ -65,7 +65,7 @@ public class ItemController {
                         } else if (value.containsKey("X") && value.containsKey("Y") && value.containsKey("way_id") && value.containsKey("node_id")) {
                             //Format from Arun https://github.com/osmlab/to-fix/wiki/Task%20sources#unconnected-major                           
                             String st_astext = "POINT(" + value.getString("X") + " " + value.getString("Y") + ")";
-                           // iub.setNode_id(Long.parseLong(value.getString("node_id")));
+                            // iub.setNode_id(Long.parseLong(value.getString("node_id")));
                             iub.setWay_id(Long.parseLong(value.getString("way_id")));
                             iub.setSt_astext(st_astext);
                             item.setItemUnconnectedBean(iub);
@@ -150,13 +150,13 @@ public class ItemController {
                             item.setStatus(520);
                         }
                     }
-                     if (accessToTask.getTask_source().equals("osmlint-point")) {
+                    if (accessToTask.getTask_source().equals("osmlint-point")) {
                         //https://github.com/osmlab/to-fix/wiki/Task%20sources#broken-polygons
                         ItemOsmlintPoint iop = new ItemOsmlintPoint();
                         iop.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
                         if (value.containsKey("way") && value.containsKey("geom")) {
-                            iop.setWay(Long.parseLong(value.getString("way")));                            
+                            iop.setWay(Long.parseLong(value.getString("way")));
                             iop.setGeom(value.getString("geom"));
                             item.setItemOsmlintPoint(iop);
                         } else {

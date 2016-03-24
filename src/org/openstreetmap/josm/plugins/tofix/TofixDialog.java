@@ -122,7 +122,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
-                Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", setup_comment(mainAccessToTask.getTask_id()));
+                Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
                 uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
                 if (!UploadDialog.getUploadDialog().isCanceled()) {
                     fixed();
@@ -245,7 +245,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
-            Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", setup_comment(mainAccessToTask.getTask_id()));
+            Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
             uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
             if (!UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
@@ -268,6 +268,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getTitle());
             mainAccessToTask.setTask_id(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
             mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
+            mainAccessToTask.setTask_comment(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getComment());
             get_new_item();
             skipButton.setEnabled(true);
             fixedButton.setEnabled(true);
@@ -359,14 +360,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 mainAccessToTask.setAccess(false);
                 JOptionPane.showMessageDialog(Main.panel, tr("Something went wrong, try again"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
         }
-    }
-
-    public String setup_comment(String idtask) {
-        String comment = UploadDialog.getUploadDialog().getLastChangesetCommentFromHistory();
-        if (!comment.contains(idtask)) {
-            comment = "#to-fix:" + idtask;
-        }
-        return comment;
     }
 
 }

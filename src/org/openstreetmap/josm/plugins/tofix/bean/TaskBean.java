@@ -9,6 +9,7 @@ public class TaskBean {
     private String title;
     private String source;
     private boolean status;
+    private String comment;
 
     public String getId() {
         return id;
@@ -40,6 +41,14 @@ public class TaskBean {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
     
     
