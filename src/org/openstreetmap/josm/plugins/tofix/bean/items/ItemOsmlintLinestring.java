@@ -32,8 +32,8 @@ public class ItemOsmlintLinestring extends ItemTask {
 
     public List<List<Node>> get_nodes() {
         String geostring = getGeom();
-        geostring = geostring.replace("MULTILINESTRING (", "").replace("))", ")").replace(", ", ",");
-        geostring = geostring.replace("LINESTRING (", "(");
+        geostring = geostring.replace("MULTILINESTRING(", "").replace("))", ")").replace(", ", ",");
+        geostring = geostring.replace("LINESTRING(", "(");
 
         List<List<Node>> list = new LinkedList<List<Node>>();
         String[] array;
