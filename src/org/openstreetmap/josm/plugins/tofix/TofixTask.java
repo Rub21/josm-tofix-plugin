@@ -2,12 +2,12 @@ package org.openstreetmap.josm.plugins.tofix;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
@@ -40,7 +40,7 @@ public class TofixTask {
 
     public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download
         //Delete the previous layer 
-        if (Main.map != null && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && !Main.main.getEditLayer().isModified()) {
+        while (Main.main.hasEditLayer()) {
             Main.main.removeLayer(Main.main.getEditLayer());
         }
         if (accessToTask.getTask_source().equals("unconnected")) {
@@ -154,8 +154,8 @@ public class TofixTask {
         return accessToTask;
 
     }
-    
-    private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring , AccessToTask accessToTask, double size) {
+
+    private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintLinestring.getKey());
         List<List<Node>> list = itemOsmlintLinestring.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
@@ -164,8 +164,8 @@ public class TofixTask {
         Download.Download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
         return accessToTask;
     }
-    
-     private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
+
+    private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultipoint.getKey());
         List<Node> list = itemOsmlintMultipoint.get_nodes();
         node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
@@ -180,7 +180,7 @@ public class TofixTask {
         String num = myFormatter.format(item.getTaskCompleteBean().getTotal());
         String message = "Task " + accessToTask.getTask_name() + " is complete\n"
                 + num + " issues fixed";
-        JOptionPane.showMessageDialog(Main.panel, tr(message));
+        new Notification(tr(message)).show();
     }
 
 }
