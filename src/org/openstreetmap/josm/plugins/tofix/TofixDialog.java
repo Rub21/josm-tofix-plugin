@@ -1,7 +1,5 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import static org.openstreetmap.josm.tools.I18n.tr;
-
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -13,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
-
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -21,12 +18,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
-
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.APIDataSet;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
+import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
@@ -40,6 +37,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
+import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -121,12 +119,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
-                Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-                uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
-                if (!UploadDialog.getUploadDialog().isCanceled()) {
-                    fixed();
-                }
+                eventFixed();
             }
         });
 
@@ -244,12 +237,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
-            Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-            uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
-            if (!UploadDialog.getUploadDialog().isCanceled()) {
-                fixed();
-            }
+            eventFixed();
         }
     }
 
@@ -315,7 +303,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void noterror() {
         if (mainAccessToTask.isAccess()) {
-
             FixedBean NoterrorBean = new FixedBean();
             NoterrorBean.setUser(josmUserIdentityManager.getUserName());
             NoterrorBean.setKey(mainAccessToTask.getKey());
@@ -341,7 +328,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             case 503:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, tr("Maintenance server"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
+                new Notification(tr("Maintenance server")).show();
+
                 break;
             case 520:
                 mainAccessToTask.setAccess(false);
@@ -358,8 +346,21 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             default:
                 mainAccessToTask.setAccess(false);
-                JOptionPane.showMessageDialog(Main.panel, tr("Something went wrong, try again"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
+                new Notification(tr("Something went wrong, try again")).show();
         }
     }
 
+    private void eventFixed() {
+        if (!Main.main.getCurrentDataSet().isModified()) {
+            new Notification(tr("No change to upload!")).show();
+            skip();
+        } else {
+            APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
+            Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
+            uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
+            if (!UploadDialog.getUploadDialog().isCanceled()) {
+                fixed();
+            }
+        }
+    }
 }
