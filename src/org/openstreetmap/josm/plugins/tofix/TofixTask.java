@@ -40,13 +40,9 @@ public class TofixTask {
 
     public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download
         //Delete the previous layer 
-        //if (Main.map != null && Main.map.mapView.getActiveLayer() instanceof OsmDataLayer && !Main.main.getEditLayer().isModified()) {
-//            Main.main.removeLayer(Main.main.getEditLayer());
         while (Main.main.hasEditLayer()) {
             Main.main.removeLayer(Main.main.getEditLayer());
         }
-
-        //}
         if (accessToTask.getTask_source().equals("unconnected")) {
             accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask, size);
         }
