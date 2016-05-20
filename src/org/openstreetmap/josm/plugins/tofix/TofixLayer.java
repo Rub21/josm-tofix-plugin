@@ -32,9 +32,8 @@ public class TofixLayer extends Layer implements ActionListener {
     String type = "";
 
     public TofixLayer(String name) {
-        super(name);
+        super(name);      
     }
-    // private static final Icon icon = new ImageIcon("icontofix.png");
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
     @Override

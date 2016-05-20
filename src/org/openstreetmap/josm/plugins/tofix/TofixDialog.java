@@ -288,7 +288,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
 
         }
-
     }
 
     public void msg() {
