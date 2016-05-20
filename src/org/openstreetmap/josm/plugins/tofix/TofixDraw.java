@@ -15,7 +15,6 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  *
  * @author ruben
  */
-
 public class TofixDraw {
 
     ItemUnconnectedBean itemBean = null;
@@ -37,6 +36,7 @@ public class TofixDraw {
         } else {
             tofixLayer.add_Node(latLon);
         }
+
     }
 
     public static void draw_line(final TofixLayer tofixLayer, LatLon latLon, List<List<Node>> list_nodes) {

@@ -7,9 +7,9 @@ import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.io.UploadDialog;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
@@ -36,6 +36,7 @@ public class TofixTask {
     Bounds bounds = null;
     DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
     Node node = null;
+    MapView mv = null;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
     public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download       
@@ -84,6 +85,7 @@ public class TofixTask {
         accessToTask.setKey(itemUnconnectedBean.getKey());
         node = itemUnconnectedBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemUnconnectedBean.getWay_id());
         return accessToTask;
@@ -93,6 +95,7 @@ public class TofixTask {
         accessToTask.setKey(itemKeeprightBean.getKey());
         node = itemKeeprightBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemKeeprightBean.getObject_id());
         return accessToTask;
@@ -103,6 +106,7 @@ public class TofixTask {
         accessToTask.setKey(itemNycbuildingsBean.getKey());
         node = itemNycbuildingsBean.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemNycbuildingsBean.osm_obj_id());
         return accessToTask;
@@ -113,6 +117,7 @@ public class TofixTask {
         List<List<Node>> list = itemTigerdeltaBean.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
@@ -123,6 +128,7 @@ public class TofixTask {
         List<Node> list = itemkrakatoaBean.get_nodes();
         node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
@@ -132,6 +138,7 @@ public class TofixTask {
         accessToTask.setKey(itemStrava.getKey());
         node = itemStrava.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, 0x0L);
         return accessToTask;
@@ -142,6 +149,7 @@ public class TofixTask {
         List<List<Node>> list = itemSmallcomponents.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, 0x0L);//0x0L = null porque no exixte el id del objeto
         return accessToTask;
@@ -151,6 +159,7 @@ public class TofixTask {
         accessToTask.setKey(itemOsmlintPoint.getKey());
         node = itemOsmlintPoint.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
         Download.Download(downloadOsmTask, bounds, itemOsmlintPoint.getWay());
         return accessToTask;
@@ -162,6 +171,7 @@ public class TofixTask {
         List<List<Node>> list = itemOsmlintLinestring.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
         return accessToTask;
@@ -172,6 +182,7 @@ public class TofixTask {
         List<Node> list = itemOsmlintMultipoint.get_nodes();
         node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
         Download.Download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay());
         return accessToTask;
@@ -185,4 +196,9 @@ public class TofixTask {
         new Notification(tr(message)).show();
     }
 
+    public final void checkTofixLayer() {
+        if (!Main.map.mapView.hasLayer(tofixLayer)) {
+            Main.main.addLayer(tofixLayer);
+        }
+    }
 }
