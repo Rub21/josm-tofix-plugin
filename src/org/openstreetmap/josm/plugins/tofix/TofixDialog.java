@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import javax.swing.AbstractAction;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -82,11 +85,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jcontenConfig = new JPanel(new GridLayout(2, 1));
     JPanel panelslide = new JPanel(new GridLayout(1, 1));
 
+    JPanel jcontenActivation = new JPanel(new GridLayout(3, 1));
+    JPanel panelactivationPlugin = new JPanel(new GridLayout(1, 1));
+    JPanel panelactivationLayer = new JPanel(new GridLayout(1, 1));
+
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
     //Upload upload = new Upload();
     UploadAction uploadAction = new UploadAction();
+    boolean checkboxStatus;
+    boolean checkboxStatusLayer;
 
     public TofixDialog() {
 
@@ -94,6 +103,47 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
 
+        //ENABLE-DISABLE CHECKBOX
+        JCheckBox checkPlugin = new JCheckBox("Enable Tofix plugin");
+        checkPlugin.setSelected(true);
+        checkboxStatus = checkPlugin.isSelected();
+
+        checkPlugin.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    checkboxStatus = true;
+                } else {
+                    checkboxStatus = false;
+                }
+                return;
+            }
+        });
+
+        //AUTO DELETE LAYER
+        JCheckBox checkLayer = new JCheckBox("Auto delete layer");
+        checkLayer.setSelected(true);
+        checkboxStatusLayer = checkLayer.isSelected();
+
+        checkLayer.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    checkboxStatusLayer = true;
+                } else {
+                    checkboxStatusLayer = false;
+                }
+                return;
+            }
+        });
+
+        jcontenActivation.add(new Label(tr("Select the checkbox to:")));
+        panelactivationPlugin.add(checkPlugin);
+        panelactivationLayer.add(checkLayer);
+        jcontenActivation.add(panelactivationPlugin);
+        jcontenActivation.add(panelactivationLayer);
+
+        //BUTTONS
         // "Skip" button
         skipButton = new SideButton(new AbstractAction() {
             {
@@ -104,7 +154,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                skip();
+                if (checkboxStatus) {
+                    skip();
+                } else {
+                    msg();
+                }
             }
         });
         skipButton.setEnabled(false);
@@ -119,7 +173,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                eventFixed();
+                if (checkboxStatus) {
+                    eventFixed();
+                } else {
+                    msg();
+                }
             }
         });
 
@@ -135,7 +193,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                noterror();
+                if (checkboxStatus) {
+                    noterror();
+                } else {
+                    msg();
+                }
             }
         });
 
@@ -193,11 +255,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             //PANEL TASKS
             valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            //jcontenTasks.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
             TabbedPanel.addTab("Tasks", jcontenTasks);
             TabbedPanel.addTab("Config", jcontenConfig);
+            TabbedPanel.addTab("Activation", jcontenActivation);
 
             //add panels in JOSM
             createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
@@ -222,14 +286,29 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
             }
+
         }
+
+    }
+
+    public void msg() {
+        JOptionPane.showMessageDialog(
+                Main.parent,
+                tr("Activate to-fix plugin."),
+                tr("Warning"),
+                JOptionPane.WARNING_MESSAGE
+        );
     }
 
     public class Skip_key_Action extends AbstractAction {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            skip();
+            if (checkboxStatus) {
+                skip();
+            } else {
+                msg();
+            }
         }
     }
 
@@ -237,7 +316,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            eventFixed();
+            if (checkboxStatus) {
+                eventFixed();
+            } else {
+                msg();
+            }
         }
     }
 
@@ -245,7 +328,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            noterror();
+            if (checkboxStatus) {
+                noterror();
+            } else {
+                msg();
+            }
         }
     }
 
@@ -319,6 +406,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         switch (item.getStatus()) {
             case 200:
                 mainAccessToTask.setAccess(true);
+                if (checkboxStatusLayer) {
+                    tofixTask.deleteLayer();
+                }
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
                 edit();
                 break;
