@@ -85,8 +85,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jcontenConfig = new JPanel(new GridLayout(2, 1));
     JPanel panelslide = new JPanel(new GridLayout(1, 1));
 
-    JPanel jcontenActivation = new JPanel(new GridLayout(2, 1));
-    JPanel panelactivation = new JPanel(new GridLayout(1, 1));
+    JPanel jcontenActivation = new JPanel(new GridLayout(3, 1));
+    JPanel panelactivationPlugin = new JPanel(new GridLayout(1, 1));
+    JPanel panelactivationLayer = new JPanel(new GridLayout(1, 1));
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
@@ -94,6 +95,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     //Upload upload = new Upload();
     UploadAction uploadAction = new UploadAction();
     boolean checkboxStatus;
+    boolean checkboxStatusLayer;
 
     public TofixDialog() {
 
@@ -102,11 +104,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
 
         //ENABLE-DISABLE CHECKBOX
-        JCheckBox check = new JCheckBox("Enable/Disable");
-        check.setSelected(true);
-        checkboxStatus = check.isSelected();
+        JCheckBox checkPlugin = new JCheckBox("Enable Tofix plugin");
+        checkPlugin.setSelected(true);
+        checkboxStatus = checkPlugin.isSelected();
 
-        check.addItemListener(new ItemListener() {
+        checkPlugin.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -118,8 +120,28 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
-        jcontenActivation.add(new Label(tr("Select the checkbox to activate the plugin")));
-        jcontenActivation.add(check);
+        //AUTO DELETE LAYER
+        JCheckBox checkLayer = new JCheckBox("Auto delete layer");
+        checkLayer.setSelected(true);
+        checkboxStatusLayer = checkLayer.isSelected();
+
+        checkLayer.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    checkboxStatusLayer = true;
+                } else {
+                    checkboxStatusLayer = false;
+                }
+                return;
+            }
+        });
+
+        jcontenActivation.add(new Label(tr("Select the checkbox to:")));
+        panelactivationPlugin.add(checkPlugin);
+        panelactivationLayer.add(checkLayer);
+        jcontenActivation.add(panelactivationPlugin);
+        jcontenActivation.add(panelactivationLayer);
 
         //BUTTONS
         // "Skip" button
@@ -234,6 +256,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             //PANEL TASKS
             valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
             TabbedPanel.addTab("Tasks", jcontenTasks);
             TabbedPanel.addTab("Config", jcontenConfig);
@@ -382,6 +406,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         switch (item.getStatus()) {
             case 200:
                 mainAccessToTask.setAccess(true);
+                if (checkboxStatusLayer) {
+                    tofixTask.deleteLayer();
+                }
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
                 edit();
                 break;

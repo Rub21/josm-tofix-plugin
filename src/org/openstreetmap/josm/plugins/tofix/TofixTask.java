@@ -38,11 +38,7 @@ public class TofixTask {
     Node node = null;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download
-        //Delete the previous layer 
-        while (Main.main.hasEditLayer()) {
-            Main.main.removeLayer(Main.main.getEditLayer());
-        }
+    public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download       
         if (accessToTask.getTask_source().equals("unconnected")) {
             accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask, size);
         }
@@ -76,6 +72,12 @@ public class TofixTask {
 
         UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
         return accessToTask;
+    }
+
+    public void deleteLayer() {
+        while (Main.main.hasEditLayer()) {
+            Main.main.removeLayer(Main.main.getEditLayer());
+        }
     }
 
     private AccessToTask work_unconnected(ItemUnconnectedBean itemUnconnectedBean, AccessToTask accessToTask, double size) {
