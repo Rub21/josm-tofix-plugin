@@ -104,7 +104,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
 
         //ENABLE-DISABLE CHECKBOX
-        JCheckBox checkPlugin = new JCheckBox("Enable Tofix plugin");
+        JCheckBox checkPlugin = new JCheckBox(tr("Enable Tofix plugin"));
         checkPlugin.setSelected(true);
         checkboxStatus = checkPlugin.isSelected();
 
@@ -121,7 +121,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         });
 
         //AUTO DELETE LAYER
-        JCheckBox checkLayer = new JCheckBox("Auto delete layer");
+        JCheckBox checkLayer = new JCheckBox(tr("Auto delete layer"));
         checkLayer.setSelected(true);
         checkboxStatusLayer = checkLayer.isSelected();
 
@@ -205,7 +205,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         //add tittle for To-fix task
         JLabel title_tasks = new javax.swing.JLabel();
-        title_tasks.setText("<html><a href=\"\">List of tasks</a></html>");
+        title_tasks.setText(tr("<html><a href=\"\">List of tasks</a></html>"));
         title_tasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
         title_tasks.addMouseListener(new MouseAdapter() {
             @Override
@@ -217,7 +217,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<String>();
-        tasksList.add("Select a task ...");
+        tasksList.add(tr("Select a task ..."));
 
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
@@ -259,9 +259,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-            TabbedPanel.addTab("Tasks", jcontenTasks);
-            TabbedPanel.addTab("Config", jcontenConfig);
-            TabbedPanel.addTab("Activation", jcontenActivation);
+            TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
+            TabbedPanel.addTab(tr("Config"), jcontenConfig);
+            TabbedPanel.addTab(tr("Activation"), jcontenActivation);
 
             //add panels in JOSM
             createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
