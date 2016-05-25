@@ -53,7 +53,8 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class TofixDialog extends ToggleDialog implements ActionListener {
 
-    // private final SideButton editButton;
+    boolean validator;
+// private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
     private final SideButton noterrorButton;
@@ -442,6 +443,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void eventFixed() {
+        validator=false;
         if (!Main.main.getCurrentDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             skip();
@@ -461,15 +463,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
                 @Override
                 public void componentShown(ComponentEvent e) {
-                    if (!UploadDialog.getUploadDialog().isCanceled()) {
-                        fixed();
-                    }
+                    validator = true;
                 }
 
                 @Override
                 public void componentHidden(ComponentEvent e) {
                 }
             });
+
+            if (validator==true && !UploadDialog.getUploadDialog().isCanceled()) {
+                fixed();
+            }
 
         }
     }
