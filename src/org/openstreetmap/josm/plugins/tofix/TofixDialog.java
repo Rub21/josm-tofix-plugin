@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -447,9 +449,28 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
             Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
             uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
-            if (!UploadDialog.getUploadDialog().isCanceled()) {
-                fixed();
-            }
+            UploadDialog.getUploadDialog().addComponentListener(new ComponentListener() {
+
+                @Override
+                public void componentResized(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+                    if (!UploadDialog.getUploadDialog().isCanceled()) {
+                        fixed();
+                    }
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                }
+            });
+
         }
     }
 }
