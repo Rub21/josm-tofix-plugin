@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -51,7 +53,8 @@ import org.openstreetmap.josm.tools.Shortcut;
  */
 public class TofixDialog extends ToggleDialog implements ActionListener {
 
-    // private final SideButton editButton;
+    boolean validator;
+// private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
     private final SideButton noterrorButton;
@@ -440,6 +443,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void eventFixed() {
+        validator=false;
         if (!Main.main.getCurrentDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             skip();
@@ -447,9 +451,30 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
             Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
             uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
-            if (!UploadDialog.getUploadDialog().isCanceled()) {
+            UploadDialog.getUploadDialog().addComponentListener(new ComponentListener() {
+
+                @Override
+                public void componentResized(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+                    validator = true;
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+                }
+            });
+
+            if (validator==true && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
             }
+
         }
     }
 }
