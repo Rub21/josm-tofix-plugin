@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
@@ -30,9 +32,10 @@ public class TofixLayer extends Layer implements ActionListener {
     List<List<Node>> list_list_nodes;
     List<Node> list_nodes;
     String type = "";
+    float width;
 
     public TofixLayer(String name) {
-        super(name);      
+        super(name);
     }
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
@@ -71,8 +74,15 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
+        Stroke ss = g.getStroke();
+        if (MapRendererFactory.getInstance().isWireframeMapRendererActive()) {
+            width = 1f;
+        } else {
+            width = 5f;
+        }
+
         g.setColor(new Color(254, 30, 123));
-        g.setStroke(new BasicStroke((float) 5));
+        g.setStroke(new BasicStroke((float) width));
         if (type.equals("draw_node")) {
             Point pnt = mv.getPoint(latLon);
             g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
@@ -90,8 +100,7 @@ public class TofixLayer extends Layer implements ActionListener {
                 g.drawOval(pnt.x - 10, pnt.y - 10, 20, 20);
             }
         }
-
-//add for others ways
+        g.setStroke(ss);
     }
 
     @Override
@@ -120,5 +129,6 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void mergeFrom(Layer layer) {
+
     }
 }

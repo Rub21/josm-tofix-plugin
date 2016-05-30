@@ -10,8 +10,10 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -23,13 +25,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
+import javax.swing.event.MouseInputListener;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.APIDataSet;
+import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
+import org.openstreetmap.josm.gui.dialogs.MapPaintDialog;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
@@ -443,7 +448,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void eventFixed() {
-        validator=false;
+        validator = false;
         if (!Main.main.getCurrentDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             skip();
@@ -471,10 +476,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             });
 
-            if (validator==true && !UploadDialog.getUploadDialog().isCanceled()) {
+            if (validator == true && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
             }
 
         }
     }
+
 }

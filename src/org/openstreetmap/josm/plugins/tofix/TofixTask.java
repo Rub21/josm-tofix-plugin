@@ -200,5 +200,6 @@ public class TofixTask {
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
             Main.main.addLayer(tofixLayer);
         }
-    }
+    }   
+
 }
