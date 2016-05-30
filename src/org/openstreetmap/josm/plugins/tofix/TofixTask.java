@@ -201,4 +201,9 @@ public class TofixTask {
             Main.main.addLayer(tofixLayer);
         }
     }
+
+    public void wireframeTask(float fl) {
+        tofixLayer.paintWidth(fl);
+    }
+
 }
