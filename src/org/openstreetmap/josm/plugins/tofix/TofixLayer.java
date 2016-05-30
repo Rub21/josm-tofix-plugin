@@ -31,7 +31,7 @@ public class TofixLayer extends Layer implements ActionListener {
     List<List<Node>> list_list_nodes;
     List<Node> list_nodes;
     String type = "";
-    float width=5f;
+    float width;
 
     public TofixLayer(String name) {
         super(name);      
@@ -73,11 +73,13 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
+       
         if (MapRendererFactory.getInstance().isWireframeMapRendererActive()) {
             width=1f;
         }else{
             width=5f;
         }
+       
         g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) width));
         if (type.equals("draw_node")) {
@@ -126,9 +128,5 @@ public class TofixLayer extends Layer implements ActionListener {
     @Override
     public void mergeFrom(Layer layer) {
         
-    }
-    
-    public void paintWidth(float fl){
-        width=fl;
-    }
+    }   
 }

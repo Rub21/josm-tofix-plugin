@@ -200,10 +200,6 @@ public class TofixTask {
         if (!Main.map.mapView.hasLayer(tofixLayer)) {
             Main.main.addLayer(tofixLayer);
         }
-    }
-
-    public void wireframeTask(float fl) {
-        tofixLayer.paintWidth(fl);
-    }
+    }   
 
 }

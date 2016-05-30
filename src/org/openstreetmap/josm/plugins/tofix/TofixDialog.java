@@ -34,6 +34,7 @@ import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
+import org.openstreetmap.josm.gui.dialogs.MapPaintDialog;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
@@ -295,8 +296,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
 
         }
-
-        wireframe();
     }
 
     public void msg() {
@@ -484,26 +483,4 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
-    private void wireframe() {
-
-        Main.map.mapView.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (MapRendererFactory.getInstance().isWireframeMapRendererActive()) {
-                    tofixTask.wireframeTask(1f);
-                } else {
-                    tofixTask.wireframeTask(5f);
-                }                
-            }
-        });
-    }
 }
