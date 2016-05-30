@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class TofixLayer extends Layer implements ActionListener {
     float width;
 
     public TofixLayer(String name) {
-        super(name);      
+        super(name);
     }
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
@@ -73,13 +74,13 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
-       
+        Stroke ss = g.getStroke();
         if (MapRendererFactory.getInstance().isWireframeMapRendererActive()) {
-            width=1f;
-        }else{
-            width=5f;
+            width = 1f;
+        } else {
+            width = 5f;
         }
-       
+
         g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) width));
         if (type.equals("draw_node")) {
@@ -99,6 +100,7 @@ public class TofixLayer extends Layer implements ActionListener {
                 g.drawOval(pnt.x - 10, pnt.y - 10, 20, 20);
             }
         }
+        g.setStroke(ss);
     }
 
     @Override
@@ -127,6 +129,6 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public void mergeFrom(Layer layer) {
-        
-    }   
+
+    }
 }
