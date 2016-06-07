@@ -10,10 +10,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -25,16 +23,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
-import javax.swing.event.MouseInputListener;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.APIDataSet;
-import org.openstreetmap.josm.data.osm.visitor.paint.MapRendererFactory;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
-import org.openstreetmap.josm.gui.dialogs.MapPaintDialog;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
@@ -413,10 +408,14 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         switch (item.getStatus()) {
             case 200:
                 mainAccessToTask.setAccess(true);
-                if (checkboxStatusLayer) {
-                    tofixTask.deleteLayer();
-                }
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
+                if (checkboxStatusLayer) {
+                    try {
+                        tofixTask.deleteLayer();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 edit();
                 break;
             case 410:
@@ -453,9 +452,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             new Notification(tr("No change to upload!")).show();
             skip();
         } else {
+
             APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
             Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-            uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
             UploadDialog.getUploadDialog().addComponentListener(new ComponentListener() {
 
                 @Override
@@ -475,12 +474,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 public void componentHidden(ComponentEvent e) {
                 }
             });
-
+            uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
             if (validator == true && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
             }
-
         }
     }
-
 }

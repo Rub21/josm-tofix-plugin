@@ -77,7 +77,7 @@ public class TofixTask {
 
     public void deleteLayer() {
         while (Main.main.hasEditLayer()) {
-            Main.main.removeLayer(Main.main.getEditLayer());
+                Main.main.removeLayer(Main.main.getEditLayer());
         }
     }
 
