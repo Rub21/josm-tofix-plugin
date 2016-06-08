@@ -10,6 +10,7 @@ import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.io.UploadDialog;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemKeeprightBean;
@@ -76,8 +77,11 @@ public class TofixTask {
     }
 
     public void deleteLayer() {
-        while (Main.main.hasEditLayer()) {
-                Main.main.removeLayer(Main.main.getEditLayer());
+//        while (Main.main.hasEditLayer()) {
+//                Main.main.removeLayer(Main.main.getEditLayer());
+//        }
+         for(OsmDataLayer la : Main.map.mapView.getLayersOfType(OsmDataLayer.class)){
+            Main.map.mapView.removeLayer(la);
         }
     }
 
