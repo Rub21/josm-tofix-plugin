@@ -80,7 +80,7 @@ public class TofixTask {
 //        while (Main.main.hasEditLayer()) {
 //                Main.main.removeLayer(Main.main.getEditLayer());
 //        }
-         for(OsmDataLayer la : Main.map.mapView.getLayersOfType(OsmDataLayer.class)){
+         for(OsmDataLayer la : Main.map.mapView.getLayersOfType(OsmDataLayer.class)){           
             Main.map.mapView.removeLayer(la);
         }
     }

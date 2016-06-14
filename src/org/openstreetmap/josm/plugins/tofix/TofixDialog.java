@@ -31,8 +31,8 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.gui.io.UploadDialog;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
+import org.openstreetmap.josm.gui.io.*;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
@@ -401,7 +401,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         get_new_item();
     }
-
+    
+    
     private void get_new_item() {
         item.setStatus(0);
         itemController.setAccessToTask(mainAccessToTask);
@@ -410,18 +411,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             case 200:
                 mainAccessToTask.setAccess(true);
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
-                edit();
-                if (checkboxStatusLayer) {
-                    try {
-                        tofixTask.deleteLayer();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                edit();                
                 break;
             case 410:
                 mainAccessToTask.setAccess(false);
-                tofixTask.task_complete(item, mainAccessToTask);
+                tofixTask.task_complete(item, mainAccessToTask);                
                 break;
             case 503:
                 mainAccessToTask.setAccess(false);
@@ -472,11 +466,19 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 public void componentHidden(ComponentEvent e) {
                 }
             });
-            APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
             Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-            uploadAction.uploadData(Main.map.mapView.getEditLayer(), apiData);
+            APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
+            OsmDataLayer odl = Main.main.getEditLayer();
+            uploadAction.uploadData(odl, apiData);
             if (validator == true && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
+                if (checkboxStatusLayer) {
+//                    try {
+                        tofixTask.deleteLayer();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+                }
             }
         }
     }
