@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Hashtable;
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
@@ -26,6 +27,7 @@ import javax.swing.JTabbedPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.APIDataSet;
+import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
@@ -472,12 +474,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             uploadAction.uploadData(odl, apiData);
             if (validator == true && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
+                Main.main.getEditLayer().data.clear();
                 if (checkboxStatusLayer) {
-//                    try {
                         tofixTask.deleteLayer();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                 }
             }
         }
