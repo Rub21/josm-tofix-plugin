@@ -77,12 +77,12 @@ public class TofixTask {
     }
 
     public void deleteLayer() {
-//        while (Main.main.hasEditLayer()) {
-//                Main.main.removeLayer(Main.main.getEditLayer());
-//        }
-         for(OsmDataLayer la : Main.map.mapView.getLayersOfType(OsmDataLayer.class)){           
-            Main.map.mapView.removeLayer(la);
+        while (Main.main.hasEditLayer()) {
+                Main.main.removeLayer(Main.main.getEditLayer());
         }
+//         for(OsmDataLayer la : Main.map.mapView.getLayersOfType(OsmDataLayer.class)){           
+//            Main.map.mapView.removeLayer(la);
+//        }
     }
 
     private AccessToTask work_unconnected(ItemUnconnectedBean itemUnconnectedBean, AccessToTask accessToTask, double size) {
