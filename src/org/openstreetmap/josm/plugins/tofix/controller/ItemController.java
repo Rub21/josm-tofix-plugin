@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.tofix.controller;
 
 import java.io.StringReader;
+import java.net.HttpURLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
@@ -53,7 +54,7 @@ public class ItemController {
             JsonObject object = reader.readObject();
             //if the structure change , we need to customize this site, to easy resolve , but we need to standardize the source in each task.
             switch (responseBean.getStatus()) {
-                case 200:
+                case HttpURLConnection.HTTP_OK:
                     if (accessToTask.getTask_source().equals("unconnected")) {
                         //https://github.com/osmlab/to-fix/wiki/Task%20sources#unconnected-minor
                         ItemUnconnectedBean iub = new ItemUnconnectedBean();

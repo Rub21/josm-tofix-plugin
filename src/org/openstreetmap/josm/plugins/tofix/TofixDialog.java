@@ -1,12 +1,14 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -14,8 +16,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Hashtable;
+
 import javax.swing.AbstractAction;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -24,16 +26,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.APIDataSet;
-import org.openstreetmap.josm.data.osm.IPrimitive;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
-import org.openstreetmap.josm.gui.io.*;
+import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
@@ -45,7 +47,6 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
-import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -154,7 +155,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
-                putValue(SMALL_ICON, ImageProvider.get("mapmode", "skip.png"));
+                new ImageProvider("mapmode", "skip").getResource().attachImageIcon(this);
                 putValue(SHORT_DESCRIPTION, tr("Skip Error"));
             }
 
@@ -173,7 +174,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         fixedButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Fixed"));
-                putValue(SMALL_ICON, ImageProvider.get("mapmode", "fixed.png"));
+                new ImageProvider("mapmode", "fixed").getResource().attachImageIcon(this);
                 putValue(SHORT_DESCRIPTION, tr("Fixed Error"));
             }
 
@@ -193,7 +194,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         noterrorButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Not an error"));
-                putValue(SMALL_ICON, ImageProvider.get("mapmode", "noterror.png"));
+                new ImageProvider("mapmode", "noterror").getResource().attachImageIcon(this);
                 putValue(SHORT_DESCRIPTION, tr("Not an error"));
             }
 
@@ -222,7 +223,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         jcontenTasks.add(title_tasks);
 
         // JComboBox for each task
-        ArrayList<String> tasksList = new ArrayList<String>();
+        ArrayList<String> tasksList = new ArrayList<>();
         tasksList.add(tr("Select a task ..."));
 
         if (Status.isInternetReachable()) { //checkout  internet connection
@@ -245,15 +246,16 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             slider.setPaintTicks(true);
             slider.setPaintLabels(true);
             //slider.setLabelTable((slider.createStandardLabels(1)));
-            Hashtable<Integer, JLabel> table = new Hashtable<Integer, JLabel>();
+            Hashtable<Integer, JLabel> table = new Hashtable<>();
             table.put(1, new JLabel(tr("~.02")));
             table.put(3, new JLabel("~.20"));
             table.put(5, new JLabel("~.40"));
             slider.setLabelTable(table);
 
             slider.addChangeListener(new javax.swing.event.ChangeListener() {
+                @Override
                 public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                    zise = (slider.getValue() * 0.001);
+                    zise = slider.getValue() * 0.001;
                 }
             });
             panelslide.add(slider);
@@ -292,7 +294,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
             }
-
         }
     }
 
@@ -343,7 +344,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        JComboBox cb = (JComboBox) e.getSource();
+        JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
             mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getTitle());
             mainAccessToTask.setTask_id(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
@@ -422,7 +423,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             case 503:
                 mainAccessToTask.setAccess(false);
                 new Notification(tr("Maintenance server")).show();
-
                 break;
             case 520:
                 mainAccessToTask.setAccess(false);
@@ -449,34 +449,21 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             skip();
         } else {
             validator = false;
-            UploadDialog.getUploadDialog().addComponentListener(new ComponentListener() {
-
-                @Override
-                public void componentResized(ComponentEvent e) {
-                }
-
-                @Override
-                public void componentMoved(ComponentEvent e) {
-                }
-
+            UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
                 @Override
                 public void componentShown(ComponentEvent e) {
                     validator = true;
                 }
-
-                @Override
-                public void componentHidden(ComponentEvent e) {
-                }
             });
-            Main.map.mapView.getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
+            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
             APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
             OsmDataLayer odl = Main.main.getEditLayer();
             uploadAction.uploadData(odl, apiData);
-            if (validator == true && !UploadDialog.getUploadDialog().isCanceled()) {
+            if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
                 Main.main.getEditLayer().data.clear();
                 if (checkboxStatusLayer) {
-                        tofixTask.deleteLayer();
+                    tofixTask.deleteLayer();
                 }
             }
         }

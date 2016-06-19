@@ -1,6 +1,7 @@
 package org.openstreetmap.josm.plugins.tofix.bean.items;
 
 import java.util.Arrays;
+
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 

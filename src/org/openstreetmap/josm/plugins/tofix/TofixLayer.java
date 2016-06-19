@@ -1,5 +1,7 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+import static org.openstreetmap.josm.tools.I18n.tr;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,9 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
+
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -23,7 +27,6 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.Layer;
-import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 public class TofixLayer extends Layer implements ActionListener {
@@ -34,10 +37,15 @@ public class TofixLayer extends Layer implements ActionListener {
     String type = "";
     float width;
 
+    final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
+    
+    /**
+     * Constructs a new {@code TofixLayer}.
+     * @param name layer name
+     */
     public TofixLayer(String name) {
         super(name);
     }
-    final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
 
     @Override
     public Icon getIcon() {
@@ -83,10 +91,10 @@ public class TofixLayer extends Layer implements ActionListener {
 
         g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) width));
-        if (type.equals("draw_node")) {
+        if ("draw_node".equals(type)) {
             Point pnt = mv.getPoint(latLon);
             g.drawOval(pnt.x - 25, pnt.y - 25, 50, 50);
-        } else if (type.equals("draw_line")) {
+        } else if ("draw_line".equals(type)) {
             for (List<Node> l_nodes : list_list_nodes) {
                 for (int i = 0; i < l_nodes.size() - 1; i++) {
                     Point pnt1 = mv.getPoint(l_nodes.get(i).getCoor());
@@ -94,7 +102,7 @@ public class TofixLayer extends Layer implements ActionListener {
                     g.drawLine(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
                 }
             }
-        } else if (type.equals("draw_nodes")) {
+        } else if ("draw_nodes".equals(type)) {
             for (Node node : list_nodes) {
                 Point pnt = mv.getPoint(node.getCoor());
                 g.drawOval(pnt.x - 10, pnt.y - 10, 20, 20);

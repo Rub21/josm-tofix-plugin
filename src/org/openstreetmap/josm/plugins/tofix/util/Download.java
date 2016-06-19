@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
@@ -22,13 +23,10 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
  */
 public class Download {
 
-    private static Future<?> future;
-
-    public static void Download(final DownloadOsmTask task, Bounds bounds, final Long osm_obj_id) {
+    public static void download(final DownloadOsmTask task, Bounds bounds, final Long osm_obj_id) {
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
         Runnable runAfterTask = new Runnable() {
-
             @Override
             public void run() {
                 try {
