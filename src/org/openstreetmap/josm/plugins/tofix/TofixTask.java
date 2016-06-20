@@ -26,6 +26,11 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUsaBuildingsBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
 import static org.openstreetmap.josm.tools.I18n.tr;
+import java.util.Collection;
+import javax.swing.Icon;
+import org.openstreetmap.josm.command.Command;
+import org.openstreetmap.josm.command.SequenceCommand;
+import org.openstreetmap.josm.tools.ImageProvider;
 
 /**
  *
