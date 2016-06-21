@@ -1,8 +1,8 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
-import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.net.*;
+import java.io.IOException;
 
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.tools.HttpClient;
@@ -15,7 +15,7 @@ import org.openstreetmap.josm.tools.HttpClient.Response;
 public class Request {
 
     public static ResponseBean sendPOST(String url) throws IOException {
-        Response resp = HttpClient.create(new URL(url), "POST").connect();
+        Response resp = HttpClient.create(new URL(url), "POST").setRequestBody(url.getBytes()).connect();
         //Crear un ResponseBean para que regrese el String y el status de la peticion.
         ResponseBean responseBean = new ResponseBean();
         responseBean.setStatus(resp.getResponseCode());//agregar el estatus
@@ -36,6 +36,7 @@ public class Request {
         Response response = HttpClient.create(new URL(url)).connect();
         String result = response.fetchContent();
         response.disconnect();
+
         return result;
     }
 }

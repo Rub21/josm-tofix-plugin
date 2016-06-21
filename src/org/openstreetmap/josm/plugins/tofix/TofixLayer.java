@@ -49,7 +49,7 @@ public class TofixLayer extends Layer implements ActionListener {
 
     @Override
     public Icon getIcon() {
-        return ImageProvider.get("layer", "marker_small");
+        return ImageProvider.get("icontofix_layer");
     }
 
     @Override
