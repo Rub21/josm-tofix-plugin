@@ -444,7 +444,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void eventFixed() {
-        if (!Main.main.getCurrentDataSet().isModified()) {
+        if (!Main.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             skip();
         } else {
@@ -456,12 +456,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             });
             Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-            APIDataSet apiData = new APIDataSet(Main.main.getCurrentDataSet());
-            OsmDataLayer odl = Main.main.getEditLayer();
+            APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
+            OsmDataLayer odl = Main.getLayerManager().getEditLayer();
             uploadAction.uploadData(odl, apiData);
             if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
                 fixed();
-                Main.main.getEditLayer().data.clear();
+                Main.getLayerManager().getEditLayer().data.clear();
                 if (checkboxStatusLayer) {
                     tofixTask.deleteLayer();
                 }

@@ -78,8 +78,8 @@ public class TofixTask {
     }
 
     public void deleteLayer() {
-        while (Main.main.hasEditLayer()) {
-            Main.main.removeLayer(Main.main.getEditLayer());
+        while (Main.getLayerManager().getEditLayer() != null) {
+            Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
         }
     }
 
@@ -198,7 +198,7 @@ public class TofixTask {
 
     public final void checkTofixLayer() {
         if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.main.addLayer(tofixLayer);
+            Main.getLayerManager().addLayer(tofixLayer);
         }
     }   
 }

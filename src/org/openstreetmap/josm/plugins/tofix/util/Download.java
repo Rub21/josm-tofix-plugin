@@ -42,7 +42,7 @@ public class Download {
                         selection.add(node);
                         selection.add(relation);
                         //make selection ob objects
-                        Main.main.getCurrentDataSet().setSelected(selection);
+                        Main.getLayerManager().getEditDataSet().setSelected(selection);
                     }
                 } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
