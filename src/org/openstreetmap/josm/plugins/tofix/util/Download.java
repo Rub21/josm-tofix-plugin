@@ -36,13 +36,23 @@ public class Download {
                         Node node = new Node(osm_obj_id);
                         Relation relation = new Relation(osm_obj_id);
                         Way way = new Way(osm_obj_id);
+                        
                         //create list of objects
                         List<OsmPrimitive> selection = new ArrayList<>();
-                        selection.add(way);
-                        selection.add(node);
-                        selection.add(relation);
-                        //make selection ob objects
-                        Main.getLayerManager().getEditDataSet().setSelected(selection);
+                        
+                        if (node != null && Main.getLayerManager().getEditLayer().data.containsNode(node)) {
+                            selection.add(node);
+                            Main.getLayerManager().getEditDataSet().setSelected(selection);
+
+                        } else if (way != null && Main.getLayerManager().getEditLayer().data.containsWay(way)) {
+                            selection.add(way);
+                            Main.getLayerManager().getEditDataSet().setSelected(selection);
+
+                        } else if (relation != null && Main.getLayerManager().getEditLayer().data.containsRelation(relation)) {
+                            selection.add(relation);
+                            Main.getLayerManager().getEditDataSet().setSelected(selection);
+
+                        }
                     }
                 } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(TofixDialog.class.getName()).log(Level.SEVERE, null, ex);
