@@ -404,21 +404,20 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         get_new_item();
     }
-    
-    
+
     private void get_new_item() {
         item.setStatus(0);
         itemController.setAccessToTask(mainAccessToTask);
         item = itemController.getItem();
         switch (item.getStatus()) {
             case 200:
-                mainAccessToTask.setAccess(true);
+                mainAccessToTask.setAccess(true);          
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
-                edit();                
+                edit();
                 break;
             case 410:
                 mainAccessToTask.setAccess(false);
-                tofixTask.task_complete(item, mainAccessToTask);                
+                tofixTask.task_complete(item, mainAccessToTask);
                 break;
             case 503:
                 mainAccessToTask.setAccess(false);

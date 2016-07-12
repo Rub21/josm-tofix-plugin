@@ -183,7 +183,8 @@ public class ItemController {
                         ItemOsmlintMultipoint iom = new ItemOsmlintMultipoint();
                         iom.setKey(object.getString("key"));
                         JsonObject value = object.getJsonObject("value");
-                        if (value.containsKey("geom")) {
+                        if (value.containsKey("way") && value.containsKey("geom")) {
+                            iom.setWay(Long.parseLong(value.getString("way")));
                             iom.setGeom(value.getString("geom"));
                             item.setItemOsmlintMultipoint(iom);
                         } else {
