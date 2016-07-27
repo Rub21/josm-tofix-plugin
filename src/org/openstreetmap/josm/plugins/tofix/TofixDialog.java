@@ -50,6 +50,19 @@ import org.openstreetmap.josm.plugins.tofix.util.Status;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.ProjectionBounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.gui.download.BoundingBoxSelection;
+import static org.openstreetmap.josm.tools.Utils.max;
+import java.awt.geom.Area;
+import org.openstreetmap.josm.data.osm.DataSet;
 
 /**
  *
@@ -411,7 +424,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         item = itemController.getItem();
         switch (item.getStatus()) {
             case 200:
-                mainAccessToTask.setAccess(true);          
+                mainAccessToTask.setAccess(true);
                 mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
                 edit();
                 break;
@@ -447,24 +460,44 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             new Notification(tr("No change to upload!")).show();
             skip();
         } else {
-            validator = false;
-            UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentShown(ComponentEvent e) {
-                    validator = true;
+            if (boundingsdistance() < 1.0) {
+                validator = false;
+                UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
+                    @Override
+                    public void componentShown(ComponentEvent e) {
+                        validator = true;
+                    }
+                });
+                Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
+                APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
+                OsmDataLayer odl = Main.getLayerManager().getEditLayer();
+
+                uploadAction.uploadData(odl, apiData);
+                if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
+                    fixed();
+                    Main.getLayerManager().getEditLayer().data.clear();
+                    if (checkboxStatusLayer) {
+                        tofixTask.deleteLayer();
+                    }
                 }
-            });
-            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-            APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
-            OsmDataLayer odl = Main.getLayerManager().getEditLayer();
-            uploadAction.uploadData(odl, apiData);
-            if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
-                fixed();
-                Main.getLayerManager().getEditLayer().data.clear();
-                if (checkboxStatusLayer) {
-                    tofixTask.deleteLayer();
-                }
+            } else {
+                new Notification(tr("The bounding box is too big.")).show();
+                return;
             }
         }
+    }
+
+    private double boundingsdistance() {
+        DataSet ds = Main.getLayerManager().getEditLayer().data;
+        ArrayList<Double> distancelist = new ArrayList<>();
+        distancelist.add(0.0);
+
+        for (int i = 0; i < ds.getDataSourceBounds().size(); i++) {
+            if (ds.getDataSourceBounds().size() - 1 != i) {
+                distancelist.add(ds.getDataSourceBounds().get(i).getCenter().distance(ds.getDataSourceBounds().get(i + 1).getCenter()));
+            }
+        }
+        Double d = Collections.max(distancelist);
+        return d;
     }
 }
