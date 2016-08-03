@@ -14,7 +14,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
@@ -51,17 +50,8 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.PriorityQueue;
 
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.ProjectionBounds;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.gui.download.BoundingBoxSelection;
-import static org.openstreetmap.josm.tools.Utils.max;
-import java.awt.geom.Area;
 import org.openstreetmap.josm.data.osm.DataSet;
 
 /**
