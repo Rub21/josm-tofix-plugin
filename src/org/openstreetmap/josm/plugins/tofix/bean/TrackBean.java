@@ -17,7 +17,7 @@ public class TrackBean {
     }
    
     //Atributos
-    public class AttributesBean {
+    public static class AttributesBean {
 
         String user;
         String action;
