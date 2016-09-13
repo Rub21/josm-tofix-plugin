@@ -15,11 +15,12 @@ import org.openstreetmap.josm.tools.HttpClient.Response;
 public class Request {
 
     public static ResponseBean sendPOST(String url) throws IOException {
-        Response resp = HttpClient.create(new URL(url), "POST").setRequestBody(url.getBytes()).connect();
+        Response resp = HttpClient.create(new URL(url), "POST").setRequestBody(url.getBytes(StandardCharsets.UTF_8)).connect();
         //Crear un ResponseBean para que regrese el String y el status de la peticion.
         ResponseBean responseBean = new ResponseBean();
         responseBean.setStatus(resp.getResponseCode());//agregar el estatus
         responseBean.setValue(resp.fetchContent());//agrega el valor de la respuesta
+
         resp.disconnect();
         return responseBean;
     }
@@ -36,7 +37,6 @@ public class Request {
         Response response = HttpClient.create(new URL(url)).connect();
         String result = response.fetchContent();
         response.disconnect();
-
         return result;
     }
 }
