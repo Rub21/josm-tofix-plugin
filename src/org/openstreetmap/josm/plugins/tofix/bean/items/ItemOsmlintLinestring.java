@@ -10,26 +10,7 @@ import org.openstreetmap.josm.data.osm.Node;
  *
  * @author samely
  */
-public class ItemOsmlintLinestring extends ItemTask {
-
-    private Long way;
-    private String geom;
-
-    public Long getWay() {
-        return way;
-    }
-
-    public void setWay(Long way) {
-        this.way = way;
-    }
-
-    public String getGeom() {
-        return geom;
-    }
-
-    public void setGeom(String geom) {
-        this.geom = geom;
-    }
+public class ItemOsmlintLinestring extends AbstractItemOsmlint {
 
     public List<List<Node>> get_nodes() {
         String geostring = getGeom();
