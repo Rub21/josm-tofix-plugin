@@ -10,17 +10,7 @@ import org.openstreetmap.josm.data.osm.Node;
  *
  * @author ruben
  */
-public class ItemKrakatoaBean extends ItemTask {
-
-    private String geom;
-
-    public String getGeom() {
-        return geom;
-    }
-
-    public void setGeom(String geom) {
-        this.geom = geom;
-    }
+public class ItemKrakatoaBean extends AbstractItemGeom {
 
     public List<Node> get_nodes() {
         String geoString = getGeom();

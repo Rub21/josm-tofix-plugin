@@ -10,10 +10,9 @@ import org.openstreetmap.josm.data.osm.Node;
  *
  * @author ruben
  */
-public class ItemSmallcomponents extends ItemTask {
+public class ItemSmallcomponents extends AbstractItemGeom {
 
     private String nothing;
-    private String geom;
 
     public String getNothing() {
         return nothing;
@@ -21,14 +20,6 @@ public class ItemSmallcomponents extends ItemTask {
 
     public void setNothing(String nothing) {
         this.nothing = nothing;
-    }
-
-    public String getGeom() {
-        return geom;
-    }
-
-    public void setGeom(String geom) {
-        this.geom = geom;
     }
 
     public List<List<Node>> get_nodes() {

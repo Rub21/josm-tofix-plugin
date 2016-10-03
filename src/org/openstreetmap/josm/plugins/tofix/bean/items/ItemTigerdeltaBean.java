@@ -10,18 +10,7 @@ import org.openstreetmap.josm.data.osm.Node;
  *
  * @author ruben
  */
-public class ItemTigerdeltaBean extends ItemTask{
-
-    private String geom;
-
-
-    public String getGeom() {
-        return geom;
-    }
-
-    public void setGeom(String geom) {
-        this.geom = geom;
-    }
+public class ItemTigerdeltaBean extends AbstractItemGeom {
 
     public List<List<Node>> get_nodes() {
         String geostring = getGeom();

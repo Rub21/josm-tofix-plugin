@@ -4,10 +4,9 @@ package org.openstreetmap.josm.plugins.tofix.bean.items;
  *
  * @author samely
  */
-public abstract class AbstractItemOsmlint extends ItemTask {
+public abstract class AbstractItemOsmlint extends AbstractItemGeom {
 
     private Long way;
-    private String geom;
 
     public Long getWay() {
         return way;
@@ -15,13 +14,5 @@ public abstract class AbstractItemOsmlint extends ItemTask {
 
     public void setWay(Long way) {
         this.way = way;
-    }
-
-    public String getGeom() {
-        return geom;
-    }
-
-    public void setGeom(String geom) {
-        this.geom = geom;
     }
 }
