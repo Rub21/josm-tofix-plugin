@@ -231,6 +231,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
+
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                 tasksList.add(listTaskBean.getTasks().get(i).getTitle());
             }
@@ -449,31 +450,29 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (!Main.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             skip();
-        } else {
-            if (boundingsdistance() < 1.0) {
-                validator = false;
-                UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
-                    @Override
-                    public void componentShown(ComponentEvent e) {
-                        validator = true;
-                    }
-                });
-                Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-                APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
-                OsmDataLayer odl = Main.getLayerManager().getEditLayer();
-
-                uploadAction.uploadData(odl, apiData);
-                if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
-                    fixed();
-                    Main.getLayerManager().getEditLayer().data.clear();
-                    if (checkboxStatusLayer) {
-                        tofixTask.deleteLayer();
-                    }
+        } else if (boundingsdistance() < 1.0) {
+            validator = false;
+            UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentShown(ComponentEvent e) {
+                    validator = true;
                 }
-            } else {
-                new Notification(tr("The bounding box is too big.")).show();
-                return;
+            });
+            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
+            APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
+            OsmDataLayer odl = Main.getLayerManager().getEditLayer();
+
+            uploadAction.uploadData(odl, apiData);
+            if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
+                fixed();
+                Main.getLayerManager().getEditLayer().data.clear();
+                if (checkboxStatusLayer) {
+                    tofixTask.deleteLayer();
+                }
             }
+        } else {
+            new Notification(tr("The bounding box is too big.")).show();
+            return;
         }
     }
 

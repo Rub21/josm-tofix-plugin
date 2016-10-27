@@ -32,7 +32,8 @@ public class AccessToTask {
     }
 
     public String getTask_url() {
-        String url = this.getHost() + "task/" + this.getTask_id();
+        System.out.println("Entro a gettaks_url");
+        String url = this.getHost() + "tasks/" + this.getTask_id();        
         return url;
     }
 
@@ -61,15 +62,19 @@ public class AccessToTask {
     }
 
     public String getTrack_url() {
-        return getHost() + "track/" + getTask_id();
+        System.out.println("entro a get track_url");
+        return getHost() + "tasks" + getTask_id(); // return getHost() + "track/" + getTask_id(); 
     }
 
     public String getFixed_url() {
-        return getHost() + "fixed/" + getTask_id();
+        System.out.println("Entro a get fixed url");
+        return getHost() + "tasks/" + getTask_id()+"/items/action/fixed"; //return getHost() + "fixed/" + getTask_id()
     }
 
     public String getNoterror_url() {
-        return getHost() + "noterror/" + getTask_id();
+        System.out.println("Entro a not errir url");
+        return getHost() + "tasks/" + getTask_id()+"/items/action/noterror";
+         // return getHost() + "noterror/" + getTask_id(); 
     }
 
     public Long getOsm_obj_id() {

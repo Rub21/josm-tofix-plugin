@@ -28,6 +28,7 @@ public class ListTaskController {
     /**
      * Constructs a new {@code ListTaskController}.
      */
+    
     public ListTaskController() {
         this.url = Config.HOST + "tasks";
     }
