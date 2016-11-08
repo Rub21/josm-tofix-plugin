@@ -233,7 +233,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             listTaskBean = listTaskController.getListTasksBean();
 
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-                tasksList.add(listTaskBean.getTasks().get(i).getTitle());
+                tasksList.add(listTaskBean.getTasks().get(i).getName());
             }
             JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
             valuePanel.add(jcomboBox);
@@ -287,7 +287,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButton.setEnabled(false);
             } else {
                 // Request data
-                mainAccessToTask = new AccessToTask("mixedlayer", "keepright", false);//start mixedlayer task by default
+                mainAccessToTask = new AccessToTask("mixedlayer", false);//start mixedlayer task by default
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
@@ -350,10 +350,20 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getTitle());
-            mainAccessToTask.setTask_id(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
-            mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
-            mainAccessToTask.setTask_comment(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getComment());
+            mainAccessToTask.setTask_idtask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIdtask());
+            mainAccessToTask.setTask_isCompleted(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsCompleted());
+            //mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
+            mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getName());
+            mainAccessToTask.setTask_description(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDescription());
+            mainAccessToTask.setTask_updated(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getUpdated());
+            mainAccessToTask.setTask_changesetComment(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getChangesetComment());
+            mainAccessToTask.setTask_date(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDate());
+            mainAccessToTask.setTask_edit(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getEdit());
+            mainAccessToTask.setTask_fixed(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getFixed());
+            mainAccessToTask.setTask_skip(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSkip());
+            mainAccessToTask.setTask_items(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getItems());
+            mainAccessToTask.setTask_noterror(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getNoterror());
+
             get_new_item();
             skipButton.setEnabled(true);
             fixedButton.setEnabled(true);
@@ -458,7 +468,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                     validator = true;
                 }
             });
-            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
+            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
             APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
             OsmDataLayer odl = Main.getLayerManager().getEditLayer();
 

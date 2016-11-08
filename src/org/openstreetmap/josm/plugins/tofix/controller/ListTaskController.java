@@ -28,7 +28,6 @@ public class ListTaskController {
     /**
      * Constructs a new {@code ListTaskController}.
      */
-    
     public ListTaskController() {
         this.url = Config.HOST + "tasks";
     }
@@ -38,15 +37,24 @@ public class ListTaskController {
         try (JsonReader jsonReader = Json.createReader(new StringReader(Request.sendGET(url)))) {
             JsonObject jsonObject = jsonReader.readObject();
             JsonArray jsonArray = jsonObject.getJsonArray("tasks");
+           // System.out.println("Starting the loop for reading elements");
             for (JsonValue value : jsonArray) {
                 TaskBean taskBean = new TaskBean();
                 try (JsonReader jsonReader2 = Json.createReader(new StringReader(value.toString()))) {
                     JsonObject jsontask = jsonReader2.readObject();
-                    taskBean.setId(jsontask.getString("id"));
-                    taskBean.setTitle(jsontask.getString("title"));
-                    taskBean.setSource(jsontask.getString("source"));
-                    taskBean.setStatus(jsontask.getBoolean("status"));
-                    taskBean.setComment(jsontask.getString("changeset_comment"));
+                    //System.out.println("This is the value: "+ jsontask.getJsonString("id"));
+                    taskBean.setIdtask(jsontask.getString("idtask"));
+                    taskBean.setIsCompleted(jsontask.getBoolean("isCompleted"));
+                    taskBean.setName(jsontask.getString("value.name"));
+                    taskBean.setDescription(jsontask.getString("value.description"));
+                    taskBean.setUpdated(jsontask.getString("value.updated"));
+                    taskBean.setChangesetComment(jsontask.getString("value.changesetComment"));
+                    taskBean.setDate(jsontask.getString("value.stats.date"));
+                    taskBean.setEdit(jsontask.getInt("value.stats.edit"));
+                    taskBean.setFixed(jsontask.getInt("value.stats.fixed"));
+                    taskBean.setSkip(jsontask.getInt("value.stats.skip"));
+                    taskBean.setItems(jsontask.getInt("value.stats.items"));
+                    taskBean.setNoterror(jsontask.getInt("value.stats.noterror"));                    
                 }
                 tasks.add(taskBean);
             }
