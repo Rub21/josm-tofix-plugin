@@ -18,6 +18,9 @@ public class TaskBean {
     private int skip;
     private int items;
     private int noterror;
+    
+    private String geometry;
+    
 
     public String getIdtask() {
         return idtask;
@@ -113,6 +116,14 @@ public class TaskBean {
 
     public void setNoterror(int noterror) {
         this.noterror = noterror;
+    }
+
+    public String getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(String geometry) {
+        this.geometry = geometry;
     }
 
     

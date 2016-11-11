@@ -13,7 +13,7 @@ import org.openstreetmap.josm.data.osm.Node;
 public class ItemKrakatoaBean extends AbstractItemGeom {
 
     public List<Node> get_nodes() {
-        String geoString = getGeom();
+        String geoString = getGeometry();
         List<Node> list = new LinkedList<>();
         String multipoint = geoString.substring(0, 10);
         if (multipoint.equalsIgnoreCase("MULTIPOINT")) {

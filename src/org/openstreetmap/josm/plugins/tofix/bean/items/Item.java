@@ -9,6 +9,7 @@ import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 public class Item {
 
     private int status;
+    private String type;
     private ItemKeeprightBean itemKeeprightBean;
     private ItemKrakatoaBean itemKrakatoaBean;
     private ItemUsaBuildingsBean itemUsabuildingsBean;
@@ -115,6 +116,14 @@ public class Item {
 
     public void setItemOsmlintLinestring(ItemOsmlintLinestring itemOsmlintLinestring) {
         this.itemOsmlintLinestring = itemOsmlintLinestring;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

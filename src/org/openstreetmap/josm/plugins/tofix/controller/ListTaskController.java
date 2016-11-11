@@ -29,32 +29,34 @@ public class ListTaskController {
      * Constructs a new {@code ListTaskController}.
      */
     public ListTaskController() {
-        this.url = Config.HOST + "tasks";
+        this.url = Config.HOST + "/tasks";
     }
 
     public ListTaskBean getListTasksBean() {
         List<TaskBean> tasks = new LinkedList<>();
+        System.out.println("Esto es el URL in listtaskcontroller: " + url);
         try (JsonReader jsonReader = Json.createReader(new StringReader(Request.sendGET(url)))) {
             JsonObject jsonObject = jsonReader.readObject();
             JsonArray jsonArray = jsonObject.getJsonArray("tasks");
-           // System.out.println("Starting the loop for reading elements");
             for (JsonValue value : jsonArray) {
                 TaskBean taskBean = new TaskBean();
                 try (JsonReader jsonReader2 = Json.createReader(new StringReader(value.toString()))) {
                     JsonObject jsontask = jsonReader2.readObject();
-                    //System.out.println("This is the value: "+ jsontask.getJsonString("id"));
+                    JsonObject value_jsontask = (JsonObject) jsontask.get("value");
+                    JsonObject stats_jsontask = (JsonObject) value_jsontask.get("stats");
+
                     taskBean.setIdtask(jsontask.getString("idtask"));
                     taskBean.setIsCompleted(jsontask.getBoolean("isCompleted"));
-                    taskBean.setName(jsontask.getString("value.name"));
-                    taskBean.setDescription(jsontask.getString("value.description"));
-                    taskBean.setUpdated(jsontask.getString("value.updated"));
-                    taskBean.setChangesetComment(jsontask.getString("value.changesetComment"));
-                    taskBean.setDate(jsontask.getString("value.stats.date"));
-                    taskBean.setEdit(jsontask.getInt("value.stats.edit"));
-                    taskBean.setFixed(jsontask.getInt("value.stats.fixed"));
-                    taskBean.setSkip(jsontask.getInt("value.stats.skip"));
-                    taskBean.setItems(jsontask.getInt("value.stats.items"));
-                    taskBean.setNoterror(jsontask.getInt("value.stats.noterror"));                    
+                    taskBean.setName(value_jsontask.getString("name"));
+                    taskBean.setDescription(value_jsontask.getString("description"));
+                    taskBean.setUpdated(value_jsontask.getJsonNumber("updated").toString());
+                    taskBean.setChangesetComment(value_jsontask.getString("changesetComment"));
+                    taskBean.setDate(stats_jsontask.getJsonNumber("date").toString());
+                    taskBean.setEdit(Integer.parseInt(stats_jsontask.getJsonNumber("edit").toString()));
+                    taskBean.setFixed(Integer.parseInt(stats_jsontask.getJsonNumber("fixed").toString()));
+                    taskBean.setSkip(Integer.parseInt(stats_jsontask.getJsonNumber("skip").toString()));
+                    taskBean.setItems(Integer.parseInt(stats_jsontask.getJsonNumber("items").toString()));
+                    taskBean.setNoterror(Integer.parseInt(stats_jsontask.getJsonNumber("noterror").toString()));
                 }
                 tasks.add(taskBean);
             }

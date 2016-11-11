@@ -10,6 +10,16 @@ public class ResponseBean {
     private int status;
     private String value;//String from server response 
 
+    public ResponseBean() {
+    }    
+
+    public ResponseBean(int status, String value) {
+        this.status = status;
+        this.value = value;
+    }
+    
+    
+
     public int getStatus() {
         return status;
     }

@@ -23,7 +23,7 @@ public class ItemSmallcomponents extends AbstractItemGeom {
     }
 
     public List<List<Node>> get_nodes() {
-        String geostring = getGeom();
+        String geostring = getGeometry();
         geostring = geostring.replace("MULTILINESTRING (", "").replace("))", ")").replace(", ", ",");
         geostring = geostring.replace("LINESTRING (", "(");
 

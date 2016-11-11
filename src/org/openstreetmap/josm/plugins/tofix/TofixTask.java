@@ -41,7 +41,8 @@ public class TofixTask {
     MapView mv = null;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download       
+    public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download    
+
 //        if (accessToTask.getTask_source().equals("unconnected")) {
 //            accessToTask = work_unconnected(item.getItemUnconnectedBean(), accessToTask, size);
 //        }
@@ -63,15 +64,15 @@ public class TofixTask {
 //        if (accessToTask.getTask_source().equals("components")) {
 //            accessToTask = work_smallcomponents(item.getItemSmallcomponents(), accessToTask, size);
 //        }
-//        if (accessToTask.getTask_source().equals("osmlint-point")) {
-//            accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
-//        }
-//        if (accessToTask.getTask_source().equals("osmlint-linestring")) {
-//            accessToTask = work_osmlintlinestring(item.getItemOsmlintLinestring(), accessToTask, size);
-//        }
-//        if (accessToTask.getTask_source().equals("osmlint-multipoint")) {
-//            accessToTask = work_osmlintmultipoint(item.getItemOsmlintMultipoint(), accessToTask, size);
-//        }
+        if ("Point".equals(item.getType())) {
+            accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
+        }
+        if ("LineString".equals(item.getType())) {
+            accessToTask = work_osmlintlinestring(item.getItemOsmlintLinestring(), accessToTask, size);
+        }
+        if ("MultiPoint".equals(item.getType())) {
+            accessToTask = work_osmlintmultipoint(item.getItemOsmlintMultipoint(), accessToTask, size);
+        }
 
         UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
         return accessToTask;
@@ -156,37 +157,44 @@ public class TofixTask {
 //        return accessToTask;
 //    }
 //
-//    private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
-//        accessToTask.setKey(itemOsmlintPoint.getKey());
-//        node = itemOsmlintPoint.get_node();
-//        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
-//        checkTofixLayer();
-//        TofixDraw.draw_Node(tofixLayer, node.getCoor());
-//        Download.download(downloadOsmTask, bounds, itemOsmlintPoint.getWay());
-//        return accessToTask;
-//    }
-//
-//    private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring, AccessToTask accessToTask, double size) {
-//        accessToTask.setKey(itemOsmlintLinestring.getKey());
-//        List<List<Node>> list = itemOsmlintLinestring.get_nodes();
-//        node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
-//        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
-//        checkTofixLayer();
-//        TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
-//        Download.download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
-//        return accessToTask;
-//    }
-//
-//    private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
-//        accessToTask.setKey(itemOsmlintMultipoint.getKey());
-//        List<Node> list = itemOsmlintMultipoint.get_nodes();
-//        node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
-//        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
-//        checkTofixLayer();
-//        TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
-//        Download.download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay());
-//        return accessToTask;
-//    }
+    private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemOsmlintPoint.getKey());
+        node = itemOsmlintPoint.get_node();
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
+        TofixDraw.draw_Node(tofixLayer, node.getCoor());
+        Download.download(downloadOsmTask, bounds, itemOsmlintPoint.getWay());
+        return accessToTask;
+    }
+
+    private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring, AccessToTask accessToTask, double size) {
+        accessToTask.setKey(itemOsmlintLinestring.getKey());
+        List<List<Node>> list = itemOsmlintLinestring.get_nodes();
+        node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
+        TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
+        Download.download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
+        return accessToTask;
+    }
+
+    private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
+        System.out.println("Estoy entrando a work_osmlintmultipoint en tofixtask");
+        System.out.println("Es tofixtask esto es el key multipnt " + itemOsmlintMultipoint.getKey());
+        accessToTask.setKey(itemOsmlintMultipoint.getKey());
+        List<Node> list = itemOsmlintMultipoint.get_nodes();
+        System.out.println("en tofix task esto es el nodo de item: " + itemOsmlintMultipoint.get_nodes().get(0).getCoor().toString());
+        System.out.println("ss: "+list.get(0).getCoor().lat() + list.get(0).getCoor().lon());
+
+        node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
+        System.out.println("Esto es el nodo en tofixtask " + node.getCoor().toString());
+
+        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        checkTofixLayer();
+        TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
+        Download.download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay());
+        return accessToTask;
+    }
 
     public void task_complete(Item item, AccessToTask accessToTask) {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
@@ -200,5 +208,5 @@ public class TofixTask {
         if (!Main.getLayerManager().containsLayer(tofixLayer)) {
             Main.getLayerManager().addLayer(tofixLayer);
         }
-    }   
+    }
 }
