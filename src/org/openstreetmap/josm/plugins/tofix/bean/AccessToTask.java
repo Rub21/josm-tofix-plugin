@@ -29,7 +29,6 @@ public class AccessToTask {
 
     public AccessToTask(String task_id, boolean access) {
         this.task_idtask = task_id;
-        //this.task_source = task_source;
         this.access = access;
     }
 

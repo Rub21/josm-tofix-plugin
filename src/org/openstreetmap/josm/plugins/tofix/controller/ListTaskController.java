@@ -34,7 +34,6 @@ public class ListTaskController {
 
     public ListTaskBean getListTasksBean() {
         List<TaskBean> tasks = new LinkedList<>();
-        System.out.println("Esto es el URL in listtaskcontroller: " + url);
         try (JsonReader jsonReader = Json.createReader(new StringReader(Request.sendGET(url)))) {
             JsonObject jsonObject = jsonReader.readObject();
             JsonArray jsonArray = jsonObject.getJsonArray("tasks");

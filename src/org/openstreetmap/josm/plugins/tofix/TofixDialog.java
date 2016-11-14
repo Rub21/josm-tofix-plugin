@@ -345,13 +345,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("in tofixdialog is starting combo to get new item");
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
-        System.out.println("Esto es el source del combo: " + e.getSource());
         if (cb.getSelectedIndex() != 0) {
             mainAccessToTask.setTask_idtask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIdtask());
             mainAccessToTask.setTask_isCompleted(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsCompleted());
-//          mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
             mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getName());
             mainAccessToTask.setTask_description(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDescription());
             mainAccessToTask.setTask_updated(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getUpdated());
@@ -362,8 +359,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             mainAccessToTask.setTask_skip(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSkip());
             mainAccessToTask.setTask_items(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getItems());
             mainAccessToTask.setTask_noterror(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getNoterror());
-
-            System.out.println("En tofixdialog esto es mainaccestoken: " + mainAccessToTask.getTask_changesetComment() + mainAccessToTask.getTask_name());
             get_new_item();
             skipButton.setEnabled(true);
             fixedButton.setEnabled(true);
@@ -376,13 +371,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public void edit() {
-        System.out.println("Entrando a edit() in dialog");
         if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
             trackBean.getAttributes().setAction("edit");
             trackBean.getAttributes().setEditor("josm");
             trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            System.out.println("Esto es el mainacces.getkey en dialog " + mainAccessToTask.getKey());
             trackBean.getAttributes().setKey(mainAccessToTask.getKey());
             itemTrackController.send_track_edit(mainAccessToTask.getTask_url(), trackBean);
         }
@@ -395,7 +388,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             trackBean.getAttributes().setEditor("josm");
             trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
             trackBean.getAttributes().setKey(mainAccessToTask.getKey());
-            System.out.println("Esto en dialog es el track_url: " + mainAccessToTask.getTask_url());
             itemTrackController.send_track_skip(mainAccessToTask.getTask_url(), trackBean);
         }
         get_new_item();
@@ -406,7 +398,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             FixedBean fixedBean = new FixedBean();
             fixedBean.setUser(josmUserIdentityManager.getUserName());
             fixedBean.setKey(mainAccessToTask.getKey());
-            System.out.println("Esto en dialog es el track_url: " + mainAccessToTask.getTask_url());
             itemTrackController.send_track_fix(mainAccessToTask.getTask_url(), fixedBean);
         }
         get_new_item();
@@ -417,7 +408,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             FixedBean NoterrorBean = new FixedBean();
             NoterrorBean.setUser(josmUserIdentityManager.getUserName());
             NoterrorBean.setKey(mainAccessToTask.getKey());
-            System.out.println("Esto en dialog es el track_url: " + mainAccessToTask.getTask_url());
             itemTrackController.send_track_noterror(mainAccessToTask.getTask_url(), NoterrorBean);
 
         }
@@ -425,9 +415,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void get_new_item() {
-        System.out.println("Estoy entrando en dialog a get_new_item");
         item.setStatus(0);
-        System.out.println("Esto en dialog mainaccesstotoaks :" + mainAccessToTask.getKey());
         itemController.setAccessToTask(mainAccessToTask);
         item = itemController.getItem();
         switch (item.getStatus()) {

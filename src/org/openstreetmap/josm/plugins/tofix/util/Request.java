@@ -39,16 +39,11 @@ public class Request {
         ResponseBean responseBean = new ResponseBean();
         responseBean.setStatus(resp.getResponseCode());//agregar el estatus
         responseBean.setValue(resp.fetchContent());//agrega el valor de la respuesta
-
-        System.out.println("in accesstotoask this is responsebean value " + responseBean.getValue());
-
         resp.disconnect();
         return responseBean;
     }
 
     public static void sendPOST_Json(String url, String object) throws IOException {
-        System.out.println("Entre en request a sendPOST_Json");
-        System.out.println("En request esto es el url: "+ url);
         HttpClient.create(new URL(url), "PUT")
                 .setHeader("Content-Type", "application/json")
                 .setAccept("application/json")

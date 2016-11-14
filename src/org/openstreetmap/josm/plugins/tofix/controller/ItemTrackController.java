@@ -22,7 +22,6 @@ public class ItemTrackController {
         attributesBuilder.add("attributes", trackBeanBuilder);
         JsonObject track_edit = attributesBuilder.build();
         try {
-            System.out.println("en itemtraccontroller esto es la lista de atributtos "+track_edit.toString());
             Request.sendPOST_Json(url, track_edit.toString());
         } catch (IOException ex) {
             Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);
