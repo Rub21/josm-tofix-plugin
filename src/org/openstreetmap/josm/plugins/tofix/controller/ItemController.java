@@ -48,7 +48,6 @@ public class ItemController {
             JsonObject properties = (JsonObject) object.get("properties");
             item.setType(geometry.getString("type"));
 
-            //if the structure change , we need to customize this site, to easy resolve , but we need to standardize the source in each task.
             switch (responseBean.getStatus()) {
                 case HttpURLConnection.HTTP_OK:
                     if (geometry.getString("type").equals("Point")) {

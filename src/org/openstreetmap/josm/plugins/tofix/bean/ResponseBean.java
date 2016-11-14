@@ -16,9 +16,7 @@ public class ResponseBean {
     public ResponseBean(int status, String value) {
         this.status = status;
         this.value = value;
-    }
-    
-    
+    }     
 
     public int getStatus() {
         return status;
@@ -34,7 +32,6 @@ public class ResponseBean {
 
     public void setValue(String value) {
         this.value = value;
-    }
-    
+    }  
     
 }
