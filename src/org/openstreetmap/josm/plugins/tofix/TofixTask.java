@@ -62,7 +62,7 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.download(downloadOsmTask, bounds, itemOsmlintPoint.getWay());
+        Download.download(downloadOsmTask, bounds, itemOsmlintPoint.getWay(),itemOsmlintPoint.getGeometry());
         return accessToTask;
     }
 
@@ -73,7 +73,7 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
-        Download.download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
+        Download.download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay(),itemOsmlintLinestring.getGeometry());
         return accessToTask;
     }
 
@@ -84,7 +84,7 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
-        Download.download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay());
+        Download.download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay(),itemOsmlintMultipoint.getGeometry());
         return accessToTask;
     }
 

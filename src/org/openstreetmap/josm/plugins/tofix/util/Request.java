@@ -3,6 +3,8 @@ package org.openstreetmap.josm.plugins.tofix.util;
 import java.nio.charset.StandardCharsets;
 import java.net.*;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
@@ -44,7 +46,7 @@ public class Request {
     }
 
     public static void sendPOST_Json(String url, String object) throws IOException {
-        HttpClient.create(new URL(url), "PUT")
+        HttpClient.create(new URL(url), "POST")
                 .setHeader("Content-Type", "application/json")
                 .setAccept("application/json")
                 .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
@@ -56,5 +58,13 @@ public class Request {
         String result = response.fetchContent();
         response.disconnect();
         return result;
+    }
+
+    public static void sendPUT_Json(String url, String object) throws IOException {
+        HttpClient.create(new URL(url), "PUT")
+                .setHeader("Content-Type", "application/json")
+                .setAccept("application/json")
+                .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
+                .connect().disconnect();
     }
 }

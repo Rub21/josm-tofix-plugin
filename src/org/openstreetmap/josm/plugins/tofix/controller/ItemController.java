@@ -87,10 +87,7 @@ public class ItemController {
                             item.setStatus(520);
                         }
 
-                    }
-                    if (geometry.getString("type").equals("MultiLineString")) {
-                    }
-
+                    }                    
                     break;
                 case 410:
                     TaskCompleteBean taskCompleteBean = new TaskCompleteBean();

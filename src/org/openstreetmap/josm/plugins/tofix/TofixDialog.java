@@ -37,7 +37,6 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
-import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
@@ -53,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
 /**
  *
@@ -164,7 +164,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
-                    skip();
+                    action("skip");
                 } else {
                     msg();
                 }
@@ -203,7 +203,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
-                    noterror();
+                    action("noterror");
                 } else {
                     msg();
                 }
@@ -312,7 +312,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
-                skip();
+                action("skip");
             } else {
                 msg();
             }
@@ -336,7 +336,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
-                noterror();
+                action("noterror");
             } else {
                 msg();
             }
@@ -373,43 +373,22 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void edit() {
         if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
-            trackBean.getAttributes().setAction("edit");
+            //trackBean.getAttributes().setAction("edit");
             trackBean.getAttributes().setEditor("josm");
             trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            trackBean.getAttributes().setKey(mainAccessToTask.getKey());
+            //trackBean.getAttributes().setKey(mainAccessToTask.getKey());
             itemTrackController.send_track_edit(mainAccessToTask.getTask_url(), trackBean);
         }
     }
 
-    public void skip() {
+    public void action(String action) { //fixed, noterror or skip
         if (mainAccessToTask.isAccess()) {
-            TrackBean trackBean = new TrackBean();
-            trackBean.getAttributes().setAction("skip");
-            trackBean.getAttributes().setEditor("josm");
-            trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            trackBean.getAttributes().setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_skip(mainAccessToTask.getTask_url(), trackBean);
-        }
-        get_new_item();
-    }
-
-    public void fixed() {
-        if (mainAccessToTask.isAccess()) {
-            FixedBean fixedBean = new FixedBean();
-            fixedBean.setUser(josmUserIdentityManager.getUserName());
-            fixedBean.setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_fix(mainAccessToTask.getTask_url(), fixedBean);
-        }
-        get_new_item();
-    }
-
-    public void noterror() {
-        if (mainAccessToTask.isAccess()) {
-            FixedBean NoterrorBean = new FixedBean();
-            NoterrorBean.setUser(josmUserIdentityManager.getUserName());
-            NoterrorBean.setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_noterror(mainAccessToTask.getTask_url(), NoterrorBean);
-
+            ActionBean trackBean = new ActionBean();
+            trackBean.setAction(action);
+            trackBean.setEditor("josm");
+            trackBean.setUser(josmUserIdentityManager.getUserName());
+            trackBean.setKey(mainAccessToTask.getKey());
+            itemTrackController.send_track_action(mainAccessToTask.getTask_url(), trackBean);
         }
         get_new_item();
     }
@@ -454,7 +433,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private void eventFixed() {
         if (!Main.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
-            skip();
+            action("skip");
         } else if (boundingsdistance() < 1.0) {
             validator = false;
             UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
@@ -469,7 +448,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
             uploadAction.uploadData(odl, apiData);
             if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
-                fixed();
+                action("fixed");
                 Main.getLayerManager().getEditLayer().data.clear();
                 if (checkboxStatusLayer) {
                     tofixTask.deleteLayer();
