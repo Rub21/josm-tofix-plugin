@@ -24,8 +24,7 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
  */
 public class Download {
 
-    public static void download(final DownloadOsmTask task, Bounds bounds, final Long osm_obj_id, final String geometry) {
-        System.out.println("Esta es la geometria para descargar: " + geometry);
+    public static void download(final DownloadOsmTask task, Bounds bounds, final Long osm_obj_id) {
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
         Runnable runAfterTask;
@@ -33,25 +32,27 @@ public class Download {
             @Override
             public void run() {
                 try {
-                    if (osm_obj_id != 0 && geometry != null) {
+                    if (osm_obj_id != 0) {
                         future.get();
                         //create object
                         if (future.isDone()) {
+                            DataSet dataset = Main.getLayerManager().getEditLayer().data;
+                            Node node = new Node(osm_obj_id);
+                            Relation relation = new Relation(osm_obj_id);
+                            Way way = new Way(osm_obj_id);
+
                             //create list of objects
                             List<OsmPrimitive> selection = new ArrayList<>();
 
-                            if (geometry.equals("node")) {
-                                Node node = new Node(osm_obj_id);
+                            if (dataset.allPrimitives().contains(node)) {
                                 selection.add(node);
                                 Main.getLayerManager().getEditDataSet().setSelected(selection);
 
-                            } else if (geometry.equals("way")) {
-                                Way way = new Way(osm_obj_id);
+                            } else if (dataset.allPrimitives().contains(way)) {
                                 selection.add(way);
                                 Main.getLayerManager().getEditDataSet().setSelected(selection);
 
-                            } else if (geometry.equals("relation")) {
-                                Relation relation = new Relation(osm_obj_id);
+                            } else if (dataset.allPrimitives().contains(relation)) {
                                 selection.add(relation);
                                 Main.getLayerManager().getEditDataSet().setSelected(selection);
                             }

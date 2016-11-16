@@ -373,10 +373,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void edit() {
         if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
-            //trackBean.getAttributes().setAction("edit");
             trackBean.getAttributes().setEditor("josm");
             trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            //trackBean.getAttributes().setKey(mainAccessToTask.getKey());
             itemTrackController.send_track_edit(mainAccessToTask.getTask_url(), trackBean);
         }
     }
