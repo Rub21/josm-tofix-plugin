@@ -37,7 +37,6 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
-import org.openstreetmap.josm.plugins.tofix.bean.FixedBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
@@ -53,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
 /**
  *
@@ -61,7 +61,6 @@ import org.openstreetmap.josm.data.osm.DataSet;
 public class TofixDialog extends ToggleDialog implements ActionListener {
 
     boolean validator;
-// private final SideButton editButton;
     private final SideButton skipButton;
     private final SideButton fixedButton;
     private final SideButton noterrorButton;
@@ -165,7 +164,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
-                    skip();
+                    action("skip");
                 } else {
                     msg();
                 }
@@ -204,7 +203,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
-                    noterror();
+                    action("noterror");
                 } else {
                     msg();
                 }
@@ -232,12 +231,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-                tasksList.add(listTaskBean.getTasks().get(i).getTitle());
+                tasksList.add(listTaskBean.getTasks().get(i).getName());
             }
             JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
             valuePanel.add(jcomboBox);
             jcomboBox.addActionListener(this);
-
             jcontenTasks.add(valuePanel);
 
             //add title to download
@@ -286,7 +284,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButton.setEnabled(false);
             } else {
                 // Request data
-                mainAccessToTask = new AccessToTask("mixedlayer", "keepright", false);//start mixedlayer task by default
+                mainAccessToTask = new AccessToTask("mixedlayer", false);//start mixedlayer task by default
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
@@ -314,7 +312,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
-                skip();
+                action("skip");
             } else {
                 msg();
             }
@@ -338,7 +336,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
-                noterror();
+                action("noterror");
             } else {
                 msg();
             }
@@ -349,10 +347,18 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getTitle());
-            mainAccessToTask.setTask_id(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getId());
-            mainAccessToTask.setTask_source(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSource());
-            mainAccessToTask.setTask_comment(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getComment());
+            mainAccessToTask.setTask_idtask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIdtask());
+            mainAccessToTask.setTask_isCompleted(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsCompleted());
+            mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getName());
+            mainAccessToTask.setTask_description(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDescription());
+            mainAccessToTask.setTask_updated(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getUpdated());
+            mainAccessToTask.setTask_changesetComment(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getChangesetComment());
+            mainAccessToTask.setTask_date(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDate());
+            mainAccessToTask.setTask_edit(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getEdit());
+            mainAccessToTask.setTask_fixed(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getFixed());
+            mainAccessToTask.setTask_skip(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSkip());
+            mainAccessToTask.setTask_items(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getItems());
+            mainAccessToTask.setTask_noterror(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getNoterror());
             get_new_item();
             skipButton.setEnabled(true);
             fixedButton.setEnabled(true);
@@ -367,43 +373,20 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     public void edit() {
         if (mainAccessToTask.isAccess()) {
             TrackBean trackBean = new TrackBean();
-            trackBean.getAttributes().setAction("edit");
             trackBean.getAttributes().setEditor("josm");
             trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            trackBean.getAttributes().setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_edit(mainAccessToTask.getTrack_url(), trackBean);
+            itemTrackController.send_track_edit(mainAccessToTask.getTask_url(), trackBean);
         }
     }
 
-    public void skip() {
+    public void action(String action) { //fixed, noterror or skip
         if (mainAccessToTask.isAccess()) {
-            TrackBean trackBean = new TrackBean();
-            trackBean.getAttributes().setAction("skip");
-            trackBean.getAttributes().setEditor("josm");
-            trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            trackBean.getAttributes().setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_skip(mainAccessToTask.getTrack_url(), trackBean);
-        }
-        get_new_item();
-    }
-
-    public void fixed() {
-        if (mainAccessToTask.isAccess()) {
-            FixedBean fixedBean = new FixedBean();
-            fixedBean.setUser(josmUserIdentityManager.getUserName());
-            fixedBean.setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_fix(mainAccessToTask.getFixed_url(), fixedBean);
-        }
-        get_new_item();
-    }
-
-    public void noterror() {
-        if (mainAccessToTask.isAccess()) {
-            FixedBean NoterrorBean = new FixedBean();
-            NoterrorBean.setUser(josmUserIdentityManager.getUserName());
-            NoterrorBean.setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_noterror(mainAccessToTask.getNoterror_url(), NoterrorBean);
-
+            ActionBean trackBean = new ActionBean();
+            trackBean.setAction(action);
+            trackBean.setEditor("josm");
+            trackBean.setUser(josmUserIdentityManager.getUserName());
+            trackBean.setKey(mainAccessToTask.getKey());
+            itemTrackController.send_track_action(mainAccessToTask.getTask_url(), trackBean);
         }
         get_new_item();
     }
@@ -448,32 +431,30 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private void eventFixed() {
         if (!Main.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
-            skip();
-        } else {
-            if (boundingsdistance() < 1.0) {
-                validator = false;
-                UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
-                    @Override
-                    public void componentShown(ComponentEvent e) {
-                        validator = true;
-                    }
-                });
-                Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_comment());
-                APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
-                OsmDataLayer odl = Main.getLayerManager().getEditLayer();
-
-                uploadAction.uploadData(odl, apiData);
-                if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
-                    fixed();
-                    Main.getLayerManager().getEditLayer().data.clear();
-                    if (checkboxStatusLayer) {
-                        tofixTask.deleteLayer();
-                    }
+            action("skip");
+        } else if (boundingsdistance() < 1.0) {
+            validator = false;
+            UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentShown(ComponentEvent e) {
+                    validator = true;
                 }
-            } else {
-                new Notification(tr("The bounding box is too big.")).show();
-                return;
+            });
+            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
+            APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
+            OsmDataLayer odl = Main.getLayerManager().getEditLayer();
+
+            uploadAction.uploadData(odl, apiData);
+            if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
+                action("fixed");
+                Main.getLayerManager().getEditLayer().data.clear();
+                if (checkboxStatusLayer) {
+                    tofixTask.deleteLayer();
+                }
             }
+        } else {
+            new Notification(tr("The bounding box is too big.")).show();
+            return;
         }
     }
 

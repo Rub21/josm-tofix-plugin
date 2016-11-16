@@ -11,15 +11,11 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
-import org.openstreetmap.josm.plugins.tofix.bean.items.ItemUnconnectedBean;
-
 /**
  *
  * @author ruben
  */
 public class TofixDraw {
-
-    ItemUnconnectedBean itemBean = null;
 
     public static void draw_Node(final TofixLayer tofixLayer, LatLon latLon) {
         if (latLon.isOutSideWorld()) {

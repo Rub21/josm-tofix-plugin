@@ -29,7 +29,7 @@ public class ListTaskController {
      * Constructs a new {@code ListTaskController}.
      */
     public ListTaskController() {
-        this.url = Config.HOST + "tasks";
+        this.url = Config.HOST + "/tasks";
     }
 
     public ListTaskBean getListTasksBean() {
@@ -41,11 +41,21 @@ public class ListTaskController {
                 TaskBean taskBean = new TaskBean();
                 try (JsonReader jsonReader2 = Json.createReader(new StringReader(value.toString()))) {
                     JsonObject jsontask = jsonReader2.readObject();
-                    taskBean.setId(jsontask.getString("id"));
-                    taskBean.setTitle(jsontask.getString("title"));
-                    taskBean.setSource(jsontask.getString("source"));
-                    taskBean.setStatus(jsontask.getBoolean("status"));
-                    taskBean.setComment(jsontask.getString("changeset_comment"));
+                    JsonObject value_jsontask = (JsonObject) jsontask.get("value");
+                    JsonObject stats_jsontask = (JsonObject) value_jsontask.get("stats");
+
+                    taskBean.setIdtask(jsontask.getString("idtask"));
+                    taskBean.setIsCompleted(jsontask.getBoolean("isCompleted"));
+                    taskBean.setName(value_jsontask.getString("name"));
+                    taskBean.setDescription(value_jsontask.getString("description"));
+                    taskBean.setUpdated(value_jsontask.getJsonNumber("updated").toString());
+                    taskBean.setChangesetComment(value_jsontask.getString("changesetComment"));
+                    taskBean.setDate(stats_jsontask.getJsonNumber("date").toString());
+                    taskBean.setEdit(Integer.parseInt(stats_jsontask.getJsonNumber("edit").toString()));
+                    taskBean.setFixed(Integer.parseInt(stats_jsontask.getJsonNumber("fixed").toString()));
+                    taskBean.setSkip(Integer.parseInt(stats_jsontask.getJsonNumber("skip").toString()));
+                    taskBean.setItems(Integer.parseInt(stats_jsontask.getJsonNumber("items").toString()));
+                    taskBean.setNoterror(Integer.parseInt(stats_jsontask.getJsonNumber("noterror").toString()));
                 }
                 tasks.add(taskBean);
             }

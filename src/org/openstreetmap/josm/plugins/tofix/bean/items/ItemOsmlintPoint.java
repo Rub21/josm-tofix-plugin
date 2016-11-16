@@ -9,10 +9,10 @@ import org.openstreetmap.josm.data.osm.Node;
  */
 public class ItemOsmlintPoint extends AbstractItemOsmlint {
 
-    public Node get_node(){        
-        String geoString = getGeom();
-        geoString = geoString.replace("POINT(", "").replace(")", "");
-        String[] array = geoString.split(" ");
+    public Node get_node() {
+        String geoString = getCoordinates();
+        geoString = geoString.replace("[", "").replace("]", "");
+        String[] array = geoString.split(",");
         LatLon latLon = new LatLon(Double.parseDouble(array[1]), Double.parseDouble(array[0]));
         return new Node(latLon);
     }

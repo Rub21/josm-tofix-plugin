@@ -27,7 +27,8 @@ public class Download {
     public static void download(final DownloadOsmTask task, Bounds bounds, final Long osm_obj_id) {
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
-        Runnable runAfterTask = new Runnable() {
+        Runnable runAfterTask;
+        runAfterTask = new Runnable() {
             @Override
             public void run() {
                 try {
@@ -41,7 +42,7 @@ public class Download {
                             Way way = new Way(osm_obj_id);
 
                             //create list of objects
-                            List<OsmPrimitive> selection = new ArrayList<>();  
+                            List<OsmPrimitive> selection = new ArrayList<>();
 
                             if (dataset.allPrimitives().contains(node)) {
                                 selection.add(node);
