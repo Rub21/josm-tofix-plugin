@@ -2,6 +2,9 @@ package org.openstreetmap.josm.plugins.tofix.controller;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.Collator;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -62,6 +65,12 @@ public class ListTaskController {
         } catch (IOException ex) {
             Logger.getLogger(ListTaskController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        Collections.sort(tasks, new Comparator<TaskBean>() {        
+            @Override
+            public int compare(TaskBean o1, TaskBean o2) {
+                return Collator.getInstance().compare(o1.getName(), o2.getName());
+            }
+        });
         listTasksBean.setTasks(tasks);
         return listTasksBean;
     }
