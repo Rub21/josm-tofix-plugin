@@ -44,12 +44,13 @@ public class ItemController {
             Util.print(responseBean.getValue());
             JsonReader reader = Json.createReader(new StringReader(responseBean.getValue()));
             JsonObject object = reader.readObject();
-            JsonObject geometry = (JsonObject) object.get("geometry");
-            JsonObject properties = (JsonObject) object.get("properties");
-            item.setType(geometry.getString("type"));
 
             switch (responseBean.getStatus()) {
                 case HttpURLConnection.HTTP_OK:
+                    JsonObject geometry = (JsonObject) object.get("geometry");
+                    JsonObject properties = (JsonObject) object.get("properties");
+                    item.setType(geometry.getString("type"));
+
                     if (geometry.getString("type").equals("Point")) {
                         ItemOsmlintPoint iop = new ItemOsmlintPoint();
                         iop.setKey(properties.getString("_key"));
@@ -86,15 +87,11 @@ public class ItemController {
                             item.setStatus(520);
                         }
 
-                    }                    
+                    }
                     break;
                 case 410:
                     TaskCompleteBean taskCompleteBean = new TaskCompleteBean();
                     taskCompleteBean.setTotal(0);
-                    String total = responseBean.getValue().replaceAll("[^0-9]+", " ");
-                    if (total.trim().split(" ")[1] != null) {
-                        taskCompleteBean.setTotal(Integer.parseInt(total.trim().split(" ")[1]));
-                    }
                     item.setTaskCompleteBean(taskCompleteBean);
                     break;
                 case 503:

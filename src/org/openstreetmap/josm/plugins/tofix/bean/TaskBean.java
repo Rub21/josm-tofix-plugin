@@ -8,6 +8,7 @@ public class TaskBean {
 
     private String idtask;
     private boolean isCompleted;
+    private boolean isAllItemsLoad;
     private String name;
     private String description;
     private String updated;
@@ -123,5 +124,13 @@ public class TaskBean {
 
     public void setGeometry(String geometry) {
         this.geometry = geometry;
+    }
+
+    public boolean isIsAllItemsLoad() {
+        return isAllItemsLoad;
+    }
+
+    public void setIsAllItemsLoad(boolean isAllItemsLoad) {
+        this.isAllItemsLoad = isAllItemsLoad;
     }
 }

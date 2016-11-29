@@ -55,7 +55,7 @@ public class TofixTask {
             Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
         }
     }
-    
+
     private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintPoint.getKey());
         node = itemOsmlintPoint.get_node();

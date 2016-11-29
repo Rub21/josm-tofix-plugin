@@ -49,6 +49,7 @@ public class ListTaskController {
 
                     taskBean.setIdtask(jsontask.getString("idtask"));
                     taskBean.setIsCompleted(jsontask.getBoolean("isCompleted"));
+                    taskBean.setIsAllItemsLoad(jsontask.getBoolean("isAllItemsLoad"));
                     taskBean.setName(value_jsontask.getString("name"));
                     taskBean.setDescription(value_jsontask.getString("description"));
                     taskBean.setUpdated(value_jsontask.getJsonNumber("updated").toString());
@@ -65,7 +66,7 @@ public class ListTaskController {
         } catch (IOException ex) {
             Logger.getLogger(ListTaskController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Collections.sort(tasks, new Comparator<TaskBean>() {        
+        Collections.sort(tasks, new Comparator<TaskBean>() {
             @Override
             public int compare(TaskBean o1, TaskBean o2) {
                 return Collator.getInstance().compare(o1.getName(), o2.getName());
