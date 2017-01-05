@@ -49,9 +49,30 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Future;
+import org.openstreetmap.josm.actions.JosmAction;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.IPrimitive;
+import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
+import org.openstreetmap.josm.data.osm.event.DataSetListener;
+import org.openstreetmap.josm.data.osm.event.NodeMovedEvent;
+import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
+import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
+import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
+import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
+import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
+import org.openstreetmap.josm.gui.layer.GpxLayer;
+import org.openstreetmap.josm.gui.layer.ImageryLayer;
+import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.gui.layer.LayerManager;
+import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
 /**
@@ -101,8 +122,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
-    //Upload upload = new Upload();
-    UploadAction uploadAction = new UploadAction();
     boolean checkboxStatus;
     boolean checkboxStatusLayer;
 
@@ -183,7 +202,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
-                    eventFixed();
+                    eventFixed(e);
                 } else {
                     msg();
                 }
@@ -324,7 +343,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
-                eventFixed();
+                eventFixed(e);
             } else {
                 msg();
             }
@@ -337,6 +356,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
                 action("noterror");
+                if (checkboxStatusLayer) {
+                    deleteLayer();
+                }
             } else {
                 msg();
             }
@@ -428,11 +450,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
-    private void eventFixed() {
+    private void eventFixed(ActionEvent e) {
         if (!Main.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
-            action("skip");
-        } else if (boundingsdistance() < 1.0) {
+            action("skipeventFixed");
+        } else if (new Bounds(Main.getLayerManager().getEditDataSet().getDataSourceArea().getBounds()).getArea() < 30) {
             validator = false;
             UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
                 @Override
@@ -441,34 +463,25 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             });
             Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
-            APIDataSet apiData = new APIDataSet(Main.getLayerManager().getEditDataSet());
-            OsmDataLayer odl = Main.getLayerManager().getEditLayer();
+            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("source", Main.map.mapView.getLayerInformationForSourceTag());
 
-            uploadAction.uploadData(odl, apiData);
-            if (validator && !UploadDialog.getUploadDialog().isCanceled()) {
-                action("fixed");
-                Main.getLayerManager().getEditLayer().data.clear();
+            new UploadAction().actionPerformed(e);
+
+            if (validator && !UploadDialog.getUploadDialog().isCanceled() && UploadDialog.getUploadDialog().getChangeset().isNew()) {
                 if (checkboxStatusLayer) {
-                    tofixTask.deleteLayer();
+                    deleteLayer();
                 }
+                action("fixed");
             }
         } else {
             new Notification(tr("The bounding box is too big.")).show();
-            return;
         }
     }
 
-    private double boundingsdistance() {
-        DataSet ds = Main.getLayerManager().getEditLayer().data;
-        ArrayList<Double> distancelist = new ArrayList<>();
-        distancelist.add(0.0);
-
-        for (int i = 0; i < ds.getDataSourceBounds().size(); i++) {
-            if (ds.getDataSourceBounds().size() - 1 != i) {
-                distancelist.add(ds.getDataSourceBounds().get(i).getCenter().distance(ds.getDataSourceBounds().get(i + 1).getCenter()));
-            }
+    public void deleteLayer() {
+        if (Main.getLayerManager().getEditLayer() != null) {
+            Main.getLayerManager().getEditLayer().data.clear();
+            Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
         }
-        Double d = Collections.max(distancelist);
-        return d;
     }
 }

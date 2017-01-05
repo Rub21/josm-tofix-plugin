@@ -50,11 +50,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    public void deleteLayer() {
-        while (Main.getLayerManager().getEditLayer() != null) {
-            Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
-        }
-    }
+   
 
     private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintPoint.getKey());
