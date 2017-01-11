@@ -28,14 +28,12 @@ import javax.swing.JTabbedPane;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
-import org.openstreetmap.josm.data.APIDataSet;
 import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
-import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
@@ -49,30 +47,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Future;
-import org.openstreetmap.josm.actions.JosmAction;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
-
-import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.IPrimitive;
-import org.openstreetmap.josm.data.osm.event.AbstractDatasetChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataChangedEvent;
-import org.openstreetmap.josm.data.osm.event.DataSetListener;
-import org.openstreetmap.josm.data.osm.event.NodeMovedEvent;
-import org.openstreetmap.josm.data.osm.event.PrimitivesAddedEvent;
-import org.openstreetmap.josm.data.osm.event.PrimitivesRemovedEvent;
-import org.openstreetmap.josm.data.osm.event.RelationMembersChangedEvent;
-import org.openstreetmap.josm.data.osm.event.TagsChangedEvent;
-import org.openstreetmap.josm.data.osm.event.WayNodesChangedEvent;
-import org.openstreetmap.josm.gui.layer.GpxLayer;
-import org.openstreetmap.josm.gui.layer.ImageryLayer;
-import org.openstreetmap.josm.gui.layer.Layer;
-import org.openstreetmap.josm.gui.layer.LayerManager;
-import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
 /**
@@ -156,12 +131,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         checkLayer.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    checkboxStatusLayer = true;
-                } else {
-                    checkboxStatusLayer = false;
-                }
-                return;
+                checkboxStatusLayer = e.getStateChange() == ItemEvent.SELECTED;
             }
         });
 
@@ -184,6 +154,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
                     action("skip");
+                    deleteLayer();
+
                 } else {
                     msg();
                 }
@@ -223,6 +195,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
                     action("noterror");
+                    deleteLayer();
                 } else {
                     msg();
                 }
@@ -332,6 +305,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
                 action("skip");
+                deleteLayer();
             } else {
                 msg();
             }
@@ -356,9 +330,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
                 action("noterror");
-                if (checkboxStatusLayer) {
-                    deleteLayer();
-                }
+                deleteLayer();
             } else {
                 msg();
             }
@@ -381,6 +353,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             mainAccessToTask.setTask_skip(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSkip());
             mainAccessToTask.setTask_items(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getItems());
             mainAccessToTask.setTask_noterror(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getNoterror());
+            deleteLayer();
             get_new_item();
             skipButton.setEnabled(true);
             fixedButton.setEnabled(true);
@@ -468,10 +441,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             new UploadAction().actionPerformed(e);
 
             if (validator && !UploadDialog.getUploadDialog().isCanceled() && UploadDialog.getUploadDialog().getChangeset().isNew()) {
-                if (checkboxStatusLayer) {
-                    deleteLayer();
-                }
                 action("fixed");
+                deleteLayer();
             }
         } else {
             new Notification(tr("The bounding box is too big.")).show();
@@ -479,9 +450,11 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public void deleteLayer() {
-        if (Main.getLayerManager().getEditLayer() != null) {
-            Main.getLayerManager().getEditLayer().data.clear();
-            Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
+        if (checkboxStatusLayer) {
+            if (Main.getLayerManager().getEditLayer() != null) {
+                Main.getLayerManager().getEditLayer().data.clear();
+                Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
+            }
         }
     }
 }
