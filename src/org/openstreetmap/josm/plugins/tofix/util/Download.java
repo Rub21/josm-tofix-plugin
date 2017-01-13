@@ -24,10 +24,12 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
  */
 public class Download {
 
-    public static void download(final DownloadOsmTask task, Bounds bounds, final Long osm_obj_id) {
+    public static void download(Bounds bounds, final Long osm_obj_id) {
+        DownloadOsmTask task = new DownloadOsmTask();
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
         Runnable runAfterTask;
+
         runAfterTask = new Runnable() {
             @Override
             public void run() {

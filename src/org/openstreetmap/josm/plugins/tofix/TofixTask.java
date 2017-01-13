@@ -6,7 +6,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
@@ -29,13 +28,12 @@ public class TofixTask {
 
     ItemController itemController = new ItemController();
     Bounds bounds = null;
-    DownloadOsmTask downloadOsmTask = new DownloadOsmTask();
+
     Node node = null;
     MapView mv = null;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
     public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download    
-
         if ("Point".equals(item.getType())) {
             accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
         }
@@ -50,15 +48,13 @@ public class TofixTask {
         return accessToTask;
     }
 
-   
-
     private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintPoint.getKey());
         node = itemOsmlintPoint.get_node();
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_Node(tofixLayer, node.getCoor());
-        Download.download(downloadOsmTask, bounds, itemOsmlintPoint.getWay());
+        Download.download(bounds, itemOsmlintPoint.getWay());
         return accessToTask;
     }
 
@@ -69,7 +65,8 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
-        Download.download(downloadOsmTask, bounds, itemOsmlintLinestring.getWay());
+
+        Download.download(bounds, itemOsmlintLinestring.getWay());
         return accessToTask;
     }
 
@@ -80,7 +77,7 @@ public class TofixTask {
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
-        Download.download(downloadOsmTask, bounds, itemOsmlintMultipoint.getWay());
+        Download.download(bounds, itemOsmlintMultipoint.getWay());
         return accessToTask;
     }
 
