@@ -275,8 +275,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 fixedButton.setEnabled(false);
                 noterrorButton.setEnabled(false);
             } else {
-                // Request data
-                mainAccessToTask = new AccessToTask("mixedlayer", false);//start mixedlayer task by default
+//                start();
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
@@ -288,6 +287,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
             }
         }
+    }
+
+    public final void start() {
+        mainAccessToTask = new AccessToTask("mixedlayer", false);//start mixedlayer task by default
     }
 
     public void msg() {
@@ -339,6 +342,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
             mainAccessToTask.setTask_idtask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIdtask());
@@ -384,6 +388,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             itemTrackController.send_track_action(mainAccessToTask.getTask_url(), trackBean);
         }
         get_new_item();
+
     }
 
     private void get_new_item() {
@@ -456,5 +461,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
             }
         }
+    }
+
+    public void downloadCancelled() {
+        action("skip");
+        deleteLayer();
     }
 }
