@@ -50,6 +50,7 @@ public class ListTaskController {
                     taskBean.setIdtask(jsontask.getString("idtask"));
                     taskBean.setIsCompleted(jsontask.getBoolean("isCompleted"));
                     taskBean.setIsAllItemsLoad(jsontask.getBoolean("isAllItemsLoad"));
+                    taskBean.setIduser(jsontask.getString("iduser"));
                     taskBean.setName(value_jsontask.getString("name"));
                     taskBean.setDescription(value_jsontask.getString("description"));
                     taskBean.setUpdated(value_jsontask.getJsonNumber("updated").toString());
@@ -58,6 +59,7 @@ public class ListTaskController {
                     taskBean.setEdit(Integer.parseInt(stats_jsontask.getJsonNumber("edit").toString()));
                     taskBean.setFixed(Integer.parseInt(stats_jsontask.getJsonNumber("fixed").toString()));
                     taskBean.setSkip(Integer.parseInt(stats_jsontask.getJsonNumber("skip").toString()));
+                    taskBean.setType(stats_jsontask.getString("type"));
                     taskBean.setItems(Integer.parseInt(stats_jsontask.getJsonNumber("items").toString()));
                     taskBean.setNoterror(Integer.parseInt(stats_jsontask.getJsonNumber("noterror").toString()));
                 }
