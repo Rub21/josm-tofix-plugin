@@ -9,9 +9,11 @@ import org.openstreetmap.josm.plugins.tofix.util.Config;
 public class AccessToTask {
 
     private String host = Config.HOST;
-   
+
     private String task_idtask;
     private boolean task_isCompleted;
+    private boolean task_isAllItemsLoad;
+    private String task_iduser;
     private String task_name;
     private String task_description;
     private String task_updated;
@@ -20,6 +22,7 @@ public class AccessToTask {
     private int task_edit;
     private int task_fixed;
     private int task_skip;
+    private String task_type;
     private int task_items;
     private int task_noterror;
 
@@ -41,7 +44,7 @@ public class AccessToTask {
     }
 
     public String getTask_url() {
-        String url = this.getHost() + "/tasks/" + this.getTask_idtask()+"/items";
+        String url = this.getHost() + "/tasks/" + this.getTask_idtask()+"/"+this.getTask_type()+"/items";
         return url;
     }
 
@@ -163,5 +166,29 @@ public class AccessToTask {
 
     public void setTask_noterror(int task_noterror) {
         this.task_noterror = task_noterror;
+    }
+
+    public boolean isTask_isAllItemsLoad() {
+        return task_isAllItemsLoad;
+    }
+
+    public void setTask_isAllItemsLoad(boolean task_isAllItemsLoad) {
+        this.task_isAllItemsLoad = task_isAllItemsLoad;
+    }
+
+    public String getTask_iduser() {
+        return task_iduser;
+    }
+
+    public void setTask_iduser(String task_iduser) {
+        this.task_iduser = task_iduser;
+    }
+
+    public String getTask_type() {
+        return task_type;
+    }
+
+    public void setTask_type(String task_type) {
+        this.task_type = task_type;
     }
 }

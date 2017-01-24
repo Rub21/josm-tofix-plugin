@@ -347,6 +347,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         if (cb.getSelectedIndex() != 0) {
             mainAccessToTask.setTask_idtask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIdtask());
             mainAccessToTask.setTask_isCompleted(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsCompleted());
+            mainAccessToTask.setTask_isAllItemsLoad(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsAllItemsLoad());
+            mainAccessToTask.setTask_iduser(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIduser());
             mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getName());
             mainAccessToTask.setTask_description(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDescription());
             mainAccessToTask.setTask_updated(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getUpdated());
@@ -355,6 +357,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             mainAccessToTask.setTask_edit(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getEdit());
             mainAccessToTask.setTask_fixed(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getFixed());
             mainAccessToTask.setTask_skip(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSkip());
+            mainAccessToTask.setTask_type(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getType());
             mainAccessToTask.setTask_items(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getItems());
             mainAccessToTask.setTask_noterror(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getNoterror());
             deleteLayer();

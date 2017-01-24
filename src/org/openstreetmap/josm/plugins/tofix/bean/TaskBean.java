@@ -9,6 +9,7 @@ public class TaskBean {
     private String idtask;
     private boolean isCompleted;
     private boolean isAllItemsLoad;
+    private String iduser;
     private String name;
     private String description;
     private String updated;
@@ -17,6 +18,7 @@ public class TaskBean {
     private int edit;
     private int fixed;
     private int skip;
+    private String type;
     private int items;
     private int noterror;
 
@@ -126,11 +128,33 @@ public class TaskBean {
         this.geometry = geometry;
     }
 
-    public boolean isIsAllItemsLoad() {
+    public boolean getIsAllItemsLoad() {
         return isAllItemsLoad;
     }
 
     public void setIsAllItemsLoad(boolean isAllItemsLoad) {
         this.isAllItemsLoad = isAllItemsLoad;
+    }
+
+    public String getIduser() {
+        return iduser;
+    }
+
+    public void setIduser(String iduser) {
+        this.iduser = iduser;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 }
