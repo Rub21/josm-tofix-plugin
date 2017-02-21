@@ -32,15 +32,19 @@ import org.openstreetmap.josm.tools.ImageProvider;
 public class TofixLayer extends Layer implements ActionListener {
 
     LatLon latLon;
-    List<List<Node>> list_list_nodes;
     List<Node> list_nodes;
+    List<List<Node>> list_list_nodes;
+    List<List<List<Node>>> list_list_list_nodes;
+    List<List<List<List<Node>>>> list_list_list_list_nodes;
+
     String type = "";
     float width;
 
     final Collection<OsmPrimitive> points = Main.main.getInProgressSelection();
-    
+
     /**
      * Constructs a new {@code TofixLayer}.
+     *
      * @param name layer name
      */
     public TofixLayer(String name) {
@@ -68,15 +72,27 @@ public class TofixLayer extends Layer implements ActionListener {
         Main.map.mapView.repaint();
     }
 
+    public void add_Nodes(List<Node> list_nodes) {
+        type = "draw_nodes";
+        this.list_nodes = list_nodes;
+        Main.map.mapView.repaint();
+    }
+
     public void add_Line(List<List<Node>> list_nodes) {
         type = "draw_line";
         this.list_list_nodes = list_nodes;
         Main.map.mapView.repaint();
     }
 
-    public void add_Nodes(List<Node> list_nodes) {
-        type = "draw_nodes";
-        this.list_nodes = list_nodes;
+    public void add_lines(List<List<List<Node>>> list_nodes) {
+        type = "draw_lines";
+        this.list_list_list_nodes = list_nodes;
+        Main.map.mapView.repaint();
+    }
+
+    public void add_Lines(List<List<List<List<Node>>>> list_nodes) {
+        type = "draw_Lines";
+        this.list_list_list_list_nodes = list_nodes;
         Main.map.mapView.repaint();
     }
 
@@ -106,6 +122,28 @@ public class TofixLayer extends Layer implements ActionListener {
             for (Node node : list_nodes) {
                 Point pnt = mv.getPoint(node.getCoor());
                 g.drawOval(pnt.x - 10, pnt.y - 10, 20, 20);
+            }
+        } else if ("draw_lines".equals(type)) {
+            for (List<List<Node>> ll_nodes : list_list_list_nodes) {
+                for (List<Node> l_nodes : ll_nodes) {
+                    for (int i = 0; i < l_nodes.size() - 1; i++) {
+                        Point pnt1 = mv.getPoint(l_nodes.get(i).getCoor());
+                        Point pnt2 = mv.getPoint(l_nodes.get(i + 1).getCoor());
+                        g.drawLine(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
+                    }
+                }
+            }
+        } else if ("draw_Lines".equals(type)) {
+            for (List<List<List<Node>>> lll_nodes : list_list_list_list_nodes) {
+                for (List<List<Node>> ll_nodes : lll_nodes) {
+                    for (List<Node> l_nodes : ll_nodes) {
+                        for (int i = 0; i < l_nodes.size() - 1; i++) {
+                            Point pnt1 = mv.getPoint(l_nodes.get(i).getCoor());
+                            Point pnt2 = mv.getPoint(l_nodes.get(i + 1).getCoor());
+                            g.drawLine(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
+                        }
+                    }
+                }
             }
         }
         g.setStroke(ss);

@@ -12,8 +12,11 @@ import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintLinestring;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintMultilinestring;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintMultipoint;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintMultipolygon;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPoint;
+import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPolygon;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 import org.openstreetmap.josm.plugins.tofix.util.Util;
 
@@ -86,7 +89,39 @@ public class ItemController {
                         } else {
                             item.setStatus(520);
                         }
-
+                    }
+                    if (geometry.getString("type").equals("MultiLineString")) {
+                        ItemOsmlintMultilinestring ioml = new ItemOsmlintMultilinestring();
+                        ioml.setKey(properties.getString("_key"));
+                        if (object.containsKey("geometry")) {
+                            ioml.setGeometry(geometry.getJsonString("type").toString());
+                            ioml.setCoordinates(geometry.get("coordinates").toString());
+                            item.setItemOsmlintMultilinestring(ioml);
+                        } else {
+                            item.setStatus(520);
+                        }
+                    }
+                    if (geometry.getString("type").equals("Polygon")) {
+                        ItemOsmlintPolygon iop = new ItemOsmlintPolygon();
+                        iop.setKey(properties.getString("_key"));
+                        if (object.containsKey("geometry")) {
+                            iop.setGeometry(geometry.getJsonString("type").toString());
+                            iop.setCoordinates(geometry.get("coordinates").toString());
+                            item.setItemOsmlintPolygon(iop);
+                        } else {
+                            item.setStatus(520);
+                        }
+                    }
+                    if (geometry.getString("type").equals("MultiPolygon")) {
+                        ItemOsmlintMultipolygon iomp = new ItemOsmlintMultipolygon();
+                        iomp.setKey(properties.getString("_key"));
+                        if (object.containsKey("geometry")) {
+                            iomp.setGeometry(geometry.getJsonString("type").toString());
+                            iomp.setCoordinates(geometry.get("coordinates").toString());
+                            item.setItemOsmlintMultipolygon(iomp);
+                        } else {
+                            item.setStatus(520);
+                        }
                     }
                     break;
                 case 410:
