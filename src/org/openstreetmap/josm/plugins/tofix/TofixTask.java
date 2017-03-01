@@ -4,6 +4,8 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
@@ -36,7 +38,7 @@ public class TofixTask {
     MapView mv = null;
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToTask work(Item item, AccessToTask accessToTask, double size) { //size to download    
+    public AccessToTask work(Item item, AccessToTask accessToTask, double size, JsonArray relation) { //size to download    
         if ("Point".equals(item.getType())) {
             accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
         }
@@ -50,7 +52,8 @@ public class TofixTask {
             accessToTask = work_osmlintmultilinestring(item.getItemOsmlintMultilinestring(), accessToTask, size);
         }
         if ("Polygon".equals(item.getType())) {
-            accessToTask = work_osmlintpolygon(item.getItemOsmlintPolygon(), accessToTask, size);
+            accessToTask = work_osmlintpolygon(item.getItemOsmlintPolygon(), accessToTask, size, relation);
+
         }
         if ("MultiPolygon".equals(item.getType())) {
             accessToTask = work_osmlintmultipolygon(item.getItemOsmlintMultipolygon(), accessToTask, size);
@@ -103,13 +106,55 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintpolygon(ItemOsmlintPolygon itemOsmlintPolygon, AccessToTask accessToTask, double size) {
+    private AccessToTask work_osmlintpolygon(ItemOsmlintPolygon itemOsmlintPolygon, AccessToTask accessToTask, double size, JsonArray relation) {
         accessToTask.setKey(itemOsmlintPolygon.getKey());
         List<List<List<Node>>> list = itemOsmlintPolygon.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         checkTofixLayer();
         TofixDraw.draw_lines(tofixLayer, node.getCoor(), list);
+        if (relation!=null && relation.size() > 0) {
+            for (int i = 0; i < relation.size(); i++) {
+                String type = relation.getJsonObject(i).getJsonObject("geometry").get("type").toString();
+                Node node_rel = new Node();
+                if (type.equals("Point")) {
+                    ItemOsmlintPoint point = (ItemOsmlintPoint) relation.getJsonObject(i);
+                    node_rel = point.get_node();
+                    tofixLayer.add_Node(node_rel.getCoor());
+                }
+                if (type.equals("LineString")) {
+                    ItemOsmlintLinestring linestring = (ItemOsmlintLinestring) relation.getJsonObject(i);
+                    List<List<Node>> list_rel = linestring.get_nodes();
+                    node_rel = new Node(new LatLon(list_rel.get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).getCoor().lon()));
+                    tofixLayer.add_Line(list_rel);
+
+                }
+                if (type.equals("MultiPoint")) {
+                    ItemOsmlintMultipoint multipoint = (ItemOsmlintMultipoint) relation.getJsonObject(i);
+                    List<Node> list_rel = multipoint.get_nodes();
+                    node_rel = new Node(new LatLon(list_rel.get(0).getCoor().lat(), list_rel.get(0).getCoor().lon()));
+                    tofixLayer.add_Nodes(list_rel);
+                }
+                if (type.equals("MultiLineString")) {
+                    ItemOsmlintMultilinestring multilinestring = (ItemOsmlintMultilinestring) relation.getJsonObject(i);
+                    List<List<List<Node>>> list_rel = multilinestring.get_nodes();
+                    node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).getCoor().lon()));
+                    tofixLayer.add_lines(list_rel);
+                }
+                if (type.equals("Polygon")) {
+                    ItemOsmlintPolygon polygon = (ItemOsmlintPolygon) relation.getJsonObject(i);
+                    List<List<List<Node>>> list_rel = polygon.get_nodes();
+                    node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).getCoor().lon()));
+                    tofixLayer.add_lines(list_rel);
+                }
+                if (type.equals("MultiPolygon")) {
+                    ItemOsmlintMultipolygon multipolygon = (ItemOsmlintMultipolygon) relation.getJsonObject(i);
+                    List<List<List<List<Node>>>> list_rel = multipolygon.get_nodes();
+                    node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).get(0).getCoor().lon()));
+                    tofixLayer.add_Lines(list_rel);
+                }
+            }
+        }
         Download.download(bounds, itemOsmlintPolygon.getWay());
         return accessToTask;
     }

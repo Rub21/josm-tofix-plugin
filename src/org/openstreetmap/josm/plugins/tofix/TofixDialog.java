@@ -401,7 +401,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         switch (item.getStatus()) {
             case 200:
                 mainAccessToTask.setAccess(true);
-                mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise);
+                mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise, itemController.getRelation());
                 edit();
                 break;
             case 410:
