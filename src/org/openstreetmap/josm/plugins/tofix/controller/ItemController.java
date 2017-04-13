@@ -2,14 +2,12 @@ package org.openstreetmap.josm.plugins.tofix.controller;
 
 import java.io.StringReader;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonValue;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
@@ -31,8 +29,7 @@ public class ItemController {
 
     Item item = new Item();
     ResponseBean responseBean = new ResponseBean();
-    private JsonArray relation=new JsonArray[]();
-
+    JsonArray relation;
     AccessToTask accessToTask;
 
     public AccessToTask getAccessToTask() {
@@ -66,8 +63,9 @@ public class ItemController {
                     JsonObject properties = (JsonObject) object.get("properties");
                     item.setType(geometry.getString("type"));
 
-                    if (!properties.containsKey("relations")) {
-                        setRelation(properties.getJsonArray("relations"));
+                    if (properties.containsKey("relations")) {
+                        JsonArray relation2 = properties.getJsonArray("relations");
+                        setRelation(relation2);
                     }
 
                     if (geometry.getString("type").equals("Point")) {

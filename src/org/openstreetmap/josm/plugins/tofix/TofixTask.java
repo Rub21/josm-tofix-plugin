@@ -111,50 +111,63 @@ public class TofixTask {
         List<List<List<Node>>> list = itemOsmlintPolygon.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon()));
         bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
-        checkTofixLayer();
-        TofixDraw.draw_lines(tofixLayer, node.getCoor(), list);
-        if (relation!=null && relation.size() > 0) {
+
+        if (relation != null && relation.size() > 0) {
             for (int i = 0; i < relation.size(); i++) {
                 String type = relation.getJsonObject(i).getJsonObject("geometry").get("type").toString();
+                JsonObject jo = relation.getJsonObject(i);
                 Node node_rel = new Node();
-                if (type.equals("Point")) {
-                    ItemOsmlintPoint point = (ItemOsmlintPoint) relation.getJsonObject(i);
+                if (type.contains("Point")) {
+                    ItemOsmlintPoint point = new ItemOsmlintPoint();
+                    point.setGeometry(type);
+                    point.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     node_rel = point.get_node();
                     tofixLayer.add_Node(node_rel.getCoor());
                 }
-                if (type.equals("LineString")) {
-                    ItemOsmlintLinestring linestring = (ItemOsmlintLinestring) relation.getJsonObject(i);
+                if (type.contains("LineString")) {
+                    ItemOsmlintLinestring linestring = new ItemOsmlintLinestring();
+                    linestring.setGeometry(type);
+                    linestring.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     List<List<Node>> list_rel = linestring.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).getCoor().lon()));
                     tofixLayer.add_Line(list_rel);
-
                 }
-                if (type.equals("MultiPoint")) {
-                    ItemOsmlintMultipoint multipoint = (ItemOsmlintMultipoint) relation.getJsonObject(i);
+                if (type.contains("MultiPoint")) {
+                    ItemOsmlintMultipoint multipoint = new ItemOsmlintMultipoint();
+                    multipoint.setGeometry(type);
+                    multipoint.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     List<Node> list_rel = multipoint.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).getCoor().lat(), list_rel.get(0).getCoor().lon()));
                     tofixLayer.add_Nodes(list_rel);
                 }
-                if (type.equals("MultiLineString")) {
-                    ItemOsmlintMultilinestring multilinestring = (ItemOsmlintMultilinestring) relation.getJsonObject(i);
+                if (type.contains("MultiLineString")) {
+                    ItemOsmlintMultilinestring multilinestring = new ItemOsmlintMultilinestring();
+                    multilinestring.setGeometry(type);
+                    multilinestring.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     List<List<List<Node>>> list_rel = multilinestring.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).getCoor().lon()));
                     tofixLayer.add_lines(list_rel);
                 }
-                if (type.equals("Polygon")) {
-                    ItemOsmlintPolygon polygon = (ItemOsmlintPolygon) relation.getJsonObject(i);
+                if (type.contains("Polygon")) {
+                    ItemOsmlintPolygon polygon = new ItemOsmlintPolygon();
+                    polygon.setGeometry(type);
+                    polygon.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     List<List<List<Node>>> list_rel = polygon.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).getCoor().lon()));
                     tofixLayer.add_lines(list_rel);
                 }
-                if (type.equals("MultiPolygon")) {
-                    ItemOsmlintMultipolygon multipolygon = (ItemOsmlintMultipolygon) relation.getJsonObject(i);
+                if (type.contains("MultiPolygon")) {
+                    ItemOsmlintMultipolygon multipolygon = new ItemOsmlintMultipolygon();
+                    multipolygon.setGeometry(type);
+                    multipolygon.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     List<List<List<List<Node>>>> list_rel = multipolygon.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).get(0).getCoor().lon()));
                     tofixLayer.add_Lines(list_rel);
                 }
             }
         }
+        checkTofixLayer();
+        TofixDraw.draw_lines(tofixLayer, node.getCoor(), list);
         Download.download(bounds, itemOsmlintPolygon.getWay());
         return accessToTask;
     }
