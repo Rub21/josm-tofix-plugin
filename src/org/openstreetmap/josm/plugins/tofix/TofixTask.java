@@ -110,7 +110,6 @@ public class TofixTask {
         accessToTask.setKey(itemOsmlintPolygon.getKey());
         List<List<List<Node>>> list = itemOsmlintPolygon.get_nodes();
         node = new Node(new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon()));
-        bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
 
         if (relation != null && relation.size() > 0) {
             for (int i = 0; i < relation.size(); i++) {
@@ -123,6 +122,7 @@ public class TofixTask {
                     point.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
                     node_rel = point.get_node();
                     tofixLayer.add_Node(node_rel.getCoor());
+                    bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
                 }
                 if (type.contains("LineString")) {
                     ItemOsmlintLinestring linestring = new ItemOsmlintLinestring();
@@ -131,6 +131,7 @@ public class TofixTask {
                     List<List<Node>> list_rel = linestring.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).getCoor().lon()));
                     tofixLayer.add_Line(list_rel);
+                    bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
                 }
                 if (type.contains("MultiPoint")) {
                     ItemOsmlintMultipoint multipoint = new ItemOsmlintMultipoint();
@@ -165,6 +166,9 @@ public class TofixTask {
                     tofixLayer.add_Lines(list_rel);
                 }
             }
+        }
+        if (bounds == null) {
+            bounds = new Bounds(node.getCoor().toBBox(size).toRectangle());
         }
         checkTofixLayer();
         TofixDraw.draw_lines(tofixLayer, node.getCoor(), list);
