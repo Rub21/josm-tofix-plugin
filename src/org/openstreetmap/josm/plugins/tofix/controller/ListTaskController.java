@@ -4,16 +4,17 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.Collator;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
@@ -25,8 +26,8 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
  */
 public class ListTaskController {
 
-    private ListTaskBean listTasksBean = new ListTaskBean();
-    private String url;
+    private final ListTaskBean listTasksBean = new ListTaskBean();
+    private final String url;
 
     /**
      * Constructs a new {@code ListTaskController}.
@@ -46,6 +47,7 @@ public class ListTaskController {
                     JsonObject jsontask = jsonReader2.readObject();
                     JsonObject value_jsontask = (JsonObject) jsontask.get("value");
                     JsonObject stats_jsontask = (JsonObject) value_jsontask.get("stats");
+                    if (value_jsontask != null) {
                         taskBean.setIdtask(jsontask.getString("idtask"));
                         taskBean.setIsCompleted(jsontask.getBoolean("isCompleted"));
                         taskBean.setIsAllItemsLoad(jsontask.getBoolean("isAllItemsLoad"));
@@ -54,25 +56,25 @@ public class ListTaskController {
                         taskBean.setDescription(value_jsontask.getString("description"));
                         taskBean.setUpdated(value_jsontask.getJsonNumber("updated").toString());
                         taskBean.setChangesetComment(value_jsontask.getString("changesetComment"));
-                        taskBean.setDate(stats_jsontask.getJsonNumber("date").toString());
-                        taskBean.setEdit(Integer.parseInt(stats_jsontask.getJsonNumber("edit").toString()));
-                        taskBean.setFixed(Integer.parseInt(stats_jsontask.getJsonNumber("fixed").toString()));
-                        taskBean.setSkip(Integer.parseInt(stats_jsontask.getJsonNumber("skip").toString()));
-                        taskBean.setType(stats_jsontask.getString("type"));
-                        taskBean.setItems(Integer.parseInt(stats_jsontask.getJsonNumber("items").toString()));
-                        taskBean.setNoterror(Integer.parseInt(stats_jsontask.getJsonNumber("noterror").toString()));
+
+                        if (stats_jsontask != null) {
+                            taskBean.setDate(stats_jsontask.getJsonNumber("date").toString());
+                            taskBean.setEdit(Integer.parseInt(stats_jsontask.getJsonNumber("edit").toString()));
+                            taskBean.setFixed(Integer.parseInt(stats_jsontask.getJsonNumber("fixed").toString()));
+                            taskBean.setSkip(Integer.parseInt(stats_jsontask.getJsonNumber("skip").toString()));
+                            taskBean.setType(stats_jsontask.getString("type"));
+                            taskBean.setItems(Integer.parseInt(stats_jsontask.getJsonNumber("items").toString()));
+                            taskBean.setNoterror(Integer.parseInt(stats_jsontask.getJsonNumber("noterror").toString()));
+                        }
+
+                    }
                 }
                 tasks.add(taskBean);
             }
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             Logger.getLogger(ListTaskController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Collections.sort(tasks, new Comparator<TaskBean>() {
-            @Override
-            public int compare(TaskBean o1, TaskBean o2) {
-                return Collator.getInstance().compare(o1.getName(), o2.getName());
-            }
-        });
+        Collections.sort(tasks, (o1, o2) -> Collator.getInstance().compare(o1.getName(), o2.getName()));
         listTasksBean.setTasks(tasks);
         return listTasksBean;
     }

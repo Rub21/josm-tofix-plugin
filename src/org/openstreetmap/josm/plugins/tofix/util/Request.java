@@ -1,14 +1,13 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
-import java.nio.charset.StandardCharsets;
-import java.net.*;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Arrays;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 
+import org.openstreetmap.josm.gui.JosmUserIdentityManager;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.HttpClient.Response;
