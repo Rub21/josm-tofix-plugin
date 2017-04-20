@@ -14,6 +14,9 @@ public class Item {
     private ItemOsmlintPoint itemOsmlintPoint;
     private ItemOsmlintMultipoint itemOsmlintMultipoint;
     private ItemOsmlintLinestring itemOsmlintLinestring;
+    private ItemOsmlintMultilinestring itemOsmlintMultilinestring;
+    private ItemOsmlintPolygon itemOsmlintPolygon;
+    private ItemOsmlintMultipolygon itemOsmlintMultipolygon;
 
     public int getStatus() {
         return status;
@@ -61,6 +64,30 @@ public class Item {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public ItemOsmlintMultilinestring getItemOsmlintMultilinestring() {
+        return itemOsmlintMultilinestring;
+    }
+
+    public void setItemOsmlintMultilinestring(ItemOsmlintMultilinestring itemOsmlintMultilinestring) {
+        this.itemOsmlintMultilinestring = itemOsmlintMultilinestring;
+    }
+
+    public ItemOsmlintPolygon getItemOsmlintPolygon() {
+        return itemOsmlintPolygon;
+    }
+
+    public void setItemOsmlintPolygon(ItemOsmlintPolygon itemOsmlintPolygon) {
+        this.itemOsmlintPolygon = itemOsmlintPolygon;
+    }
+
+    public ItemOsmlintMultipolygon getItemOsmlintMultipolygon() {
+        return itemOsmlintMultipolygon;
+    }
+
+    public void setItemOsmlintMultipolygon(ItemOsmlintMultipolygon itemOsmlintMultipolygon) {
+        this.itemOsmlintMultipolygon = itemOsmlintMultipolygon;
     }
 
 }
