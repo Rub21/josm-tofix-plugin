@@ -66,7 +66,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JSlider slider = new JSlider(JSlider.HORIZONTAL, 1, 5, 1);
 
     //size to download
-    double zise = 0.001; //per default
+    double zise = 0.0006; //per default
 
     AccessToTask mainAccessToTask = null;
     // Task list

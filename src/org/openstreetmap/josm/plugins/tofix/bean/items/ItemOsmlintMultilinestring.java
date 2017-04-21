@@ -8,6 +8,8 @@ import org.openstreetmap.josm.data.osm.Node;
 
 public class ItemOsmlintMultilinestring extends AbstractItemOsmlint {
 
+    List<Node> bound = new LinkedList<>();
+
     public List<List<List<Node>>> get_nodes() {
         String geostring = getCoordinates();
         List<List<List<Node>>> list = new LinkedList<>();
@@ -23,8 +25,10 @@ public class ItemOsmlintMultilinestring extends AbstractItemOsmlint {
                 Node node = new Node(latLon);
                 l.add(node);
             }
+            bound.addAll(l);
             ll.add(l);
         }
+        boundSize(bound);
         list.add(ll);
 
         return list;

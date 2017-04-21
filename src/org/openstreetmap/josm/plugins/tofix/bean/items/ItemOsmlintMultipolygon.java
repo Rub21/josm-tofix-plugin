@@ -12,6 +12,8 @@ import org.openstreetmap.josm.data.osm.Node;
  */
 public class ItemOsmlintMultipolygon extends AbstractItemOsmlint {
 
+    List<Node> bound = new LinkedList<>();
+
     public List<List<List<List<Node>>>> get_nodes() {
         String geostring = getCoordinates();
         List<List<List<List<Node>>>> list = new LinkedList<>();
@@ -35,10 +37,12 @@ public class ItemOsmlintMultipolygon extends AbstractItemOsmlint {
                     Node node = new Node(latLon);
                     l.add(node);
                 }
+                bound.addAll(l);
                 ll.add(l);
             }
             lll.add(ll);
         }
+        boundSize(bound);
         list.add(lll);
         return list;
     }

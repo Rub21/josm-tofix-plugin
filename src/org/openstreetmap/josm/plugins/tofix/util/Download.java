@@ -25,6 +25,7 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 public class Download {
 
     public static void download(Bounds bounds, final Long osm_obj_id) {
+        System.out.println("Estoy en download");
         DownloadOsmTask task = new DownloadOsmTask();
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
