@@ -12,6 +12,8 @@ import org.openstreetmap.josm.data.osm.Node;
  */
 public class ItemOsmlintMultipoint extends AbstractItemOsmlint {
 
+    List<Node> bound = new LinkedList<>();
+
     public List<Node> get_nodes() {
         String geoString = getCoordinates();
         List<Node> list = new LinkedList<>();
@@ -24,6 +26,8 @@ public class ItemOsmlintMultipoint extends AbstractItemOsmlint {
             Node node = new Node(latLon);
             list.add(node);
         }
+        bound.addAll(list);
+        boundSize(bound);
         return list;
     }
 }

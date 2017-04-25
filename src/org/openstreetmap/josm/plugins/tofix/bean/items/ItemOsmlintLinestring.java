@@ -1,5 +1,8 @@
 package org.openstreetmap.josm.plugins.tofix.bean.items;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,6 +14,8 @@ import org.openstreetmap.josm.data.osm.Node;
  * @author samely
  */
 public class ItemOsmlintLinestring extends AbstractItemOsmlint {
+
+    List<Node> bound = new LinkedList<>();
 
     public List<List<Node>> get_nodes() {
         String geostring = getCoordinates();
@@ -24,6 +29,8 @@ public class ItemOsmlintLinestring extends AbstractItemOsmlint {
             Node node = new Node(latLon);
             l.add(node);
         }
+        bound.addAll(l);
+        boundSize(bound);
         list.add(l);
 
         return list;

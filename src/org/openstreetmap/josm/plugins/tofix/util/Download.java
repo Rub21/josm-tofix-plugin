@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openstreetmap.josm.Main;
+import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -25,6 +26,7 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 public class Download {
 
     public static void download(Bounds bounds, final Long osm_obj_id) {
+        System.out.println("Estoy en download");
         DownloadOsmTask task = new DownloadOsmTask();
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
@@ -58,6 +60,7 @@ public class Download {
                                 selection.add(relation);
                                 Main.getLayerManager().getEditDataSet().setSelected(selection);
                             }
+                            AutoScaleAction.autoScale("selection");
                         }
                     }
                 } catch (InterruptedException | ExecutionException ex) {
@@ -65,7 +68,7 @@ public class Download {
                 }
             }
         };
-
         Main.worker.submit(runAfterTask);
+
     }
 }
