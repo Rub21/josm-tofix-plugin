@@ -140,7 +140,6 @@ public class TofixTask {
         node = new Node(new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon()));
 
         if (relation != null && relation.size() > 0) {
-            System.out.println("has relation");
             for (int i = 0; i < relation.size(); i++) {
                 String type = relation.getJsonObject(i).getJsonObject("geometry").get("type").toString();
                 JsonObject jo = relation.getJsonObject(i);

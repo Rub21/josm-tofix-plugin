@@ -26,7 +26,6 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 public class Download {
 
     public static void download(Bounds bounds, final Long osm_obj_id) {
-        System.out.println("Estoy en download");
         DownloadOsmTask task = new DownloadOsmTask();
         ProgressMonitor monitor = null;
         final Future<?> future = task.download(true, bounds, monitor);
@@ -60,7 +59,9 @@ public class Download {
                                 selection.add(relation);
                                 Main.getLayerManager().getEditDataSet().setSelected(selection);
                             }
-                            AutoScaleAction.autoScale("selection");
+                            if (!selection.isEmpty()) {
+                                AutoScaleAction.autoScale("selection");
+                            }
                         }
                     }
                 } catch (InterruptedException | ExecutionException ex) {
