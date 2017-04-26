@@ -55,7 +55,6 @@ public abstract class AbstractItemGeom extends ItemTask {
             Double xMin = Collections.min(xList);
             Double yMax = Collections.max(yList);
             Double yMin = Collections.min(yList);
-            System.out.println("Esto son los puntos en abstract: "+xMax+" " +yMin+" "+(xMax-xMin)+" "+(yMax-yMin));
 
             setRectangle2D(new Rectangle.Double(xMin, yMin, xMax-xMin, yMax-yMin));
         } catch (Exception e) {
