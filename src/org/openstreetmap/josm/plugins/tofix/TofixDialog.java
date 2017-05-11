@@ -423,7 +423,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         OpenBrowser.displayUrl(Config.URL_TOFIX_ISSUES);
                     }
                 });
-                JOptionPane.showMessageDialog(Main.panel, text, tr("Warning"), JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(Main.parent, text, tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 break;
             default:
                 mainAccessToTask.setAccess(false);
