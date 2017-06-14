@@ -39,6 +39,7 @@ public class Download {
                         future.get();
                         //create object
                         if (future.isDone()) {
+
                             DataSet dataset = Main.getLayerManager().getEditLayer().data;
                             Node node = new Node(osm_obj_id);
                             Relation relation = new Relation(osm_obj_id);
