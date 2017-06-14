@@ -148,9 +148,9 @@ public class TofixTask {
                     ItemOsmlintPoint point = new ItemOsmlintPoint();
                     point.setGeometry(type);
                     point.setCoordinates(jo.getJsonObject("geometry").get("coordinates").toString());
+
                     node_rel = point.get_node();
                     tofixLayer.add_Node(node_rel.getCoor());
-                    //bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
                 }
                 if (type.contains("LineString")) {
                     ItemOsmlintLinestring linestring = new ItemOsmlintLinestring();
@@ -159,7 +159,7 @@ public class TofixTask {
                     List<List<Node>> list_rel = linestring.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).getCoor().lon()));
                     tofixLayer.add_Line(list_rel);
-                    //bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
+
                 }
                 if (type.contains("MultiPoint")) {
                     ItemOsmlintMultipoint multipoint = new ItemOsmlintMultipoint();
@@ -168,7 +168,6 @@ public class TofixTask {
                     List<Node> list_rel = multipoint.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).getCoor().lat(), list_rel.get(0).getCoor().lon()));
                     tofixLayer.add_Nodes(list_rel);
-                    //bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
 
                 }
                 if (type.contains("MultiLineString")) {
@@ -178,7 +177,6 @@ public class TofixTask {
                     List<List<List<Node>>> list_rel = multilinestring.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).getCoor().lon()));
                     tofixLayer.add_lines(list_rel);
-                    //bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
 
                 }
                 if (type.contains("Polygon")) {
@@ -188,7 +186,6 @@ public class TofixTask {
                     List<List<List<Node>>> list_rel = polygon.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).getCoor().lon()));
                     tofixLayer.add_lines(list_rel);
-                    // bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
 
                 }
                 if (type.contains("MultiPolygon")) {
@@ -198,8 +195,6 @@ public class TofixTask {
                     List<List<List<List<Node>>>> list_rel = multipolygon.get_nodes();
                     node_rel = new Node(new LatLon(list_rel.get(0).get(0).get(0).get(0).getCoor().lat(), list_rel.get(0).get(0).get(0).get(0).getCoor().lon()));
                     tofixLayer.add_Lines(list_rel);
-                    //bounds = new Bounds(node_rel.getCoor().toBBox(size).toRectangle());
-
                 }
             }
         }

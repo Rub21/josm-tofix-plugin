@@ -8,6 +8,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
@@ -96,6 +97,7 @@ public class ItemController {
                     if (geometry.getString("type").equals("LineString")) {
                         ItemOsmlintLinestring iol = new ItemOsmlintLinestring();
                         iol.setKey(properties.getString("_key"));
+                        iol.setWay(Long.parseLong(properties.getString("_osmId")));
                         if (object.containsKey("geometry")) {
                             iol.setGeometry(geometry.getJsonString("type").toString());
                             iol.setCoordinates(geometry.get("coordinates").toString());
@@ -107,6 +109,7 @@ public class ItemController {
                     if (geometry.getString("type").equals("MultiLineString")) {
                         ItemOsmlintMultilinestring ioml = new ItemOsmlintMultilinestring();
                         ioml.setKey(properties.getString("_key"));
+                        ioml.setWay(Long.parseLong(properties.getString("_osmId")));
                         if (object.containsKey("geometry")) {
                             ioml.setGeometry(geometry.getJsonString("type").toString());
                             ioml.setCoordinates(geometry.get("coordinates").toString());
@@ -118,6 +121,12 @@ public class ItemController {
                     if (geometry.getString("type").equals("Polygon")) {
                         ItemOsmlintPolygon iop = new ItemOsmlintPolygon();
                         iop.setKey(properties.getString("_key"));
+                        if (properties.get("_osmId").getValueType().compareTo(JsonValue.ValueType.STRING)==0) {
+                            iop.setWay(Long.parseLong(properties.getString("_osmId")));
+                        } else {
+                            iop.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+                        }
+
                         if (object.containsKey("geometry")) {
                             iop.setGeometry(geometry.getJsonString("type").toString());
                             iop.setCoordinates(geometry.get("coordinates").toString());
@@ -129,6 +138,7 @@ public class ItemController {
                     if (geometry.getString("type").equals("MultiPolygon")) {
                         ItemOsmlintMultipolygon iomp = new ItemOsmlintMultipolygon();
                         iomp.setKey(properties.getString("_key"));
+                        iomp.setWay(Long.parseLong(properties.getString("_osmId")));
                         if (object.containsKey("geometry")) {
                             iomp.setGeometry(geometry.getJsonString("type").toString());
                             iomp.setCoordinates(geometry.get("coordinates").toString());
