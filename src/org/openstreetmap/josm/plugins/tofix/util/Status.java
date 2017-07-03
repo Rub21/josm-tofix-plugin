@@ -13,7 +13,7 @@ import org.openstreetmap.josm.tools.HttpClient;
  */
 public class Status {
 
-    static final String host = Config.HOST;
+    static final String host = Config.getHOST();
 
     public static boolean server() {
         return "a ok".equals(new StatusController(host).getStatusBean().getStatus());

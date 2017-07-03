@@ -33,7 +33,7 @@ public class ListTaskController {
      * Constructs a new {@code ListTaskController}.
      */
     public ListTaskController() {
-        this.url = Config.HOST + "/tasks";
+        this.url = Config.getHOST() + "/tasks";
     }
 
     public ListTaskBean getListTasksBean() {

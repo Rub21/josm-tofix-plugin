@@ -47,6 +47,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 import java.util.ArrayList;
+import javax.swing.JTextField;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
@@ -90,15 +91,17 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jcontenConfig = new JPanel(new GridLayout(2, 1));
     JPanel panelslide = new JPanel(new GridLayout(1, 1));
 
-    JPanel jcontenActivation = new JPanel(new GridLayout(3, 1));
+    JPanel jcontenActivation = new JPanel(new GridLayout(4, 1));
     JPanel panelactivationPlugin = new JPanel(new GridLayout(1, 1));
     JPanel panelactivationLayer = new JPanel(new GridLayout(1, 1));
+    JPanel panelactivationUrl = new JPanel(new GridLayout(2, 1));
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
     boolean checkboxStatus;
     boolean checkboxStatusLayer;
+    boolean checkboxStatusUrl;
 
     public TofixDialog() {
 
@@ -135,11 +138,37 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
+        //CONFIG URL
+        JCheckBox checkUrl = new JCheckBox(tr("Set default url"));
+        checkUrl.setSelected(true);
+        checkboxStatusUrl = checkUrl.isSelected();
+
+        checkUrl.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                checkboxStatusUrl = e.getStateChange() == ItemEvent.SELECTED;
+                if (checkboxStatusUrl == true) {
+                    Config.setHOST(Config.DEFAULT_HOST);
+                } else {
+                    String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
+                    if (newHost.isEmpty()) {
+                        Config.setHOST(Config.DEFAULT_HOST);
+                        JOptionPane.showMessageDialog(Main.parent,tr("Setting default URL"));
+                    } else {
+                        Config.setHOST(newHost);
+                    }
+                }
+            }
+        });
+
         jcontenActivation.add(new Label(tr("Select the checkbox to:")));
         panelactivationPlugin.add(checkPlugin);
         panelactivationLayer.add(checkLayer);
+        panelactivationUrl.add(checkUrl);
+
         jcontenActivation.add(panelactivationPlugin);
         jcontenActivation.add(panelactivationLayer);
+        jcontenActivation.add(panelactivationUrl);
 
         //BUTTONS
         // "Skip" button
@@ -259,6 +288,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
             TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
             TabbedPanel.addTab(tr("Config"), jcontenConfig);
