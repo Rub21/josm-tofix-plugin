@@ -47,6 +47,7 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
@@ -101,7 +102,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     TofixTask tofixTask = new TofixTask();
     boolean checkboxStatus;
     boolean checkboxStatusLayer;
-    boolean checkboxStatusUrl;
 
     public TofixDialog() {
 
@@ -141,33 +141,18 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         //CONFIG URL
         JCheckBox checkUrl = new JCheckBox(tr("Set default url"));
         checkUrl.setSelected(true);
-        checkboxStatusUrl = checkUrl.isSelected();
-
-        checkUrl.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                checkboxStatusUrl = e.getStateChange() == ItemEvent.SELECTED;
-                if (checkboxStatusUrl == true) {
-                    Config.setHOST(Config.DEFAULT_HOST);
-                } else {
-                    String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
-                    if (newHost.isEmpty()) {
-                        Config.setHOST(Config.DEFAULT_HOST);
-                        JOptionPane.showMessageDialog(Main.parent,tr("Setting default URL"));
-                    } else {
-                        Config.setHOST(newHost);
-                    }
-                }
-            }
-        });
 
         jcontenActivation.add(new Label(tr("Select the checkbox to:")));
         panelactivationPlugin.add(checkPlugin);
+
         panelactivationLayer.add(checkLayer);
+
         panelactivationUrl.add(checkUrl);
 
         jcontenActivation.add(panelactivationPlugin);
+
         jcontenActivation.add(panelactivationLayer);
+
         jcontenActivation.add(panelactivationUrl);
 
         //BUTTONS
@@ -190,7 +175,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             }
         });
-        skipButton.setEnabled(false);
+
+        skipButton.setEnabled(
+                false);
 
         // "Fixed" button
         fixedButton = new SideButton(new AbstractAction() {
@@ -210,7 +197,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
-        fixedButton.setEnabled(false);
+        fixedButton.setEnabled(
+                false);
 
         // "Not a error" button
         noterrorButton = new SideButton(new AbstractAction() {
@@ -231,33 +219,70 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
-        noterrorButton.setEnabled(false);
+        noterrorButton.setEnabled(
+                false);
 
         //add tittle for To-fix task
         JLabel title_tasks = new javax.swing.JLabel();
+
         title_tasks.setText(tr("<html><a href=\"\">List of tasks</a></html>"));
-        title_tasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        title_tasks.addMouseListener(new MouseAdapter() {
+        title_tasks.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+        title_tasks.addMouseListener(
+                new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e
+            ) {
                 OpenBrowser.displayUrl(Config.URL_TOFIX);
             }
-        });
+        }
+        );
         jcontenTasks.add(title_tasks);
-
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<>();
-        tasksList.add(tr("Select a task ..."));
 
+        tasksList.add(tr("Select a task ..."));
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                 tasksList.add(listTaskBean.getTasks().get(i).getName());
             }
+
             JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
             valuePanel.add(jcomboBox);
             jcomboBox.addActionListener(this);
             jcontenTasks.add(valuePanel);
+
+            checkUrl.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (checkUrl.isSelected()) {
+                        Config.setHOST(Config.DEFAULT_HOST);
+                        JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
+                    } else {
+                        try {
+                            String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
+                            if (newHost.isEmpty()) {
+                                Config.setHOST(Config.DEFAULT_HOST);
+                                JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
+                            } else {
+                                Config.setHOST(newHost);
+                                JOptionPane.showMessageDialog(Main.parent, tr("Setting new URL: " + newHost));
+                            }
+                        } catch (Exception exc) {
+                        }
+                    }
+                    tasksList.clear();
+                    tasksList.add(tr("Select a task ..."));
+                    listTaskBean = listTaskController.getListTasksBean();
+                    for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
+                        tasksList.add(listTaskBean.getTasks().get(i).getName());
+                    }
+                    jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
+
+                }
+            }
+            );
 
             //add title to download
             jcontenConfig.add(new Label(tr("Set download area (m²)")));
