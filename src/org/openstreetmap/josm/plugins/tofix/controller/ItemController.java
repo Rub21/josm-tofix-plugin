@@ -52,6 +52,7 @@ public class ItemController {
     public Item getItem() {
 
         try {
+            System.out.println("this is host in itemcontroller get item: " + accessToTask.getTask_url());
             responseBean = Request.sendPOST(accessToTask.getTask_url());
             item.setStatus(responseBean.getStatus());
             Util.print(responseBean.getValue());
@@ -72,8 +73,11 @@ public class ItemController {
                     if (geometry.getString("type").equals("Point")) {
                         ItemOsmlintPoint iop = new ItemOsmlintPoint();
                         iop.setKey(properties.getString("_key"));
-                        if (properties.containsKey("_osmId") && geometry.containsKey("type")) {
-                            iop.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+
+                        if (geometry.containsKey("type")) {
+                            if (properties.containsKey("_osmId")) {
+                                iop.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+                            }
                             iop.setGeometry(geometry.getJsonString("type").toString());
                             iop.setCoordinates(geometry.get("coordinates").toString());
                             item.setItemOsmlintPoint(iop);
@@ -84,8 +88,10 @@ public class ItemController {
                     if (geometry.getString("type").equals("MultiPoint")) {
                         ItemOsmlintMultipoint iom = new ItemOsmlintMultipoint();
                         iom.setKey(properties.getString("_key"));
-                        if (properties.containsKey("_osmId") && geometry.containsKey("type")) {
-                            iom.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+                        if (geometry.containsKey("type")) {
+                            if (properties.containsKey("_osmId")) {
+                                iom.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+                            }
                             iom.setGeometry(geometry.getJsonString("type").toString());
                             iom.setCoordinates(geometry.get("coordinates").toString());
                             item.setItemOsmlintMultipoint(iom);
@@ -97,7 +103,9 @@ public class ItemController {
                     if (geometry.getString("type").equals("LineString")) {
                         ItemOsmlintLinestring iol = new ItemOsmlintLinestring();
                         iol.setKey(properties.getString("_key"));
-                        iol.setWay(Long.parseLong(properties.getString("_osmId")));
+                        if (properties.containsKey("_osmId")) {
+                            iol.setWay(Long.parseLong(properties.getString("_osmId")));
+                        }
                         if (object.containsKey("geometry")) {
                             iol.setGeometry(geometry.getJsonString("type").toString());
                             iol.setCoordinates(geometry.get("coordinates").toString());
@@ -109,7 +117,9 @@ public class ItemController {
                     if (geometry.getString("type").equals("MultiLineString")) {
                         ItemOsmlintMultilinestring ioml = new ItemOsmlintMultilinestring();
                         ioml.setKey(properties.getString("_key"));
-                        ioml.setWay(Long.parseLong(properties.getString("_osmId")));
+                        if (properties.containsKey("_osmId")) {
+                            ioml.setWay(Long.parseLong(properties.getString("_osmId")));
+                        }
                         if (object.containsKey("geometry")) {
                             ioml.setGeometry(geometry.getJsonString("type").toString());
                             ioml.setCoordinates(geometry.get("coordinates").toString());
@@ -121,12 +131,13 @@ public class ItemController {
                     if (geometry.getString("type").equals("Polygon")) {
                         ItemOsmlintPolygon iop = new ItemOsmlintPolygon();
                         iop.setKey(properties.getString("_key"));
-                        if (properties.get("_osmId").getValueType().compareTo(JsonValue.ValueType.STRING)==0) {
-                            iop.setWay(Long.parseLong(properties.getString("_osmId")));
-                        } else {
-                            iop.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+                        if (properties.containsKey("_osmId")) {
+                            if (properties.get("_osmId").getValueType().compareTo(JsonValue.ValueType.STRING) == 0) {
+                                iop.setWay(Long.parseLong(properties.getString("_osmId")));
+                            } else {
+                                iop.setWay(Long.parseLong(properties.getJsonNumber("_osmId").toString()));
+                            }
                         }
-
                         if (object.containsKey("geometry")) {
                             iop.setGeometry(geometry.getJsonString("type").toString());
                             iop.setCoordinates(geometry.get("coordinates").toString());
@@ -138,7 +149,9 @@ public class ItemController {
                     if (geometry.getString("type").equals("MultiPolygon")) {
                         ItemOsmlintMultipolygon iomp = new ItemOsmlintMultipolygon();
                         iomp.setKey(properties.getString("_key"));
-                        iomp.setWay(Long.parseLong(properties.getString("_osmId")));
+                        if (properties.containsKey("_osmId")) {
+                            iomp.setWay(Long.parseLong(properties.getString("_osmId")));
+                        }
                         if (object.containsKey("geometry")) {
                             iomp.setGeometry(geometry.getJsonString("type").toString());
                             iomp.setCoordinates(geometry.get("coordinates").toString());

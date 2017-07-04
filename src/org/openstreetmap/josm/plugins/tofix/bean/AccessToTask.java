@@ -44,6 +44,7 @@ public class AccessToTask {
     }
 
     public String getTask_url() {
+        System.out.println("Esto es host en accesstotask "+this.getHost());
         String url = this.getHost() + "/tasks/" + this.getTask_idtask()+"/"+this.getTask_type()+"/items";
         return url;
     }

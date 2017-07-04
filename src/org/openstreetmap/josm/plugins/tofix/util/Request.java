@@ -19,6 +19,7 @@ import org.openstreetmap.josm.tools.HttpClient.Response;
 public class Request {
 
     public static ResponseBean sendPOST(String url) throws IOException {
+        System.out.println("Esto es el url en sendpost" + url);
         Map<String, String> params = new LinkedHashMap<>();
         params.put("user", JosmUserIdentityManager.getInstance().getUserName());
         params.put("editor", "josm");
@@ -45,6 +46,8 @@ public class Request {
     }
 
     public static void sendPOST_Json(String url, String object) throws IOException {
+        System.out.println("Esto es el url en sendpost_json" + url);
+
         HttpClient.create(new URL(url), "POST")
                 .setHeader("Content-Type", "application/json")
                 .setAccept("application/json")
@@ -53,6 +56,8 @@ public class Request {
     }
 
     public static String sendGET(String url) throws IOException {
+        System.out.println("Esto es el url en sendget" + url);
+
         Response response = HttpClient.create(new URL(url)).connect();
         String result = response.fetchContent();
         response.disconnect();
@@ -60,6 +65,8 @@ public class Request {
     }
 
     public static void sendPUT_Json(String url, String object) throws IOException {
+        System.out.println("Esto es el url en sendput_json" + url);
+
         HttpClient.create(new URL(url), "PUT")
                 .setHeader("Content-Type", "application/json")
                 .setAccept("application/json")

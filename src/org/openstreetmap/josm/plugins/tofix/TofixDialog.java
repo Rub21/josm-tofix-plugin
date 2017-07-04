@@ -197,8 +197,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
-        fixedButton.setEnabled(
-                false);
+        fixedButton.setEnabled(false);
 
         // "Not a error" button
         noterrorButton = new SideButton(new AbstractAction() {
@@ -219,8 +218,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
-        noterrorButton.setEnabled(
-                false);
+        noterrorButton.setEnabled(false);
 
         //add tittle for To-fix task
         JLabel title_tasks = new javax.swing.JLabel();
@@ -238,6 +236,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
         );
         jcontenTasks.add(title_tasks);
+
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<>();
 
@@ -256,6 +255,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             checkUrl.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     if (checkUrl.isSelected()) {
                         Config.setHOST(Config.DEFAULT_HOST);
                         JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
@@ -272,14 +272,21 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         } catch (Exception exc) {
                         }
                     }
+                    listTaskController = new ListTaskController();
+                    itemTrackController=new ItemTrackController();
+                    itemController=new ItemController();
+                    System.out.println("This is the host: " + Config.getHOST());
                     tasksList.clear();
+                    System.out.println("This is the new size: " + tasksList.size());
                     tasksList.add(tr("Select a task ..."));
                     listTaskBean = listTaskController.getListTasksBean();
                     for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                         tasksList.add(listTaskBean.getTasks().get(i).getName());
                     }
+                    jcomboBox.setModel(new DefaultComboBoxModel<>());
+                    System.out.println("This is combo size " + jcomboBox.getSize());
                     jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
-
+                    jcomboBox.addActionListener(TofixDialog.this);
                 }
             }
             );
@@ -397,6 +404,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("Estoy entrno a action listenr de tofix dialog");
         start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
