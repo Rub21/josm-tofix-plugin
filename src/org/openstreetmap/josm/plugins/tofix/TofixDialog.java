@@ -47,6 +47,8 @@ import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
@@ -90,9 +92,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jcontenConfig = new JPanel(new GridLayout(2, 1));
     JPanel panelslide = new JPanel(new GridLayout(1, 1));
 
-    JPanel jcontenActivation = new JPanel(new GridLayout(3, 1));
+    JPanel jcontenActivation = new JPanel(new GridLayout(4, 1));
     JPanel panelactivationPlugin = new JPanel(new GridLayout(1, 1));
     JPanel panelactivationLayer = new JPanel(new GridLayout(1, 1));
+    JPanel panelactivationUrl = new JPanel(new GridLayout(2, 1));
 
     JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
 
@@ -135,11 +138,22 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
 
+        //CONFIG URL
+        JCheckBox checkUrl = new JCheckBox(tr("Set default url"));
+        checkUrl.setSelected(true);
+
         jcontenActivation.add(new Label(tr("Select the checkbox to:")));
         panelactivationPlugin.add(checkPlugin);
+
         panelactivationLayer.add(checkLayer);
+
+        panelactivationUrl.add(checkUrl);
+
         jcontenActivation.add(panelactivationPlugin);
+
         jcontenActivation.add(panelactivationLayer);
+
+        jcontenActivation.add(panelactivationUrl);
 
         //BUTTONS
         // "Skip" button
@@ -161,7 +175,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             }
         });
-        skipButton.setEnabled(false);
+
+        skipButton.setEnabled(
+                false);
 
         // "Fixed" button
         fixedButton = new SideButton(new AbstractAction() {
@@ -206,29 +222,74 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
         //add tittle for To-fix task
         JLabel title_tasks = new javax.swing.JLabel();
+
         title_tasks.setText(tr("<html><a href=\"\">List of tasks</a></html>"));
-        title_tasks.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        title_tasks.addMouseListener(new MouseAdapter() {
+        title_tasks.setCursor(
+                new Cursor(Cursor.HAND_CURSOR));
+        title_tasks.addMouseListener(
+                new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e
+            ) {
                 OpenBrowser.displayUrl(Config.URL_TOFIX);
             }
-        });
+        }
+        );
         jcontenTasks.add(title_tasks);
 
         // JComboBox for each task
         ArrayList<String> tasksList = new ArrayList<>();
-        tasksList.add(tr("Select a task ..."));
 
+        tasksList.add(tr("Select a task ..."));
         if (Status.isInternetReachable()) { //checkout  internet connection
             listTaskBean = listTaskController.getListTasksBean();
             for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                 tasksList.add(listTaskBean.getTasks().get(i).getName());
             }
+
             JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
             valuePanel.add(jcomboBox);
             jcomboBox.addActionListener(this);
             jcontenTasks.add(valuePanel);
+
+            checkUrl.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    if (checkUrl.isSelected()) {
+                        Config.setHOST(Config.DEFAULT_HOST);
+                        JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
+                    } else {
+                        try {
+                            String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
+                            if (newHost.isEmpty()) {
+                                Config.setHOST(Config.DEFAULT_HOST);
+                                JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
+                            } else {
+                                Config.setHOST(newHost);
+                                JOptionPane.showMessageDialog(Main.parent, tr("Setting new URL: " + newHost));
+                            }
+                        } catch (Exception exc) {
+                        }
+                    }
+                    listTaskController = new ListTaskController();
+                    itemTrackController=new ItemTrackController();
+                    itemController=new ItemController();
+                    System.out.println("This is the host: " + Config.getHOST());
+                    tasksList.clear();
+                    System.out.println("This is the new size: " + tasksList.size());
+                    tasksList.add(tr("Select a task ..."));
+                    listTaskBean = listTaskController.getListTasksBean();
+                    for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
+                        tasksList.add(listTaskBean.getTasks().get(i).getName());
+                    }
+                    jcomboBox.setModel(new DefaultComboBoxModel<>());
+                    System.out.println("This is combo size " + jcomboBox.getSize());
+                    jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
+                    jcomboBox.addActionListener(TofixDialog.this);
+                }
+            }
+            );
 
             //add title to download
             jcontenConfig.add(new Label(tr("Set download area (m²)")));
@@ -259,6 +320,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
             panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+            panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
             TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
             TabbedPanel.addTab(tr("Config"), jcontenConfig);
@@ -342,6 +404,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("Estoy entrno a action listenr de tofix dialog");
         start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {

@@ -13,9 +13,11 @@ import org.openstreetmap.josm.tools.HttpClient;
  */
 public class Status {
 
-    static final String host = Config.HOST;
+    static String host = Config.getHOST();
 
     public static boolean server() {
+      
+        System.out.println("Este es el host en status: "+host);
         return "a ok".equals(new StatusController(host).getStatusBean().getStatus());
     }
 

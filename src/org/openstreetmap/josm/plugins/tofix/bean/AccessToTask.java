@@ -8,7 +8,7 @@ import org.openstreetmap.josm.plugins.tofix.util.Config;
  */
 public class AccessToTask {
 
-    private String host = Config.HOST;
+    private String host = Config.getHOST();
 
     private String task_idtask;
     private boolean task_isCompleted;
@@ -44,6 +44,7 @@ public class AccessToTask {
     }
 
     public String getTask_url() {
+        System.out.println("Esto es host en accesstotask "+this.getHost());
         String url = this.getHost() + "/tasks/" + this.getTask_idtask()+"/"+this.getTask_type()+"/items";
         return url;
     }
