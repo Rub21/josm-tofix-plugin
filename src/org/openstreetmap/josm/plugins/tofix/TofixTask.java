@@ -37,6 +37,7 @@ public class TofixTask {
 
     Node node = null;
     MapView mv = null;
+    
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
     public AccessToTask work(Item item, AccessToTask accessToTask, double size, JsonArray relation) { //size to download    

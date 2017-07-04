@@ -72,8 +72,6 @@ public class Download {
                 }
             };
             Main.worker.submit(runAfterTask);
-        } else {
-            task.download(true, bounds, monitor);
         }
 
     }

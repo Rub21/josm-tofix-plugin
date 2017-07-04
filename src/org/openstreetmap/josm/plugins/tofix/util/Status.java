@@ -16,8 +16,6 @@ public class Status {
     static String host = Config.getHOST();
 
     public static boolean server() {
-      
-        System.out.println("Este es el host en status: "+host);
         return "a ok".equals(new StatusController(host).getStatusBean().getStatus());
     }
 

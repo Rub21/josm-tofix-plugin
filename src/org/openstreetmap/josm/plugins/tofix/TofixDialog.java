@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -102,6 +103,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     TofixTask tofixTask = new TofixTask();
     boolean checkboxStatus;
     boolean checkboxStatusLayer;
+    JCheckBox checkPlugin;
 
     public TofixDialog() {
 
@@ -110,7 +112,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
 
         //ENABLE-DISABLE CHECKBOX
-        JCheckBox checkPlugin = new JCheckBox(tr("Enable Tofix plugin"));
+        checkPlugin = new JCheckBox(tr("Enable Tofix plugin"));
         checkPlugin.setSelected(true);
         checkboxStatus = checkPlugin.isSelected();
 
@@ -272,21 +274,16 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         } catch (Exception exc) {
                         }
                     }
+
                     listTaskController = new ListTaskController();
-                    itemTrackController=new ItemTrackController();
-                    itemController=new ItemController();
-                    System.out.println("This is the host: " + Config.getHOST());
                     tasksList.clear();
-                    System.out.println("This is the new size: " + tasksList.size());
                     tasksList.add(tr("Select a task ..."));
                     listTaskBean = listTaskController.getListTasksBean();
                     for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
                         tasksList.add(listTaskBean.getTasks().get(i).getName());
                     }
                     jcomboBox.setModel(new DefaultComboBoxModel<>());
-                    System.out.println("This is combo size " + jcomboBox.getSize());
                     jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
-                    jcomboBox.addActionListener(TofixDialog.this);
                 }
             }
             );
@@ -299,7 +296,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             slider.setMajorTickSpacing(5);
             slider.setPaintTicks(true);
             slider.setPaintLabels(true);
-            //slider.setLabelTable((slider.createStandardLabels(1)));
+
             Hashtable<Integer, JLabel> table = new Hashtable<>();
             table.put(1, new JLabel(tr("~.02")));
             table.put(3, new JLabel("~.20"));
@@ -337,7 +334,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 fixedButton.setEnabled(false);
                 noterrorButton.setEnabled(false);
             } else {
-//                start();
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
@@ -404,7 +400,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Estoy entrno a action listenr de tofix dialog");
         start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {

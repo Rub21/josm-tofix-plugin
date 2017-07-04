@@ -33,7 +33,6 @@ public class ListTaskController {
      * Constructs a new {@code ListTaskController}.
      */
     public ListTaskController() {
-        System.out.println("Este es el url en listtaskcontroller"+ Config.getHOST());
         this.url = Config.getHOST() + "/tasks";
     }
 

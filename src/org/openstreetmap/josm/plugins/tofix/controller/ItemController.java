@@ -52,7 +52,6 @@ public class ItemController {
     public Item getItem() {
 
         try {
-            System.out.println("this is host in itemcontroller get item: " + accessToTask.getTask_url());
             responseBean = Request.sendPOST(accessToTask.getTask_url());
             item.setStatus(responseBean.getStatus());
             Util.print(responseBean.getValue());
