@@ -11,6 +11,7 @@ import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.io.UploadDialog;
@@ -237,8 +238,8 @@ public class TofixTask {
     }
 
     public final void checkTofixLayer() {
-        if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.getLayerManager().addLayer(tofixLayer);
+        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixLayer);
         }
     }
 }

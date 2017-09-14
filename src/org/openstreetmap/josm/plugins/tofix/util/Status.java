@@ -3,9 +3,9 @@ package org.openstreetmap.josm.plugins.tofix.util;
 import java.io.IOException;
 import java.net.URL;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.plugins.tofix.controller.StatusController;
 import org.openstreetmap.josm.tools.HttpClient;
+import org.openstreetmap.josm.tools.Logging;
 
 /**
  *
@@ -24,7 +24,7 @@ public class Status {
             HttpClient.create(new URL(Config.URL_OSM)).connect().disconnect();
             return true;
         } catch (IOException e) {
-            Main.error(e, "Couldn't connect to the osm server. Please check your internet connection.");
+            Logging.log(Logging.LEVEL_ERROR, "Couldn't connect to the osm server. Please check your internet connection.", e);
             return false;
         }
     }

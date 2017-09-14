@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openstreetmap.josm.gui.JosmUserIdentityManager;
+import org.openstreetmap.josm.data.UserIdentityManager;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.tools.HttpClient;
 import org.openstreetmap.josm.tools.HttpClient.Response;
@@ -20,7 +20,7 @@ public class Request {
 
     public static ResponseBean sendPOST(String url) throws IOException {
         Map<String, String> params = new LinkedHashMap<>();
-        params.put("user", JosmUserIdentityManager.getInstance().getUserName());
+        params.put("user", UserIdentityManager.getInstance().getUserName());
         params.put("editor", "josm");
 
         StringBuilder postData = new StringBuilder();

@@ -70,31 +70,31 @@ public class TofixLayer extends Layer implements ActionListener {
     public void add_Node(LatLon latLon) {
         type.add("draw_node");
         this.latLon = latLon;
-        Main.map.mapView.repaint();
+        invalidate();
     }
 
     public void add_Nodes(List<Node> list_nodes) {
         type.add("draw_nodes");
         this.list_nodes = list_nodes;
-        Main.map.mapView.repaint();
+        invalidate();
     }
 
     public void add_Line(List<List<Node>> list_nodes) {
         type.add("draw_line");
         this.list_list_nodes = list_nodes;
-        Main.map.mapView.repaint();
+        invalidate();
     }
 
     public void add_lines(List<List<List<Node>>> list_nodes) {
         type.add("draw_lines");
         this.list_list_list_nodes = list_nodes;
-        Main.map.mapView.repaint();
+        invalidate();
     }
 
     public void add_Lines(List<List<List<List<Node>>>> list_nodes) {
         type.add("draw_Lines");
         this.list_list_list_list_nodes = list_nodes;
-        Main.map.mapView.repaint();
+        invalidate();
     }
 
     @Override

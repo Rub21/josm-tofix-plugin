@@ -9,16 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
 import javax.swing.AbstractAction;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -29,13 +30,18 @@ import javax.swing.JTabbedPane;
 
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.actions.UploadAction;
-import org.openstreetmap.josm.gui.JosmUserIdentityManager;
+import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.UserIdentityManager;
+import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
+import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
+import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
@@ -47,11 +53,6 @@ import org.openstreetmap.josm.plugins.tofix.util.Status;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
-import java.util.ArrayList;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextField;
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 
 /**
  *
@@ -81,7 +82,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     ItemController itemController = new ItemController();
 
     // To-Fix layer
-    MapView mv = Main.map.mapView;
+    MapView mv = MainApplication.getMap().mapView;
 
     ItemTrackController itemTrackController = new ItemTrackController();
 
@@ -98,7 +99,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel panelactivationLayer = new JPanel(new GridLayout(1, 1));
     JPanel panelactivationUrl = new JPanel(new GridLayout(2, 1));
 
-    JosmUserIdentityManager josmUserIdentityManager = JosmUserIdentityManager.getInstance();
+    UserIdentityManager josmUserIdentityManager = UserIdentityManager.getInstance();
 
     TofixTask tofixTask = new TofixTask();
     boolean checkboxStatus;
@@ -336,13 +337,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             } else {
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
-                Main.registerActionShortcut(new Skip_key_Action(), skipShortcut);
+                MainApplication.registerActionShortcut(new Skip_key_Action(), skipShortcut);
 
                 fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
-                Main.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
+                MainApplication.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
 
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
-                Main.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
+                MainApplication.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
             }
         }
     }
@@ -490,10 +491,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void eventFixed(ActionEvent e) {
-        if (!Main.getLayerManager().getEditDataSet().isModified()) {
+        if (!MainApplication.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             action("skipeventFixed");
-        } else if (new Bounds(Main.getLayerManager().getEditDataSet().getDataSourceArea().getBounds()).getArea() < 30) {
+        } else if (new Bounds(MainApplication.getLayerManager().getEditDataSet().getDataSourceArea().getBounds()).getArea() < 30) {
             validator = false;
             UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
                 @Override
@@ -501,8 +502,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                     validator = true;
                 }
             });
-            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
-            Main.getLayerManager().getEditLayer().data.getChangeSetTags().put("source", Main.map.mapView.getLayerInformationForSourceTag());
+        	DataSet data = MainApplication.getLayerManager().getEditLayer().data;
+        	data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
+        	data.getChangeSetTags().put("source", MainApplication.getMap().mapView.getLayerInformationForSourceTag());
 
             new UploadAction().actionPerformed(e);
 
@@ -517,9 +519,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void deleteLayer() {
         if (checkboxStatusLayer) {
-            if (Main.getLayerManager().getEditLayer() != null) {
-                Main.getLayerManager().getEditLayer().data.clear();
-                Main.getLayerManager().removeLayer(Main.getLayerManager().getEditLayer());
+        	OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
+            if (editLayer != null) {
+            	editLayer.data.clear();
+                MainApplication.getLayerManager().removeLayer(editLayer);
             }
         }
     }

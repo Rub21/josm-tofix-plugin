@@ -11,6 +11,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
+import org.openstreetmap.josm.gui.MainApplication;
 
 /**
  *
@@ -26,9 +27,9 @@ public class TofixDraw {
         BoundingXYVisitor v = new BoundingXYVisitor();
 
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
-        Main.map.mapView.zoomTo(v);
-        if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.getLayerManager().addLayer(tofixLayer);
+        MainApplication.getMap().mapView.zoomTo(v);
+        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixLayer);
             tofixLayer.add_Node(latLon);
         } else {
             tofixLayer.add_Node(latLon);
@@ -42,9 +43,9 @@ public class TofixDraw {
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
-        Main.map.mapView.zoomTo(v);
-        if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.getLayerManager().addLayer(tofixLayer);
+        MainApplication.getMap().mapView.zoomTo(v);
+        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixLayer);
             tofixLayer.add_Nodes(list_nodes);
         } else {
             tofixLayer.add_Nodes(list_nodes);
@@ -58,9 +59,9 @@ public class TofixDraw {
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
-        Main.map.mapView.zoomTo(v);
-        if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.getLayerManager().addLayer(tofixLayer);
+        MainApplication.getMap().mapView.zoomTo(v);
+        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixLayer);
             tofixLayer.add_Line(list_nodes);
         } else {
             tofixLayer.add_Line(list_nodes);
@@ -74,9 +75,9 @@ public class TofixDraw {
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
-        Main.map.mapView.zoomTo(v);
-        if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.getLayerManager().addLayer(tofixLayer);
+        MainApplication.getMap().mapView.zoomTo(v);
+        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixLayer);
             tofixLayer.add_lines(list_nodes);
         } else {
             tofixLayer.add_lines(list_nodes);
@@ -90,9 +91,9 @@ public class TofixDraw {
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
         v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
-        Main.map.mapView.zoomTo(v);
-        if (!Main.getLayerManager().containsLayer(tofixLayer)) {
-            Main.getLayerManager().addLayer(tofixLayer);
+        MainApplication.getMap().mapView.zoomTo(v);
+        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixLayer);
             tofixLayer.add_Lines(list_nodes);
         } else {
             tofixLayer.add_Lines(list_nodes);
