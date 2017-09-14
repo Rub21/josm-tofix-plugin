@@ -14,6 +14,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
+import javax.json.stream.JsonParsingException;
 
 import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskBean;
@@ -71,7 +72,7 @@ public class ListTaskController {
                 }
                 tasks.add(taskBean);
             }
-        } catch (IOException | NullPointerException ex) {
+        } catch (IOException | NullPointerException | JsonParsingException ex) {
             Logger.getLogger(ListTaskController.class.getName()).log(Level.SEVERE, null, ex);
         }
         Collections.sort(tasks, (o1, o2) -> Collator.getInstance().compare(o1.getName(), o2.getName()));
