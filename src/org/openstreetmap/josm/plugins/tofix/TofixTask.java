@@ -4,12 +4,13 @@ import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.text.DecimalFormat;
 import java.util.List;
+
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 
-import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -36,7 +37,6 @@ public class TofixTask {
     Bounds bounds = null;
     Bounds bounds_default = null;
 
-    Node node = null;
     MapView mv = null;
     
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
@@ -67,17 +67,17 @@ public class TofixTask {
 
     private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintPoint.getKey());
-        node = itemOsmlintPoint.get_node();
+        LatLon coor = itemOsmlintPoint.get_node().getCoor();
 
         bounds = new Bounds(itemOsmlintPoint.getRectangle2D());
-        bounds_default = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        bounds_default = new Bounds(new BBox(coor.getX(), coor.getY(), size).toRectangle());
 
         if (bounds.getArea() < bounds_default.getArea()) {
             bounds = bounds_default;
         }
 
         checkTofixLayer();
-        TofixDraw.draw_Node(tofixLayer, node.getCoor());
+        TofixDraw.draw_Node(tofixLayer, coor);
         Download.download(bounds, itemOsmlintPoint.getWay());
         return accessToTask;
     }
@@ -85,16 +85,16 @@ public class TofixTask {
     private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintLinestring.getKey());
         List<List<Node>> list = itemOsmlintLinestring.get_nodes();
-        node = new Node(new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon()));
+        LatLon coor = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());
 
         bounds = new Bounds(itemOsmlintLinestring.getRectangle2D());
-        bounds_default = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        bounds_default = new Bounds(new BBox(coor.getX(), coor.getY(), size).toRectangle());
 
         if (bounds.getArea() < bounds_default.getArea()) {
             bounds = bounds_default;
         }
         checkTofixLayer();
-        TofixDraw.draw_line(tofixLayer, node.getCoor(), list);
+        TofixDraw.draw_line(tofixLayer, coor, list);
 
         Download.download(bounds, itemOsmlintLinestring.getWay());
         return accessToTask;
@@ -103,17 +103,17 @@ public class TofixTask {
     private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultipoint.getKey());
         List<Node> list = itemOsmlintMultipoint.get_nodes();
-        node = new Node(new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon()));
+        LatLon coor = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
 
         bounds = new Bounds(itemOsmlintMultipoint.getRectangle2D());
-        bounds_default = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        bounds_default = new Bounds(new BBox(coor.getX(), coor.getY(), size).toRectangle());
 
         if (bounds.getArea() < bounds_default.getArea()) {
             bounds = bounds_default;
         }
 
         checkTofixLayer();
-        TofixDraw.draw_nodes(tofixLayer, node.getCoor(), list);
+        TofixDraw.draw_nodes(tofixLayer, coor, list);
         Download.download(bounds, itemOsmlintMultipoint.getWay());
         return accessToTask;
     }
@@ -121,17 +121,17 @@ public class TofixTask {
     private AccessToTask work_osmlintmultilinestring(ItemOsmlintMultilinestring itemOsmlintMultilinestring, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultilinestring.getKey());
         List<List<List<Node>>> list = itemOsmlintMultilinestring.get_nodes();
-        node = new Node(new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon()));
+        LatLon coor = new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon());
 
         bounds = new Bounds(itemOsmlintMultilinestring.getRectangle2D());
-        bounds_default = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        bounds_default = new Bounds(new BBox(coor.getX(), coor.getY(), size).toRectangle());
 
         if (bounds.getArea() < bounds_default.getArea()) {
             bounds = bounds_default;
         }
 
         checkTofixLayer();
-        TofixDraw.draw_lines(tofixLayer, node.getCoor(), list);
+        TofixDraw.draw_lines(tofixLayer, coor, list);
         Download.download(bounds, itemOsmlintMultilinestring.getWay());
         return accessToTask;
     }
@@ -139,7 +139,7 @@ public class TofixTask {
     private AccessToTask work_osmlintpolygon(ItemOsmlintPolygon itemOsmlintPolygon, AccessToTask accessToTask, double size, JsonArray relation) {
         accessToTask.setKey(itemOsmlintPolygon.getKey());
         List<List<List<Node>>> list = itemOsmlintPolygon.get_nodes();
-        node = new Node(new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon()));
+        LatLon coor = new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon());
 
         if (relation != null && relation.size() > 0) {
             for (int i = 0; i < relation.size(); i++) {
@@ -202,13 +202,13 @@ public class TofixTask {
         }
 
         bounds = new Bounds(itemOsmlintPolygon.getRectangle2D());
-        bounds_default = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        bounds_default = new Bounds(new BBox(coor.getX(), coor.getY(), size).toRectangle());
 
         if (bounds.getArea() < bounds_default.getArea()) {
             bounds = bounds_default;
         }
         checkTofixLayer();
-        TofixDraw.draw_lines(tofixLayer, node.getCoor(), list);
+        TofixDraw.draw_lines(tofixLayer, coor, list);
         Download.download(bounds, itemOsmlintPolygon.getWay());
         return accessToTask;
     }
@@ -216,15 +216,15 @@ public class TofixTask {
     private AccessToTask work_osmlintmultipolygon(ItemOsmlintMultipolygon itemOsmlintMultipolygon, AccessToTask accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultipolygon.getKey());
         List<List<List<List<Node>>>> list = itemOsmlintMultipolygon.get_nodes();
-        node = new Node(new LatLon(list.get(0).get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).get(0).getCoor().lon()));
+        LatLon coor = new LatLon(list.get(0).get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).get(0).getCoor().lon());
         bounds = new Bounds(itemOsmlintMultipolygon.getRectangle2D());
-        bounds_default = new Bounds(node.getCoor().toBBox(size).toRectangle());
+        bounds_default = new Bounds(new BBox(coor.getX(), coor.getY(), size).toRectangle());
 
         if (bounds.getArea() < bounds_default.getArea()) {
             bounds = bounds_default;
         }
         checkTofixLayer();
-        TofixDraw.draw_Lines(tofixLayer, node.getCoor(), list);
+        TofixDraw.draw_Lines(tofixLayer, coor, list);
         Download.download(bounds, itemOsmlintMultipolygon.getWay());
         return accessToTask;
     }

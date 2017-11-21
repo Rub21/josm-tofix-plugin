@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MainApplication;
@@ -26,7 +27,7 @@ public class TofixDraw {
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
 
-        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
         MainApplication.getMap().mapView.zoomTo(v);
         if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
             MainApplication.getLayerManager().addLayer(tofixLayer);
@@ -42,7 +43,7 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
         MainApplication.getMap().mapView.zoomTo(v);
         if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
             MainApplication.getLayerManager().addLayer(tofixLayer);
@@ -58,7 +59,7 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
         MainApplication.getMap().mapView.zoomTo(v);
         if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
             MainApplication.getLayerManager().addLayer(tofixLayer);
@@ -74,7 +75,7 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
         MainApplication.getMap().mapView.zoomTo(v);
         if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
             MainApplication.getLayerManager().addLayer(tofixLayer);
@@ -90,7 +91,7 @@ public class TofixDraw {
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(latLon.toBBox(0.0007).toRectangle()));
+        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
         MainApplication.getMap().mapView.zoomTo(v);
         if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
             MainApplication.getLayerManager().addLayer(tofixLayer);
