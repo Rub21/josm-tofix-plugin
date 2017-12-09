@@ -163,7 +163,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         skipButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Skip"));
-                new ImageProvider("mapmode", "skip").getResource().attachImageIcon(this);
+                new ImageProvider("mapmode", "skip").getResource().attachImageIcon(this, true);
                 putValue(SHORT_DESCRIPTION, tr("Skip Error"));
             }
 
@@ -186,7 +186,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         fixedButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Fixed"));
-                new ImageProvider("mapmode", "fixed").getResource().attachImageIcon(this);
+                new ImageProvider("mapmode", "fixed").getResource().attachImageIcon(this, true);
                 putValue(SHORT_DESCRIPTION, tr("Fixed Error"));
             }
 
@@ -206,7 +206,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         noterrorButton = new SideButton(new AbstractAction() {
             {
                 putValue(NAME, tr("Not an error"));
-                new ImageProvider("mapmode", "noterror").getResource().attachImageIcon(this);
+                new ImageProvider("mapmode", "noterror").getResource().attachImageIcon(this, true);
                 putValue(SHORT_DESCRIPTION, tr("Not an error"));
             }
 
