@@ -47,9 +47,10 @@ import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
-import org.openstreetmap.josm.plugins.tofix.controller.ListTaskController;
+import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -73,9 +74,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     double zise = 0.0006; //per default
 
     AccessToTask mainAccessToTask = null;
-    // Task list
+    // Project list
     ListProjectBean listProjectBean = null;
-    ListTaskController listTaskController = new ListTaskController();
+    ListProjectsController listProjectController = new ListProjectsController();
 
     //Item
     Item item = new Item();
@@ -246,28 +247,26 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         tasksList.add(tr("Select a task ..."));
 
         if (Status.isInternetReachable()) { //checkout  internet connection
-            if (!Status.server()) {
-                
-                skipButton.setEnabled(false);
-                fixedButton.setEnabled(false);
-                noterrorButton.setEnabled(false);
-            } else {
+            if (Status.server()) {
                 //Shortcuts
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new Skip_key_Action(), skipShortcut);
-
                 fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
-
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
-            
-                //List Projects
-                listProjectBean = listTaskController.getListTasksBean();
-            
-            
-            
-            
+
+                Util.print(Status.server());
+                listProjectBean = listProjectController.getListProjects();
+                for (int i = 0; i < listProjectBean.getProjects().size(); i++) {
+                    Util.print((listProjectBean.getProjects().get(i)));
+                    tasksList.add(listProjectBean.getProjects().get(i).getName());
+                }
+
+            } else {
+                skipButton.setEnabled(false);
+                fixedButton.setEnabled(false);
+                noterrorButton.setEnabled(false);
             }
 
 //            listTaskBean = listTaskController.getListTasksBean();

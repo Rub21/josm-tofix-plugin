@@ -4,6 +4,7 @@ public class Config {
 
     private static String HOST;
     public static final String DEFAULT_HOST = "http://localhost:3000";
+    public static final String API_VERSION = "v1";
     public static final String URL_TOFIX = "http://osmlab.github.io/to-fix/";
     public static final String URL_OSM = "http://www.openstreetmap.org";
     public static final String URL_TOFIX_ISSUES = "https://github.com/JOSM/tofix/issues";

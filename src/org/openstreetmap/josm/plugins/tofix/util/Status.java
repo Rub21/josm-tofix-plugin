@@ -16,7 +16,7 @@ public class Status {
     static String host = Config.getHOST();
 
     public static boolean server() {
-        return "a ok".equals(new StatusController(host).getStatusBean().getStatus());
+        return "OK".equals(new StatusController(host).getStatusBean().getStatus());
     }
 
     public static boolean isInternetReachable() {

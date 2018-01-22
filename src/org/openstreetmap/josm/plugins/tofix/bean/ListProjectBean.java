@@ -8,13 +8,13 @@ import java.util.List;
  */
 public class ListProjectBean {
 
-    private List<ProjectBean> project;
+    private List<ProjectBean> projects;
 
-    public List<ProjectBean> getProject() {
-        return project;
+    public List<ProjectBean> getProjects() {
+        return projects;
     }
 
-    public void setProject(List<ProjectBean> project) {
-        this.project = project;
+    public void setProjects(List<ProjectBean> projects) {
+        this.projects = projects;
     }
 }

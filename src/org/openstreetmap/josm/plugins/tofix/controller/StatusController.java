@@ -11,6 +11,7 @@ import javax.json.JsonString;
 
 import org.openstreetmap.josm.plugins.tofix.bean.StatusBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -31,12 +32,12 @@ public class StatusController {
     public StatusBean getStatusBean() {
         StatusBean statusBean = new StatusBean();
         try (JsonReader jsonReader = Json.createReader(new StringReader(Request.sendGET(url)))) {
-        	JsonString status = jsonReader.readObject().getJsonString("status");
-        	if (status != null) {
-        		statusBean.setStatus(status.getString());
-        	} else {
-        		Logging.error("Unable to retrieve status");
-        	}
+            JsonString status = jsonReader.readObject().getJsonString("status");
+            if (status != null) {
+                statusBean.setStatus(status.getString());
+            } else {
+                Logging.error("Unable to retrieve status");
+            }
         } catch (IOException ex) {
             Logger.getLogger(StatusController.class.getName()).log(Level.SEVERE, null, ex);
         }
