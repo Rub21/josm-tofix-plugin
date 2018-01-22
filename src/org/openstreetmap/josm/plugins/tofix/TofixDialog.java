@@ -42,7 +42,7 @@ import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
-import org.openstreetmap.josm.plugins.tofix.bean.ListTaskBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ListProjectBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
@@ -74,7 +74,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     AccessToTask mainAccessToTask = null;
     // Task list
-    ListTaskBean listTaskBean = null;
+    ListProjectBean listProjectBean = null;
     ListTaskController listTaskController = new ListTaskController();
 
     //Item
@@ -244,93 +244,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         ArrayList<String> tasksList = new ArrayList<>();
 
         tasksList.add(tr("Select a task ..."));
+
         if (Status.isInternetReachable()) { //checkout  internet connection
-            listTaskBean = listTaskController.getListTasksBean();
-            for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-                tasksList.add(listTaskBean.getTasks().get(i).getName());
-            }
-
-            JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
-            valuePanel.add(jcomboBox);
-            jcomboBox.addActionListener(this);
-            jcontenTasks.add(valuePanel);
-
-            checkUrl.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    if (checkUrl.isSelected()) {
-                        Config.setHOST(Config.DEFAULT_HOST);
-                        JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
-                    } else {
-                        try {
-                            String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
-                            if (newHost.isEmpty()) {
-                                Config.setHOST(Config.DEFAULT_HOST);
-                                JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
-                            } else {
-                                Config.setHOST(newHost);
-                                JOptionPane.showMessageDialog(Main.parent, tr("Setting new URL: " + newHost));
-                            }
-                        } catch (Exception exc) {
-                        }
-                    }
-
-                    listTaskController = new ListTaskController();
-                    tasksList.clear();
-                    tasksList.add(tr("Select a task ..."));
-                    listTaskBean = listTaskController.getListTasksBean();
-                    for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-                        tasksList.add(listTaskBean.getTasks().get(i).getName());
-                    }
-                    jcomboBox.setModel(new DefaultComboBoxModel<>());
-                    jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
-                }
-            }
-            );
-
-            //add title to download
-            jcontenConfig.add(new Label(tr("Set download area (m²)")));
-
-            //Add Slider to download
-            slider.setMinorTickSpacing(2);
-            slider.setMajorTickSpacing(5);
-            slider.setPaintTicks(true);
-            slider.setPaintLabels(true);
-
-            Hashtable<Integer, JLabel> table = new Hashtable<>();
-            table.put(1, new JLabel(tr("~.02")));
-            table.put(3, new JLabel("~.20"));
-            table.put(5, new JLabel("~.40"));
-            slider.setLabelTable(table);
-
-            slider.addChangeListener(new javax.swing.event.ChangeListener() {
-                @Override
-                public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                    zise = slider.getValue() * 0.001;
-                }
-            });
-            panelslide.add(slider);
-            jcontenConfig.add(panelslide);
-
-            //PANEL TASKS
-            valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-            panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-            TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
-            TabbedPanel.addTab(tr("Config"), jcontenConfig);
-            TabbedPanel.addTab(tr("Activation"), jcontenActivation);
-
-            //add panels in JOSM
-            createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
-                skipButton, noterrorButton, fixedButton
-            }));
-
             if (!Status.server()) {
-                jcomboBox.setEnabled(false);
+                
                 skipButton.setEnabled(false);
                 fixedButton.setEnabled(false);
                 noterrorButton.setEnabled(false);
@@ -344,7 +261,98 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
+            
+                //List Projects
+                listProjectBean = listTaskController.getListTasksBean();
+            
+            
+            
+            
             }
+
+//            listTaskBean = listTaskController.getListTasksBean();
+//            for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
+//                tasksList.add(listTaskBean.getTasks().get(i).getName());
+//            }
+//
+//            JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
+//            valuePanel.add(jcomboBox);
+//            jcomboBox.addActionListener(this);
+//            jcontenTasks.add(valuePanel);
+//
+//            checkUrl.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//
+//                    if (checkUrl.isSelected()) {
+//                        Config.setHOST(Config.DEFAULT_HOST);
+//                        JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
+//                    } else {
+//                        try {
+//                            String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
+//                            if (newHost.isEmpty()) {
+//                                Config.setHOST(Config.DEFAULT_HOST);
+//                                JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
+//                            } else {
+//                                Config.setHOST(newHost);
+//                                JOptionPane.showMessageDialog(Main.parent, tr("Setting new URL: " + newHost));
+//                            }
+//                        } catch (Exception exc) {
+//                        }
+//                    }
+//
+//                    listTaskController = new ListTaskController();
+//                    tasksList.clear();
+//                    tasksList.add(tr("Select a task ..."));
+//                    listTaskBean = listTaskController.getListTasksBean();
+//                    for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
+//                        tasksList.add(listTaskBean.getTasks().get(i).getName());
+//                    }
+//                    jcomboBox.setModel(new DefaultComboBoxModel<>());
+//                    jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
+//                }
+//            }
+//            );
+//
+//            //add title to download
+//            jcontenConfig.add(new Label(tr("Set download area (m²)")));
+//
+//            //Add Slider to download
+//            slider.setMinorTickSpacing(2);
+//            slider.setMajorTickSpacing(5);
+//            slider.setPaintTicks(true);
+//            slider.setPaintLabels(true);
+//
+//            Hashtable<Integer, JLabel> table = new Hashtable<>();
+//            table.put(1, new JLabel(tr("~.02")));
+//            table.put(3, new JLabel("~.20"));
+//            table.put(5, new JLabel("~.40"));
+//            slider.setLabelTable(table);
+//
+//            slider.addChangeListener(new javax.swing.event.ChangeListener() {
+//                @Override
+//                public void stateChanged(javax.swing.event.ChangeEvent evt) {
+//                    zise = slider.getValue() * 0.001;
+//                }
+//            });
+//            panelslide.add(slider);
+//            jcontenConfig.add(panelslide);
+//
+//            //PANEL TASKS
+//            valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//            panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//            panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//            panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//            panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+//
+//            TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
+//            TabbedPanel.addTab(tr("Config"), jcontenConfig);
+//            TabbedPanel.addTab(tr("Activation"), jcontenActivation);
+//
+//            //add panels in JOSM
+//            createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
+//                skipButton, noterrorButton, fixedButton
+//            }));
         }
     }
 
@@ -404,21 +412,21 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            mainAccessToTask.setTask_idtask(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIdtask());
-            mainAccessToTask.setTask_isCompleted(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsCompleted());
-            mainAccessToTask.setTask_isAllItemsLoad(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIsAllItemsLoad());
-            mainAccessToTask.setTask_iduser(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getIduser());
-            mainAccessToTask.setTask_name(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getName());
-            mainAccessToTask.setTask_description(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDescription());
-            mainAccessToTask.setTask_updated(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getUpdated());
-            mainAccessToTask.setTask_changesetComment(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getChangesetComment());
-            mainAccessToTask.setTask_date(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getDate());
-            mainAccessToTask.setTask_edit(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getEdit());
-            mainAccessToTask.setTask_fixed(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getFixed());
-            mainAccessToTask.setTask_skip(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getSkip());
-            mainAccessToTask.setTask_type(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getType());
-            mainAccessToTask.setTask_items(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getItems());
-            mainAccessToTask.setTask_noterror(listTaskBean.getTasks().get(cb.getSelectedIndex() - 1).getNoterror());
+//            mainAccessToTask.setTask_idtask(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIdtask());
+//            mainAccessToTask.setTask_isCompleted(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIsCompleted());
+//            mainAccessToTask.setTask_isAllItemsLoad(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIsAllItemsLoad());
+//            mainAccessToTask.setTask_iduser(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIduser());
+//            mainAccessToTask.setTask_name(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getName());
+//            mainAccessToTask.setTask_description(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getDescription());
+//            mainAccessToTask.setTask_updated(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getUpdated());
+//            mainAccessToTask.setTask_changesetComment(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getChangesetComment());
+//            mainAccessToTask.setTask_date(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getDate());
+//            mainAccessToTask.setTask_edit(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getEdit());
+//            mainAccessToTask.setTask_fixed(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getFixed());
+//            mainAccessToTask.setTask_skip(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getSkip());
+//            mainAccessToTask.setTask_type(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getType());
+//            mainAccessToTask.setTask_items(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getItems());
+//            mainAccessToTask.setTask_noterror(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getNoterror());
             deleteLayer();
             get_new_item();
             skipButton.setEnabled(true);
@@ -502,9 +510,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                     validator = true;
                 }
             });
-        	DataSet data = MainApplication.getLayerManager().getEditLayer().data;
-        	data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
-        	data.getChangeSetTags().put("source", MainApplication.getMap().mapView.getLayerInformationForSourceTag());
+            DataSet data = MainApplication.getLayerManager().getEditLayer().data;
+            data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
+            data.getChangeSetTags().put("source", MainApplication.getMap().mapView.getLayerInformationForSourceTag());
 
             new UploadAction().actionPerformed(e);
 
@@ -519,9 +527,9 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void deleteLayer() {
         if (checkboxStatusLayer) {
-        	OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
+            OsmDataLayer editLayer = MainApplication.getLayerManager().getEditLayer();
             if (editLayer != null) {
-            	editLayer.data.clear();
+                editLayer.data.clear();
                 MainApplication.getLayerManager().removeLayer(editLayer);
             }
         }

@@ -53,7 +53,9 @@ public class Request {
     }
 
     public static String sendGET(String url) throws IOException {
-        Response response = HttpClient.create(new URL(url)).connect();
+        Response response = HttpClient.create(new URL(url))
+                .setHeader("Authorization", Config.TOKEN)
+                .connect();
         String result = response.fetchContent();
         response.disconnect();
         return result;
