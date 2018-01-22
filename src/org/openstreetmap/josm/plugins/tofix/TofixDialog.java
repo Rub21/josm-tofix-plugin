@@ -242,9 +242,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         jcontenTasks.add(title_tasks);
 
         // JComboBox for each task
-        ArrayList<String> tasksList = new ArrayList<>();
-
-        tasksList.add(tr("Select a task ..."));
+        ArrayList<String> projectsList = new ArrayList<>();
+        projectsList.add(tr("Select a task ..."));
 
         if (Status.isInternetReachable()) { //checkout  internet connection
             if (Status.server()) {
@@ -256,102 +255,62 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
 
-                Util.print(Status.server());
+                //List projects
                 listProjectBean = listProjectController.getListProjects();
                 for (int i = 0; i < listProjectBean.getProjects().size(); i++) {
-                    Util.print((listProjectBean.getProjects().get(i)));
-                    tasksList.add(listProjectBean.getProjects().get(i).getName());
+                    projectsList.add(listProjectBean.getProjects().get(i).getName());
                 }
+
+                JComboBox<String> jcomboBox = new JComboBox<>(projectsList.toArray(new String[]{}));
+                valuePanel.add(jcomboBox);
+                jcomboBox.addActionListener(this);
+                jcontenTasks.add(valuePanel);
+
+                //add title to download
+                jcontenConfig.add(new Label(tr("Set download area (m²)")));
+
+                //Add Slider to download
+                slider.setMinorTickSpacing(2);
+                slider.setMajorTickSpacing(5);
+                slider.setPaintTicks(true);
+                slider.setPaintLabels(true);
+
+                Hashtable<Integer, JLabel> table = new Hashtable<>();
+                table.put(1, new JLabel(tr("~.02")));
+                table.put(3, new JLabel("~.20"));
+                table.put(5, new JLabel("~.40"));
+                slider.setLabelTable(table);
+
+                slider.addChangeListener(new javax.swing.event.ChangeListener() {
+                    @Override
+                    public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                        zise = slider.getValue() * 0.001;
+                    }
+                });
+                panelslide.add(slider);
+                jcontenConfig.add(panelslide);
+
+                //PANEL TASKS
+                valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+                panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+                panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+                panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+                panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+                TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
+                TabbedPanel.addTab(tr("Config"), jcontenConfig);
+                TabbedPanel.addTab(tr("Activation"), jcontenActivation);
+
+                //add panel in JOSM
+                createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
+                    skipButton, noterrorButton, fixedButton
+                }));
 
             } else {
                 skipButton.setEnabled(false);
                 fixedButton.setEnabled(false);
                 noterrorButton.setEnabled(false);
             }
-
-//            listTaskBean = listTaskController.getListTasksBean();
-//            for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-//                tasksList.add(listTaskBean.getTasks().get(i).getName());
-//            }
-//
-//            JComboBox<String> jcomboBox = new JComboBox<>(tasksList.toArray(new String[]{}));
-//            valuePanel.add(jcomboBox);
-//            jcomboBox.addActionListener(this);
-//            jcontenTasks.add(valuePanel);
-//
-//            checkUrl.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//
-//                    if (checkUrl.isSelected()) {
-//                        Config.setHOST(Config.DEFAULT_HOST);
-//                        JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
-//                    } else {
-//                        try {
-//                            String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
-//                            if (newHost.isEmpty()) {
-//                                Config.setHOST(Config.DEFAULT_HOST);
-//                                JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
-//                            } else {
-//                                Config.setHOST(newHost);
-//                                JOptionPane.showMessageDialog(Main.parent, tr("Setting new URL: " + newHost));
-//                            }
-//                        } catch (Exception exc) {
-//                        }
-//                    }
-//
-//                    listTaskController = new ListTaskController();
-//                    tasksList.clear();
-//                    tasksList.add(tr("Select a task ..."));
-//                    listTaskBean = listTaskController.getListTasksBean();
-//                    for (int i = 0; i < listTaskBean.getTasks().size(); i++) {
-//                        tasksList.add(listTaskBean.getTasks().get(i).getName());
-//                    }
-//                    jcomboBox.setModel(new DefaultComboBoxModel<>());
-//                    jcomboBox.setModel(new DefaultComboBoxModel<>(tasksList.toArray(new String[]{})));
-//                }
-//            }
-//            );
-//
-//            //add title to download
-//            jcontenConfig.add(new Label(tr("Set download area (m²)")));
-//
-//            //Add Slider to download
-//            slider.setMinorTickSpacing(2);
-//            slider.setMajorTickSpacing(5);
-//            slider.setPaintTicks(true);
-//            slider.setPaintLabels(true);
-//
-//            Hashtable<Integer, JLabel> table = new Hashtable<>();
-//            table.put(1, new JLabel(tr("~.02")));
-//            table.put(3, new JLabel("~.20"));
-//            table.put(5, new JLabel("~.40"));
-//            slider.setLabelTable(table);
-//
-//            slider.addChangeListener(new javax.swing.event.ChangeListener() {
-//                @Override
-//                public void stateChanged(javax.swing.event.ChangeEvent evt) {
-//                    zise = slider.getValue() * 0.001;
-//                }
-//            });
-//            panelslide.add(slider);
-//            jcontenConfig.add(panelslide);
-//
-//            //PANEL TASKS
-//            valuePanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-//            panelslide.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-//            panelactivationPlugin.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-//            panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-//            panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-//
-//            TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
-//            TabbedPanel.addTab(tr("Config"), jcontenConfig);
-//            TabbedPanel.addTab(tr("Activation"), jcontenActivation);
-//
-//            //add panels in JOSM
-//            createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
-//                skipButton, noterrorButton, fixedButton
-//            }));
         }
     }
 
