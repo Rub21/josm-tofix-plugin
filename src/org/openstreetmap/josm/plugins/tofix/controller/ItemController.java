@@ -9,7 +9,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
-import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
+import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
@@ -31,13 +31,13 @@ public class ItemController {
     Item item = new Item();
     ResponseBean responseBean = new ResponseBean();
     JsonArray relation;
-    AccessToTask accessToTask;
+    AccessToProject accessToTask;
 
-    public AccessToTask getAccessToTask() {
+    public AccessToProject getAccessToTask() {
         return accessToTask;
     }
 
-    public void setAccessToTask(AccessToTask accessToTask) {
+    public void setAccessToTask(AccessToProject accessToTask) {
         this.accessToTask = accessToTask;
     }
 

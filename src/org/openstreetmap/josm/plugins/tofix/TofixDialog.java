@@ -40,7 +40,7 @@ import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
-import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
+import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListProjectBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
@@ -73,7 +73,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     //size to download
     double zise = 0.0006; //per default
 
-    AccessToTask mainAccessToTask = null;
+    AccessToProject mainAccessToProject = null;
     // Project list
     ListProjectBean listProjectBean = null;
     ListProjectsController listProjectController = new ListProjectsController();
@@ -315,7 +315,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public final void start() {
-        mainAccessToTask = new AccessToTask("mixedlayer", false);//start mixedlayer task by default
+        mainAccessToProject = new AccessToProject("mixedlayer", false);//start mixedlayer task by default
     }
 
     public void msg() {
@@ -365,26 +365,15 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
+    // Event on projects
     @Override
     public void actionPerformed(ActionEvent e) {
         start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-//            mainAccessToTask.setTask_idtask(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIdtask());
-//            mainAccessToTask.setTask_isCompleted(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIsCompleted());
-//            mainAccessToTask.setTask_isAllItemsLoad(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIsAllItemsLoad());
-//            mainAccessToTask.setTask_iduser(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getIduser());
-//            mainAccessToTask.setTask_name(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getName());
-//            mainAccessToTask.setTask_description(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getDescription());
-//            mainAccessToTask.setTask_updated(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getUpdated());
-//            mainAccessToTask.setTask_changesetComment(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getChangesetComment());
-//            mainAccessToTask.setTask_date(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getDate());
-//            mainAccessToTask.setTask_edit(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getEdit());
-//            mainAccessToTask.setTask_fixed(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getFixed());
-//            mainAccessToTask.setTask_skip(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getSkip());
-//            mainAccessToTask.setTask_type(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getType());
-//            mainAccessToTask.setTask_items(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getItems());
-//            mainAccessToTask.setTask_noterror(listProjectBean.getProject().get(cb.getSelectedIndex() - 1).getNoterror());
+            mainAccessToProject.setTask_idtask(listProjectBean.getProjects().get(cb.getSelectedIndex() - 1).getId());
+            mainAccessToProject.setTask_name(listProjectBean.getProjects().get(cb.getSelectedIndex() - 1).getName());
+            
             deleteLayer();
             get_new_item();
             skipButton.setEnabled(true);
@@ -398,22 +387,22 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     public void edit() {
-        if (mainAccessToTask.isAccess()) {
+        if (mainAccessToProject.isAccess()) {
             TrackBean trackBean = new TrackBean();
             trackBean.getAttributes().setEditor("josm");
             trackBean.getAttributes().setUser(josmUserIdentityManager.getUserName());
-            itemTrackController.send_track_edit(mainAccessToTask.getTask_url(), trackBean);
+            itemTrackController.send_track_edit(mainAccessToProject.getTask_url(), trackBean);
         }
     }
 
     public void action(String action) { //fixed, noterror or skip
-        if (mainAccessToTask.isAccess()) {
+        if (mainAccessToProject.isAccess()) {
             ActionBean trackBean = new ActionBean();
             trackBean.setAction(action);
             trackBean.setEditor("josm");
             trackBean.setUser(josmUserIdentityManager.getUserName());
-            trackBean.setKey(mainAccessToTask.getKey());
-            itemTrackController.send_track_action(mainAccessToTask.getTask_url(), trackBean);
+            trackBean.setKey(mainAccessToProject.getKey());
+            itemTrackController.send_track_action(mainAccessToProject.getTask_url(), trackBean);
         }
         get_new_item();
 
@@ -421,24 +410,25 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 
     private void get_new_item() {
         item.setStatus(0);
-        itemController.setAccessToTask(mainAccessToTask);
+        itemController.setAccessToTask(mainAccessToProject);
         item = itemController.getItem();
+        
         switch (item.getStatus()) {
             case 200:
-                mainAccessToTask.setAccess(true);
-                mainAccessToTask = tofixTask.work(item, mainAccessToTask, zise, itemController.getRelation());
+                mainAccessToProject.setAccess(true);
+                mainAccessToProject = tofixTask.work(item, mainAccessToProject, zise, itemController.getRelation());
                 edit();
                 break;
             case 410:
-                mainAccessToTask.setAccess(false);
-                tofixTask.task_complete(item, mainAccessToTask);
+                mainAccessToProject.setAccess(false);
+                tofixTask.task_complete(item, mainAccessToProject);
                 break;
             case 503:
-                mainAccessToTask.setAccess(false);
+                mainAccessToProject.setAccess(false);
                 new Notification(tr("Maintenance server")).show();
                 break;
             case 520:
-                mainAccessToTask.setAccess(false);
+                mainAccessToProject.setAccess(false);
                 JLabel text = new javax.swing.JLabel();
                 text.setText(tr("<html>Something went wrong, please update the plugin or report an issue at <a href=\"\">josm-tofix-plugin/issues</a></html>"));
                 text.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -451,7 +441,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 JOptionPane.showMessageDialog(Main.parent, text, tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 break;
             default:
-                mainAccessToTask.setAccess(false);
+                mainAccessToProject.setAccess(false);
                 new Notification(tr("Something went wrong, try again")).show();
         }
     }
@@ -469,7 +459,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             });
             DataSet data = MainApplication.getLayerManager().getEditLayer().data;
-            data.getChangeSetTags().put("comment", mainAccessToTask.getTask_changesetComment());
+            data.getChangeSetTags().put("comment", mainAccessToProject.getTask_changesetComment());
             data.getChangeSetTags().put("source", MainApplication.getMap().mapView.getLayerInformationForSourceTag());
 
             new UploadAction().actionPerformed(e);

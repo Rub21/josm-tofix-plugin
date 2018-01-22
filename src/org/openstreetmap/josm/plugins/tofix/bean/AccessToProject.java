@@ -6,7 +6,7 @@ import org.openstreetmap.josm.plugins.tofix.util.Config;
  *
  * @author ruben
  */
-public class AccessToTask {
+public class AccessToProject {
 
     private String host = Config.getHOST();
 
@@ -30,7 +30,7 @@ public class AccessToTask {
     private Long osm_obj_id;
     private String key;
 
-    public AccessToTask(String task_id, boolean access) {
+    public AccessToProject(String task_id, boolean access) {
         this.task_idtask = task_id;
         this.access = access;
     }

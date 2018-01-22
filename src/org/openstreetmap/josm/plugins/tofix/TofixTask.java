@@ -16,7 +16,7 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.io.UploadDialog;
-import org.openstreetmap.josm.plugins.tofix.bean.AccessToTask;
+import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintLinestring;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintMultilinestring;
@@ -41,7 +41,7 @@ public class TofixTask {
     
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToTask work(Item item, AccessToTask accessToTask, double size, JsonArray relation) { //size to download    
+    public AccessToProject work(Item item, AccessToProject accessToTask, double size, JsonArray relation) { //size to download    
         if ("Point".equals(item.getType())) {
             accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
         }
@@ -65,7 +65,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToTask accessToTask, double size) {
+    private AccessToProject work_osmlintpoint(ItemOsmlintPoint itemOsmlintPoint, AccessToProject accessToTask, double size) {
         accessToTask.setKey(itemOsmlintPoint.getKey());
         LatLon coor = itemOsmlintPoint.get_node().getCoor();
 
@@ -82,7 +82,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring, AccessToTask accessToTask, double size) {
+    private AccessToProject work_osmlintlinestring(ItemOsmlintLinestring itemOsmlintLinestring, AccessToProject accessToTask, double size) {
         accessToTask.setKey(itemOsmlintLinestring.getKey());
         List<List<Node>> list = itemOsmlintLinestring.get_nodes();
         LatLon coor = new LatLon(list.get(0).get(0).getCoor().lat(), list.get(0).get(0).getCoor().lon());
@@ -100,7 +100,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToTask accessToTask, double size) {
+    private AccessToProject work_osmlintmultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint, AccessToProject accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultipoint.getKey());
         List<Node> list = itemOsmlintMultipoint.get_nodes();
         LatLon coor = new LatLon(list.get(0).getCoor().lat(), list.get(0).getCoor().lon());
@@ -118,7 +118,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintmultilinestring(ItemOsmlintMultilinestring itemOsmlintMultilinestring, AccessToTask accessToTask, double size) {
+    private AccessToProject work_osmlintmultilinestring(ItemOsmlintMultilinestring itemOsmlintMultilinestring, AccessToProject accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultilinestring.getKey());
         List<List<List<Node>>> list = itemOsmlintMultilinestring.get_nodes();
         LatLon coor = new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon());
@@ -136,7 +136,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintpolygon(ItemOsmlintPolygon itemOsmlintPolygon, AccessToTask accessToTask, double size, JsonArray relation) {
+    private AccessToProject work_osmlintpolygon(ItemOsmlintPolygon itemOsmlintPolygon, AccessToProject accessToTask, double size, JsonArray relation) {
         accessToTask.setKey(itemOsmlintPolygon.getKey());
         List<List<List<Node>>> list = itemOsmlintPolygon.get_nodes();
         LatLon coor = new LatLon(list.get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).getCoor().lon());
@@ -213,7 +213,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    private AccessToTask work_osmlintmultipolygon(ItemOsmlintMultipolygon itemOsmlintMultipolygon, AccessToTask accessToTask, double size) {
+    private AccessToProject work_osmlintmultipolygon(ItemOsmlintMultipolygon itemOsmlintMultipolygon, AccessToProject accessToTask, double size) {
         accessToTask.setKey(itemOsmlintMultipolygon.getKey());
         List<List<List<List<Node>>>> list = itemOsmlintMultipolygon.get_nodes();
         LatLon coor = new LatLon(list.get(0).get(0).get(0).get(0).getCoor().lat(), list.get(0).get(0).get(0).get(0).getCoor().lon());
@@ -229,7 +229,7 @@ public class TofixTask {
         return accessToTask;
     }
 
-    public void task_complete(Item item, AccessToTask accessToTask) {
+    public void task_complete(Item item, AccessToProject accessToTask) {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
         String num = myFormatter.format(item.getTaskCompleteBean().getTotal());
         String message = "Task " + accessToTask.getTask_name() + " is complete\n"
