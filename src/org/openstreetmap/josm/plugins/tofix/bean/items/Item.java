@@ -22,6 +22,15 @@ public class Item {
     private String metadata;
     private String sort;
 
+    private int StatusServer ;
+
+    public int getStatusServer() {
+        return StatusServer;
+    }
+
+    public void setStatusServer(int StatusServer) {
+        this.StatusServer = StatusServer;
+    }
 
     public String getId() {
         return id;

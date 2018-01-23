@@ -1,12 +1,18 @@
 package org.openstreetmap.josm.plugins.tofix;
 
+
 import static org.openstreetmap.josm.tools.I18n.tr;
 
 import java.text.DecimalFormat;
 import java.util.List;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import org.geojson.FeatureCollection;
+import org.geojson.GeoJsonObject;
+import org.geojson.GeoJsonObjectVisitor;
+import org.geojson.GeometryCollection;
 
 import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.data.coor.LatLon;
@@ -16,6 +22,10 @@ import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.io.UploadDialog;
+import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.geojson.DataSetBuilder;
+import org.openstreetmap.josm.plugins.geojson.DataSetBuilder.BoundedDataSet;
+import org.openstreetmap.josm.plugins.geojson.GeoJsonLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintLinestring;
@@ -26,6 +36,8 @@ import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPoint;
 import org.openstreetmap.josm.plugins.tofix.bean.items.ItemOsmlintPolygon;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
+import org.openstreetmap.josm.tools.Logging;
+
 
 /**
  *
@@ -36,19 +48,30 @@ public class TofixTask {
     ItemController itemController = new ItemController();
     Bounds bounds = null;
     Bounds bounds_default = null;
-
+    DataSetBuilder dataSetBuilder = new DataSetBuilder();
     MapView mv = null;
-    
+
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToProject work(Item item, AccessToProject accessToTask, double size) { 
+    public AccessToProject work(Item item, AccessToProject accessToTask, double size) {
 
-        
-        
-        
-        
-        
-        
+        try {
+
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            final GeoJsonObject object = mapper.readValue(item.getFeatureCollection().toString(), GeoJsonObject.class);
+            GeoJsonObject geoJsonObject = new GeometryCollection();
+            final BoundedDataSet data = new DataSetBuilder().build(object);
+
+            final Layer layer = new GeoJsonLayer(tr("tofix-Item:") + item.getId(), data);
+            layer.setBackgroundLayer(true);
+            MainApplication.getLayerManager().addLayer(layer);
+            
+        } catch (final Exception e) {
+            Logging.error("Error while reading json file!");
+            Logging.error(e);
+        } 
+
 ////size to download    
 //        if ("Point".equals(item.getType())) {
 //            accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);

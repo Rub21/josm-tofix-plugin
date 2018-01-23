@@ -415,7 +415,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                         Util.print("================== Num 200 access");
 
                 mainAccessToProject.setAccess(true);
-                mainAccessToProject = tofixTask.work(item, mainAccessToProject, zise, itemController.getRelation());
+                mainAccessToProject = tofixTask.work(item, mainAccessToProject, zise);
                 edit();
                 break;
             case 410:
