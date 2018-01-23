@@ -2,17 +2,13 @@ package org.openstreetmap.josm.plugins.tofix;
 
 import static org.openstreetmap.josm.tools.I18n.tr;
 
-import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
-import org.openstreetmap.josm.data.osm.BBox;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.visitor.BoundingXYVisitor;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.geojson.DataSetBuilder.BoundedDataSet;
 
 /**
  *
@@ -20,84 +16,20 @@ import org.openstreetmap.josm.gui.MainApplication;
  */
 public class TofixDraw {
 
-    public static void draw_Node(final TofixLayer tofixLayer, LatLon latLon) {
-        if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
+    public static void draw(final TofixNewLayer tofixNewLayer, BoundedDataSet data) {
+        if (data == null) {
+            JOptionPane.showMessageDialog(Main.parent, tr("Can not print the layer"));
             return;
         }
         BoundingXYVisitor v = new BoundingXYVisitor();
-
-        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
+        v.visit(data.getBounds());
+        
         MainApplication.getMap().mapView.zoomTo(v);
-        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
-            MainApplication.getLayerManager().addLayer(tofixLayer);
-            tofixLayer.add_Node(latLon);
+        if (!MainApplication.getLayerManager().containsLayer(tofixNewLayer)) {
+            MainApplication.getLayerManager().addLayer(tofixNewLayer);
+            tofixNewLayer.setDataset(data.getDataSet());
         } else {
-            tofixLayer.add_Node(latLon);
-        }
-    }
-
-    public static void draw_nodes(final TofixLayer tofixLayer, LatLon latLon, List<Node> list_nodes) {
-        if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
-            return;
-        }
-        BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
-        MainApplication.getMap().mapView.zoomTo(v);
-        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
-            MainApplication.getLayerManager().addLayer(tofixLayer);
-            tofixLayer.add_Nodes(list_nodes);
-        } else {
-            tofixLayer.add_Nodes(list_nodes);
-        }
-    }
-
-    public static void draw_line(final TofixLayer tofixLayer, LatLon latLon, List<List<Node>> list_nodes) {
-        if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
-            return;
-        }
-        BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
-        MainApplication.getMap().mapView.zoomTo(v);
-        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
-            MainApplication.getLayerManager().addLayer(tofixLayer);
-            tofixLayer.add_Line(list_nodes);
-        } else {
-            tofixLayer.add_Line(list_nodes);
-        }
-    }
-
-    public static void draw_lines(final TofixLayer tofixLayer, LatLon latLon, List<List<List<Node>>> list_nodes) {
-        if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
-            return;
-        }
-        BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
-        MainApplication.getMap().mapView.zoomTo(v);
-        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
-            MainApplication.getLayerManager().addLayer(tofixLayer);
-            tofixLayer.add_lines(list_nodes);
-        } else {
-            tofixLayer.add_lines(list_nodes);
-        }
-    }
-
-    public static void draw_Lines(final TofixLayer tofixLayer, LatLon latLon, List<List<List<List<Node>>>> list_nodes) {
-        if (latLon.isOutSideWorld()) {
-            JOptionPane.showMessageDialog(Main.parent, tr("Cannot place a node outside of the world."));
-            return;
-        }
-        BoundingXYVisitor v = new BoundingXYVisitor();
-        v.visit(new Bounds(new BBox(latLon.getX(), latLon.getY(), 0.0007).toRectangle()));
-        MainApplication.getMap().mapView.zoomTo(v);
-        if (!MainApplication.getLayerManager().containsLayer(tofixLayer)) {
-            MainApplication.getLayerManager().addLayer(tofixLayer);
-            tofixLayer.add_Lines(list_nodes);
-        } else {
-            tofixLayer.add_Lines(list_nodes);
+            tofixNewLayer.setDataset(data.getDataSet());
         }
     }
 }

@@ -420,7 +420,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             case 410:
                 mainAccessToProject.setAccess(false);
-                tofixTask.task_complete(item, mainAccessToProject);
+//                tofixTask.task_complete(item, mainAccessToProject);
                 break;
             case 503:
                 mainAccessToProject.setAccess(false);
