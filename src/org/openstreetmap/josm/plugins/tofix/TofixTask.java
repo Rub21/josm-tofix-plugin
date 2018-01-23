@@ -41,26 +41,34 @@ public class TofixTask {
     
     TofixLayer tofixLayer = new TofixLayer("Tofix-layer");
 
-    public AccessToProject work(Item item, AccessToProject accessToTask, double size, JsonArray relation) { //size to download    
-        if ("Point".equals(item.getType())) {
-            accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
-        }
-        if ("LineString".equals(item.getType())) {
-            accessToTask = work_osmlintlinestring(item.getItemOsmlintLinestring(), accessToTask, size);
-        }
-        if ("MultiPoint".equals(item.getType())) {
-            accessToTask = work_osmlintmultipoint(item.getItemOsmlintMultipoint(), accessToTask, size);
-        }
-        if ("MultiLineString".equals(item.getType())) {
-            accessToTask = work_osmlintmultilinestring(item.getItemOsmlintMultilinestring(), accessToTask, size);
-        }
-        if ("Polygon".equals(item.getType())) {
-            accessToTask = work_osmlintpolygon(item.getItemOsmlintPolygon(), accessToTask, size, relation);
+    public AccessToProject work(Item item, AccessToProject accessToTask, double size) { 
 
-        }
-        if ("MultiPolygon".equals(item.getType())) {
-            accessToTask = work_osmlintmultipolygon(item.getItemOsmlintMultipolygon(), accessToTask, size);
-        }
+        
+        
+        
+        
+        
+        
+////size to download    
+//        if ("Point".equals(item.getType())) {
+//            accessToTask = work_osmlintpoint(item.getItemOsmlintPoint(), accessToTask, size);
+//        }
+//        if ("LineString".equals(item.getType())) {
+//            accessToTask = work_osmlintlinestring(item.getItemOsmlintLinestring(), accessToTask, size);
+//        }
+//        if ("MultiPoint".equals(item.getType())) {
+//            accessToTask = work_osmlintmultipoint(item.getItemOsmlintMultipoint(), accessToTask, size);
+//        }
+//        if ("MultiLineString".equals(item.getType())) {
+//            accessToTask = work_osmlintmultilinestring(item.getItemOsmlintMultilinestring(), accessToTask, size);
+//        }
+//        if ("Polygon".equals(item.getType())) {
+//            accessToTask = work_osmlintpolygon(item.getItemOsmlintPolygon(), accessToTask, size, relation);
+//
+//        }
+//        if ("MultiPolygon".equals(item.getType())) {
+//            accessToTask = work_osmlintmultipolygon(item.getItemOsmlintMultipolygon(), accessToTask, size);
+//        }
         UploadDialog.getUploadDialog().getChangeset().getCommentsCount();
         return accessToTask;
     }
@@ -231,8 +239,8 @@ public class TofixTask {
 
     public void task_complete(Item item, AccessToProject accessToTask) {
         DecimalFormat myFormatter = new DecimalFormat("#,###");
-        String num = myFormatter.format(item.getTaskCompleteBean().getTotal());
-        String message = "Task " + accessToTask.getTask_name() + " is complete\n"
+        String num = myFormatter.format(item.getLockedBy()); //FIXME
+        String message = "Task " + accessToTask.getProject_name() + " is complete\n"
                 + num + " issues fixed";
         new Notification(tr(message)).show();
     }

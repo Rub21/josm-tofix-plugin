@@ -34,7 +34,11 @@ public class Request {
         }
         String urlParameters = postData.toString();
 
-        Response resp = HttpClient.create(new URL(url), "POST").setRequestBody(url.getBytes(StandardCharsets.UTF_8)).setRequestBody(urlParameters.getBytes(StandardCharsets.UTF_8)).connect();
+        Response resp = HttpClient.create(new URL(url), "POST")
+                .setRequestBody(url.getBytes(StandardCharsets.UTF_8))
+                .setRequestBody(urlParameters.getBytes(StandardCharsets.UTF_8))
+                .setHeader("Authorization", Config.TOKEN)
+                .connect();
 
         //Crear un ResponseBean para que regrese el String y el status de la peticion.
         ResponseBean responseBean = new ResponseBean();

@@ -1,5 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix.bean.items;
 
+import javax.json.JsonObject;
 import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 
 /**
@@ -8,86 +9,115 @@ import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
  */
 public class Item {
 
-    private int status;
-    private String type;    
-    private TaskCompleteBean taskCompleteBean;   
-    private ItemOsmlintPoint itemOsmlintPoint;
-    private ItemOsmlintMultipoint itemOsmlintMultipoint;
-    private ItemOsmlintLinestring itemOsmlintLinestring;
-    private ItemOsmlintMultilinestring itemOsmlintMultilinestring;
-    private ItemOsmlintPolygon itemOsmlintPolygon;
-    private ItemOsmlintMultipolygon itemOsmlintMultipolygon;
+    private String id;
+    private String project_id;
+    private String pin;
+    private String quadkey;
+    private String instructions;
+    private String createdBy;
+    private JsonObject featureCollection;
+    private String status;
+    private String lockedTill;
+    private String lockedBy;
+    private String metadata;
+    private String sort;
 
-    public int getStatus() {
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getProject_id() {
+        return project_id;
+    }
+
+    public void setProject_id(String project_id) {
+        this.project_id = project_id;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
+    public String getQuadkey() {
+        return quadkey;
+    }
+
+    public void setQuadkey(String quadkey) {
+        this.quadkey = quadkey;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public JsonObject getFeatureCollection() {
+        return featureCollection;
+    }
+
+    public void setFeatureCollection(JsonObject featureCollection) {
+        this.featureCollection = featureCollection;
+    }
+
+  
+    
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public TaskCompleteBean getTaskCompleteBean() {
-        return taskCompleteBean;
+    public String getLockedTill() {
+        return lockedTill;
     }
 
-    public void setTaskCompleteBean(TaskCompleteBean taskCompleteBean) {
-        this.taskCompleteBean = taskCompleteBean;
-    }
-    
-    public ItemOsmlintPoint getItemOsmlintPoint() {
-        return itemOsmlintPoint;
+    public void setLockedTill(String lockedTill) {
+        this.lockedTill = lockedTill;
     }
 
-    public void setItemOsmlintPoint(ItemOsmlintPoint itemOsmlintPoint) {
-        this.itemOsmlintPoint = itemOsmlintPoint;
+    public String getLockedBy() {
+        return lockedBy;
     }
 
-    public ItemOsmlintMultipoint getItemOsmlintMultipoint() {
-        return itemOsmlintMultipoint;
+    public void setLockedBy(String lockedBy) {
+        this.lockedBy = lockedBy;
     }
 
-    public void setItemOsmlintMultipoint(ItemOsmlintMultipoint itemOsmlintMultipoint) {
-        this.itemOsmlintMultipoint = itemOsmlintMultipoint;
+    public String getMetadata() {
+        return metadata;
     }
 
-    public ItemOsmlintLinestring getItemOsmlintLinestring() {
-        return itemOsmlintLinestring;
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
     }
 
-    public void setItemOsmlintLinestring(ItemOsmlintLinestring itemOsmlintLinestring) {
-        this.itemOsmlintLinestring = itemOsmlintLinestring;
+    public String getSort() {
+        return sort;
     }
 
-    public String getType() {
-        return type;
+    public void setSort(String sort) {
+        this.sort = sort;
     }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public ItemOsmlintMultilinestring getItemOsmlintMultilinestring() {
-        return itemOsmlintMultilinestring;
-    }
-
-    public void setItemOsmlintMultilinestring(ItemOsmlintMultilinestring itemOsmlintMultilinestring) {
-        this.itemOsmlintMultilinestring = itemOsmlintMultilinestring;
-    }
-
-    public ItemOsmlintPolygon getItemOsmlintPolygon() {
-        return itemOsmlintPolygon;
-    }
-
-    public void setItemOsmlintPolygon(ItemOsmlintPolygon itemOsmlintPolygon) {
-        this.itemOsmlintPolygon = itemOsmlintPolygon;
-    }
-
-    public ItemOsmlintMultipolygon getItemOsmlintMultipolygon() {
-        return itemOsmlintMultipolygon;
-    }
-
-    public void setItemOsmlintMultipolygon(ItemOsmlintMultipolygon itemOsmlintMultipolygon) {
-        this.itemOsmlintMultipolygon = itemOsmlintMultipolygon;
-    }
-
 }
