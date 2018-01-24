@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Line2D;
 import java.util.List;
 
 import javax.swing.Action;
@@ -14,6 +15,7 @@ import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
@@ -24,17 +26,19 @@ import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.dialogs.LayerListDialog;
 import org.openstreetmap.josm.gui.dialogs.LayerListPopup;
 import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.geojson.DataSetBuilder.BoundedDataSet;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 
 public class TofixNewLayer extends Layer implements ActionListener {
 
-    DataSet dataset;
+    BoundedDataSet boundedDataSet;
+
+//    DataSet dataset;
     float width;
 
-    public TofixNewLayer(String name, DataSet dataSet) {
+    public TofixNewLayer(String name) {
         super(name);
-        this.dataset = dataSet;
     }
 
     @Override
@@ -52,14 +56,14 @@ public class TofixNewLayer extends Layer implements ActionListener {
         return false;
     }
 
-    public void setDataset(DataSet dataset) {
-        this.dataset = dataset;
+    public void setBoundedDataSet(BoundedDataSet boundedDataSet) {
+        this.boundedDataSet = boundedDataSet;
         invalidate();
     }
 
     @Override
     public void paint(Graphics2D g, final MapView mv, Bounds bounds) {
-
+        DataSet dataset = boundedDataSet.getDataSet();
         Stroke stroke = g.getStroke();
         if (dataset == null) {
             return;
@@ -69,6 +73,7 @@ public class TofixNewLayer extends Layer implements ActionListener {
         } else {
             width = 3f;
         }
+        //Print the objetcs
         g.setColor(new Color(254, 30, 123));
         g.setStroke(new BasicStroke((float) width));
         for (OsmPrimitive primitive : dataset.allPrimitives()) {
@@ -83,7 +88,7 @@ public class TofixNewLayer extends Layer implements ActionListener {
                     Node node2 = way.getNode(i + 1);
                     Point pnt1 = mv.getPoint(node1.getCoor());
                     Point pnt2 = mv.getPoint(node2.getCoor());
-                    g.drawLine(pnt1.x, pnt1.y, pnt2.x, pnt2.y);
+                    g.draw(new Line2D.Double(pnt1.x, pnt1.y, pnt2.x, pnt2.y));
                 }
             } else if (primitive instanceof Node) {
                 Node node = (Node) primitive;
@@ -93,6 +98,11 @@ public class TofixNewLayer extends Layer implements ActionListener {
                 }
             }
         }
+        //Print the bbox
+//        Double top = bounds.getMax().lat();
+//        Double bottom = bounds.getMin().lat();
+//        Double left = bounds.getMin().lon();
+//        Double right = bounds.getMax().lon();
         g.setStroke(stroke);
     }
 

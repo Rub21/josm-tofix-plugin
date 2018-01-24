@@ -9,13 +9,12 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.io.UploadDialog;
-import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.plugins.geojson.DataSetBuilder;
 import org.openstreetmap.josm.plugins.geojson.DataSetBuilder.BoundedDataSet;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
+import org.openstreetmap.josm.plugins.tofix.util.Download;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
@@ -29,9 +28,9 @@ public class TofixTask {
     Bounds bounds_default = null;
     DataSetBuilder dataSetBuilder = new DataSetBuilder();
     MapView mv = null;
-    TofixNewLayer tofixLayer = new TofixNewLayer("To-fix-layer", null);
+    TofixNewLayer tofixLayer = new TofixNewLayer("Tofixlayer");
 
-    public AccessToProject work(Item item, AccessToProject accessToTask, double size) {
+    public AccessToProject work(Item item, AccessToProject accessToTask, double downloadSize) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -40,6 +39,7 @@ public class TofixTask {
             final BoundedDataSet data = new DataSetBuilder().build(object);
             checkTofixLayer();
             TofixDraw.draw(tofixLayer, data);
+            Download.download(data.getBounds(),0L, downloadSize);
         } catch (final Exception e) {
             Logging.error("Error while reading json file!");
             Logging.error(e);

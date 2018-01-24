@@ -6,16 +6,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 
 import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.coor.LatLon;
+import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
+import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 
@@ -25,9 +29,16 @@ import org.openstreetmap.josm.plugins.tofix.TofixDialog;
  */
 public class Download {
 
-    public static void download(Bounds bounds, final Long osm_obj_id) {
+    public static void download(Bounds bounds, final Long osm_obj_id, double downloadSize) {
         DownloadOsmTask task = new DownloadOsmTask();
         ProgressMonitor monitor = null;
+//        //Fix bbox to download
+        if (bounds.getArea() == 0) {
+            bounds = new Bounds(new BBox(bounds.getCenter().getX(), bounds.getCenter().getY(), downloadSize).toRectangle());
+        } else if (bounds.getArea() > 10) {
+            Util.alert(tr("It is a big area, it can't be downloaded!"));
+            return;
+        }
         final Future<?> future = task.download(true, bounds, monitor);
         Runnable runAfterTask;
 

@@ -412,8 +412,6 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         
         switch (200) {
             case 200:
-                        Util.print("================== Num 200 access");
-
                 mainAccessToProject.setAccess(true);
                 mainAccessToProject = tofixTask.work(item, mainAccessToProject, zise);
                 edit();
