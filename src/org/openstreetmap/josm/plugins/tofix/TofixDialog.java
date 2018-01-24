@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -41,16 +40,14 @@ import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
-import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ListProjectBean;
-import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
+import org.openstreetmap.josm.plugins.tofix.bean.ProjectBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -74,8 +71,12 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     double zise = 0.0006; //per default
 
     AccessToProject mainAccessToProject = null;
-    // Project list
-    ListProjectBean listProjectBean = null;
+
+    //Project
+    ProjectBean project = new ProjectBean();
+
+    // Projects list
+    ListProjectBean projectsList = null;
     ListProjectsController listProjectController = new ListProjectsController();
 
     //Item
@@ -209,7 +210,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkboxStatus) {
-                    action("noterror");
+                    notError();
                     deleteLayer();
                 } else {
                     msg();
@@ -243,14 +244,13 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 skipShortcut = Shortcut.registerShortcut("tofix:skip", tr("tofix:Skip item"), KeyEvent.VK_S, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new skipKeyAction(), skipShortcut);
                 fixedShortcut = Shortcut.registerShortcut("tofix:fixed", tr("tofix:Fixed item"), KeyEvent.VK_F, Shortcut.ALT_SHIFT);
-                MainApplication.registerActionShortcut(new Fixed_key_Action(), fixedShortcut);
+                MainApplication.registerActionShortcut(new fixedKeyAction(), fixedShortcut);
                 noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"), KeyEvent.VK_N, Shortcut.ALT_SHIFT);
                 MainApplication.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
-
                 //List projects
-                listProjectBean = listProjectController.getListProjects();
-                for (int i = 0; i < listProjectBean.getProjects().size(); i++) {
-                    projectsList.add(listProjectBean.getProjects().get(i).getName());
+                this.projectsList = listProjectController.getListProjects();
+                for (int i = 0; i < this.projectsList.getProjects().size(); i++) {
+                    projectsList.add(this.projectsList.getProjects().get(i).getName());
                 }
 
                 JComboBox<String> jcomboBox = new JComboBox<>(projectsList.toArray(new String[]{}));
@@ -313,8 +313,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         start();
         JComboBox<?> cb = (JComboBox<?>) e.getSource();
         if (cb.getSelectedIndex() != 0) {
-            mainAccessToProject.setProject_id(listProjectBean.getProjects().get(cb.getSelectedIndex() - 1).getId());
-            mainAccessToProject.setProject_name(listProjectBean.getProjects().get(cb.getSelectedIndex() - 1).getName());
+            mainAccessToProject.setProject_id(projectsList.getProjects().get(cb.getSelectedIndex() - 1).getId());
+            mainAccessToProject.setProject_name(projectsList.getProjects().get(cb.getSelectedIndex() - 1).getName());
+            project = projectsList.getProjects().get(cb.getSelectedIndex() - 1);
+
             deleteLayer();
             getNewItem();
             skipButton.setEnabled(true);
@@ -340,7 +342,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
-    public class Fixed_key_Action extends AbstractAction {
+    public class fixedKeyAction extends AbstractAction {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -357,7 +359,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkboxStatus) {
-                action("noterror");
+                notError();
                 deleteLayer();
             } else {
                 msg();
@@ -368,7 +370,8 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     private void eventFixed(ActionEvent e) {
         if (!MainApplication.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
-            action("skipeventFixed");
+            //Be sure you mark as fixed
+            fixed();
         } else if (new Bounds(MainApplication.getLayerManager().getEditDataSet().getDataSourceArea().getBounds()).getArea() < 30) {
             validator = false;
             UploadDialog.getUploadDialog().addComponentListener(new ComponentAdapter() {
@@ -378,27 +381,28 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             });
             DataSet data = MainApplication.getLayerManager().getEditLayer().data;
-            data.getChangeSetTags().put("comment", mainAccessToProject.getProject_changesetComment());
+            project.getChangesetComment();
+            //Set up the changeset comment and the source
+            if (!project.getChangesetComment().equals("none")) {
+                data.getChangeSetTags().put("comment", project.getChangesetComment());
+            }
             data.getChangeSetTags().put("source", MainApplication.getMap().mapView.getLayerInformationForSourceTag());
-
             new UploadAction().actionPerformed(e);
 
             if (validator && !UploadDialog.getUploadDialog().isCanceled() && UploadDialog.getUploadDialog().getChangeset().isNew()) {
-                action("fixed");
+                fixed();
                 deleteLayer();
             }
         } else {
-            new Notification(tr("The bounding box is too big.")).show();
+            new Notification(tr("The bounding box of the edited layer is too big.")).show();
         }
     }
 
     //==============================================================================FUNCTIONS==============================================================================
     private void getNewItem() {
-//        item.setStatus(0);
         itemController.setAccessToProject(mainAccessToProject);
         item = itemController.getItem();
-
-        switch (200) {
+        switch (item.getStatusServer()) {
             case 200:
                 mainAccessToProject.setAccess(true); //This atribute to access to  the actions
                 mainAccessToProject = tofixProject.work(item, mainAccessToProject, zise);
@@ -406,24 +410,10 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 break;
             case 410:
                 mainAccessToProject.setAccess(false);
-//                tofixTask.task_complete(item, mainAccessToProject);
                 break;
             case 503:
                 mainAccessToProject.setAccess(false);
                 new Notification(tr("Maintenance server")).show();
-                break;
-            case 520:
-                mainAccessToProject.setAccess(false);
-                JLabel text = new javax.swing.JLabel();
-                text.setText(tr("<html>Something went wrong, please update the plugin or report an issue at <a href=\"\">josm-tofix-plugin/issues</a></html>"));
-                text.setCursor(new Cursor(Cursor.HAND_CURSOR));
-                text.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        OpenBrowser.displayUrl(Config.URL_TOFIX_ISSUES);
-                    }
-                });
-                JOptionPane.showMessageDialog(Main.parent, text, tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 break;
             default:
                 mainAccessToProject.setAccess(false);
@@ -434,28 +424,29 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
 //Actions
     public void edit() {
         if (mainAccessToProject.isAccess()) {
-            itemTrackController.sendUpdateItem(item, "unlocked");
+            itemTrackController.lockItem(item, "locked");
         }
     }
 
     public void skip() {
         if (mainAccessToProject.isAccess()) {
-            itemTrackController.sendUpdateItem(item, "unlocked");
+            itemTrackController.lockItem(item, "unlocked");
             getNewItem();
         }
     }
 
-    public void action(String action) { //fixed, noterror or skip
+    public void fixed() {
         if (mainAccessToProject.isAccess()) {
-//            ActionBean trackBean = new ActionBean();
-//            trackBean.setAction(action);
-//            trackBean.setEditor("josm");
-//            trackBean.setUser(josmUserIdentityManager.getUserName());
-//            trackBean.setKey(mainAccessToProject.getKey());
-            itemTrackController.sendUpdateItem(item, "locked");
+            itemTrackController.updateStatusItem(item,  "fixed");
+            getNewItem();
         }
-        getNewItem();
+    }
 
+    public void notError() {
+        if (mainAccessToProject.isAccess()) {
+            itemTrackController.updateStatusItem(item, "noterror");
+            getNewItem();
+        }
     }
 
     public final void start() {

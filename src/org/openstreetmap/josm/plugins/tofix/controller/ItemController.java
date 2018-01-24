@@ -7,7 +7,10 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.swing.JOptionPane;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.gui.Notification;
+import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
 import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
@@ -46,25 +49,19 @@ public class ItemController {
         try {
             //Get item as String
             String itemString = Request.sendGET(accessToProject.getProject_url());
-
             Util.print(itemString);
             JsonReader reader = Json.createReader(new StringReader(itemString));
             JsonArray arrayItems = reader.readArray();
             //Check if the array hays items
             if (arrayItems.size() > 0) {
                 JsonObject itemObject = arrayItems.getJsonObject(0);
-                Util.print(itemObject);
-                Util.print(itemObject.getString("id"));
-                Util.print(itemObject.getString("project_id"));
-                Util.print(itemObject.getJsonObject("featureCollection"));
                 item.setId(itemObject.getString("id"));
                 item.setProject_id(itemObject.getString("project_id"));
                 item.setFeatureCollection(itemObject.getJsonObject("featureCollection"));
-                Util.print(item.getFeatureCollection());
                 item.setStatusServer(200);
 
             } else {
-                new Notification(tr("There are not items in this project")).show();
+                JOptionPane.showMessageDialog(Main.parent, tr("There are no more items to work on this project!"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 item.setStatusServer(410);
             }
             reader.close();

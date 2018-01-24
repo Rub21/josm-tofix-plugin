@@ -9,7 +9,7 @@ public class Config {
     public static final String URL_OSM = "http://www.openstreetmap.org";
     public static final String URL_TOFIX_ISSUES = "https://github.com/JOSM/tofix/issues";
     public static final String TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjUxMDgzNiIsInVzZXJuYW1lIjoiUnViMjEiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDAvNTEwLzgzNi9vcmlnaW5hbC9hNjI3NzkxZTFiZDJmZjk0ZWM1YjdjNDA4NjBmNTdiMy5qcGcifQ.aSBlGvOEvg1Ru_Kb0UXP6wR1MUjTYWd5zD-dXPY4lsQ";
-    public static final String QUERY = "?lock=unlocked&page_size=1&fc=true&random=true";
+    public static final String QUERY = "?status=open&lock=unlocked&page_size=1&fc=true&random=true";
 
     public static String getHOST() {
         if (HOST == null || HOST.isEmpty()) {

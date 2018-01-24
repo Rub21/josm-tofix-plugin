@@ -33,7 +33,6 @@ public class ListProjectsController {
 
     public ListProjectsController() {
         this.url = Config.getHOST() + "/" + Config.API_VERSION + "/projects";
-        Util.print(this.url);
     }
 
     public ListProjectBean getListProjects() {
@@ -46,6 +45,8 @@ public class ListProjectsController {
                     JsonObject jsonProject = jsonReader2.readObject();
                     projectBean.setId(jsonProject.getString("id"));
                     projectBean.setName(jsonProject.getString("name"));
+                    projectBean.setMetadata(jsonProject.getJsonObject("metadata"));
+//                    projectBean.setQuadkey_set_id(jsonProject.getString("quadkey_set_id")); //FIXME
                 }
                 projects.add(projectBean);
             }
