@@ -9,14 +9,11 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.swing.JOptionPane;
 import org.openstreetmap.josm.Main;
-import org.openstreetmap.josm.gui.Notification;
 import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
-import org.openstreetmap.josm.plugins.tofix.bean.ResponseBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 import org.openstreetmap.josm.plugins.tofix.util.Util;
-import static org.openstreetmap.josm.tools.I18n.tr;
 
 /**
  *
@@ -24,8 +21,7 @@ import static org.openstreetmap.josm.tools.I18n.tr;
  */
 public class ItemController {
 
-    Item item = new Item();
-    ResponseBean responseBean = new ResponseBean();
+    ItemBean item = new ItemBean();
     JsonArray relation;
     AccessToProject accessToProject;
 
@@ -45,7 +41,7 @@ public class ItemController {
         this.relation = relation;
     }
 
-    public Item getItem() {
+    public ItemBean getItem() {
         try {
             //Get item as String
             String itemString = Request.sendGET(accessToProject.getProject_url());

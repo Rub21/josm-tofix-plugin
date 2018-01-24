@@ -42,7 +42,7 @@ import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.ListProjectBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ProjectBean;
-import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
@@ -80,7 +80,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
     ListProjectsController listProjectController = new ListProjectsController();
 
     //Item
-    Item item = new Item();
+    ItemBean item = new ItemBean();
     ItemController itemController = new ItemController();
 
     // To-Fix layer

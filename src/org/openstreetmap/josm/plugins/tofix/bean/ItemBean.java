@@ -1,13 +1,12 @@
-package org.openstreetmap.josm.plugins.tofix.bean.items;
+package org.openstreetmap.josm.plugins.tofix.bean;
 
 import javax.json.JsonObject;
-import org.openstreetmap.josm.plugins.tofix.bean.TaskCompleteBean;
 
 /**
  *
  * @author ruben
  */
-public class Item {
+public class ItemBean {
 
     private String id;
     private String project_id;

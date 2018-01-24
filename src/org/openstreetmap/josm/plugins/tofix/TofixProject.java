@@ -12,7 +12,7 @@ import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.plugins.geojson.DataSetBuilder;
 import org.openstreetmap.josm.plugins.geojson.DataSetBuilder.BoundedDataSet;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
-import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
+import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.controller.ItemController;
 import org.openstreetmap.josm.plugins.tofix.util.Download;
 import org.openstreetmap.josm.tools.Logging;
@@ -30,7 +30,7 @@ public class TofixProject {
     MapView mv = null;
     TofixNewLayer tofixLayer = new TofixNewLayer("Tofixlayer");
 
-    public AccessToProject work(Item item, AccessToProject accessToTask, double downloadSize) {
+    public AccessToProject work(ItemBean item, AccessToProject accessToTask, double downloadSize) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
