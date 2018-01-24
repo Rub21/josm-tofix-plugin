@@ -6,21 +6,28 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory;
 import org.openstreetmap.josm.plugins.tofix.bean.ActionBean;
 import org.openstreetmap.josm.plugins.tofix.bean.TrackBean;
+import org.openstreetmap.josm.plugins.tofix.bean.items.Item;
+import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
 
 public class ItemTrackController {
 
-    public void send_track_edit(String url, TrackBean trackBean) {
-        JsonObjectBuilder attributesBuilder = Json.createObjectBuilder();
+    public void sendUpdateItem(Item item, String action) {
+        //Create the URL
+        String url = Config.getHOST() + "/" + Config.API_VERSION + "/projects/" + item.getProject_id() + "/items/" + item.getId();
+        //Create data(json)to looked the item
         JsonObjectBuilder trackBeanBuilder = Json.createObjectBuilder();
-        trackBeanBuilder.add("user", trackBean.getAttributes().getUser())
-                .add("editor", trackBean.getAttributes().getEditor());
-        attributesBuilder.add("attributes", trackBeanBuilder);
-        JsonObject track_edit = attributesBuilder.build();
+        trackBeanBuilder
+                .add("lock", action);
+        JsonObjectBuilder metadataBuilder = Json.createObjectBuilder();
+        metadataBuilder.add("editor", "JOSM");
+        trackBeanBuilder.add("metadata", metadataBuilder);
+        JsonObject track_edit = trackBeanBuilder.build();
         try {
-            Request.sendPOST_Json(url, track_edit.toString());
+            Request.sendPUT_Json(url, track_edit.toString());
         } catch (IOException ex) {
             Logger.getLogger(ItemTrackController.class.getName()).log(Level.SEVERE, null, ex);
         }

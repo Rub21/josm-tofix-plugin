@@ -21,7 +21,7 @@ import org.openstreetmap.josm.tools.Logging;
  *
  * @author ruben
  */
-public class TofixTask {
+public class TofixProject {
 
     ItemController itemController = new ItemController();
     Bounds bounds = null;

@@ -19,6 +19,7 @@ import org.openstreetmap.josm.tools.HttpClient.Response;
 public class Request {
 
     public static ResponseBean sendPOST(String url) throws IOException {
+        Util.print("sendPOST => :" + url);
         Map<String, String> params = new LinkedHashMap<>();
         params.put("user", UserIdentityManager.getInstance().getUserName());
         params.put("editor", "josm");
@@ -49,14 +50,27 @@ public class Request {
     }
 
     public static void sendPOST_Json(String url, String object) throws IOException {
+        Util.print("sendPOST_Json => :" + url + "->" + object);
         HttpClient.create(new URL(url), "POST")
                 .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", Config.TOKEN)
+                .setAccept("application/json")
+                .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
+                .connect().disconnect();
+    }
+
+    public static void sendPUT_Json(String url, String object) throws IOException {
+        Util.print("sendPUT_Json => :" + url + "->" + object);
+        HttpClient.create(new URL(url), "PUT")
+                .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", Config.TOKEN)
                 .setAccept("application/json")
                 .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
                 .connect().disconnect();
     }
 
     public static String sendGET(String url) throws IOException {
+        Util.print("sendGET => :" + url);
         Response response = HttpClient.create(new URL(url))
                 .setHeader("Authorization", Config.TOKEN)
                 .connect();
@@ -65,11 +79,11 @@ public class Request {
         return result;
     }
 
-    public static void sendPUT_Json(String url, String object) throws IOException {
-        HttpClient.create(new URL(url), "PUT")
-                .setHeader("Content-Type", "application/json")
-                .setAccept("application/json")
-                .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
-                .connect().disconnect();
-    }
+//    public static void sendPUT_Json(String url, String object) throws IOException {
+//        HttpClient.create(new URL(url), "PUT")
+//                .setHeader("Content-Type", "application/json")
+//                .setAccept("application/json")
+//                .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
+//                .connect().disconnect();
+//    }
 }

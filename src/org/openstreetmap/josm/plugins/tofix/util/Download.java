@@ -6,12 +6,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openstreetmap.gui.jmapviewer.Coordinate;
+import javax.swing.JOptionPane;
+import org.openstreetmap.josm.Main;
 
 import org.openstreetmap.josm.actions.AutoScaleAction;
 import org.openstreetmap.josm.actions.downloadtasks.DownloadOsmTask;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.BBox;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
@@ -36,7 +36,7 @@ public class Download {
         if (bounds.getArea() == 0) {
             bounds = new Bounds(new BBox(bounds.getCenter().getX(), bounds.getCenter().getY(), downloadSize).toRectangle());
         } else if (bounds.getArea() > 10) {
-            Util.alert(tr("It is a big area, it can't be downloaded!"));
+            JOptionPane.showMessageDialog(Main.parent, tr("It is a big area, it can't be downloaded!"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
             return;
         }
         final Future<?> future = task.download(true, bounds, monitor);
