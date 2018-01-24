@@ -289,7 +289,7 @@ public class TofixDialog extends ToggleDialog implements ActionListener {
                 panelactivationLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
                 panelactivationUrl.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-                TabbedPanel.addTab(tr("Tasks"), jcontenTasks);
+                TabbedPanel.addTab(tr("Projects"), jcontenTasks);
                 TabbedPanel.addTab(tr("Config"), jcontenConfig);
                 TabbedPanel.addTab(tr("Activation"), jcontenActivation);
 

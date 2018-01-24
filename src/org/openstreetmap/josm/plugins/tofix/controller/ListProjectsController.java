@@ -20,7 +20,6 @@ import org.openstreetmap.josm.plugins.tofix.bean.ListProjectBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ProjectBean;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 
 /**
  *

@@ -11,7 +11,6 @@ import javax.json.JsonString;
 
 import org.openstreetmap.josm.plugins.tofix.bean.StatusBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 import org.openstreetmap.josm.tools.Logging;
 
 /**
