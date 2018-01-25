@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -24,7 +23,6 @@ import static javax.swing.Action.SHORT_DESCRIPTION;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,7 +32,6 @@ import org.openstreetmap.josm.Main;
 
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.UserIdentityManager;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -76,17 +73,17 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jPanelSetNewAPI = new JPanel(new GridLayout(2, 1));
 
     //OBJECTS FOR EVNETS
-    private JLabel JlabelTitleProject;
+    private final JLabel JlabelTitleProject;
     private final SideButton skipButton;
     private final SideButton fixedButton;
     private final SideButton noterrorButton;
     private final Button bboxButton;
     private final JTextField bboxJtextField;
-    private Shortcut skipShortcut;
-    private Shortcut fixedShortcut;
-    private Shortcut noterrorButtonShortcut;
-    private JComboBox<String> jcomboBox;
-    private JCheckBox jCheckBoxDeleteLayer;
+    private final Shortcut skipShortcut;
+    private final Shortcut fixedShortcut;
+    private final Shortcut noterrorButtonShortcut;
+    private final JComboBox<String> jcomboBox;
+    private final JCheckBox jCheckBoxDeleteLayer;
     private JCheckBox jCheckBoxSetNewAPI;
 
     //VARS
