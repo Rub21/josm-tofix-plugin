@@ -51,7 +51,7 @@ public class AccessToProject {
     }
 
     public String getProject_url() {
-        String url = Config.getHOST() + "/" + Config.API_VERSION + "/projects/" + this.getProject_id() + "/items" + Config.QUERY;
+        String url = Config.getHOST() + "/" + Config.API_VERSION + "/projects/" + this.getProject_id() + "/items" + Config.getQUERY();
         return url;
     }
 }

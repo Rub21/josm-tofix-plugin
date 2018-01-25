@@ -49,7 +49,6 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
@@ -231,6 +230,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
                 Bounds bounds = mv.getRealBounds();
                 String bbox = String.valueOf(bounds.getMinLat()) + ',' + String.valueOf(bounds.getMinLon()) + ',' + String.valueOf(bounds.getMaxLat()) + ',' + String.valueOf(bounds.getMaxLon());
                 bboxJtextField.setText(bbox);
+                Config.setQUERY(bbox);
             }
         });
         jPanelQuery.add(bboxButton);
@@ -268,7 +268,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             } else {
                 jcomboBox.setModel(new DefaultComboBoxModel<>());
                 jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));
-                Util.alert("Check your url:" + Config.getHOST());
+                JOptionPane.showMessageDialog(Main.parent, tr("API did not respond!") + Config.getHOST());
             }
         } else {
             skipButton.setEnabled(false);
@@ -359,7 +359,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
-    //==============================================================================FUNCTIONS==============================================================================
+//==============================================================================FUNCTIONS==============================================================================
     private void getNewItem() {
         itemController.setAccessToProject(mainAccessToProject);
         item = itemController.getItem();

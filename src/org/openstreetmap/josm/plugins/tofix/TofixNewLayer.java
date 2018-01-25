@@ -97,11 +97,6 @@ public class TofixNewLayer extends Layer implements ActionListener {
                 }
             }
         }
-        //Print the bbox
-//        Double top = bounds.getMax().lat();
-//        Double bottom = bounds.getMin().lat();
-//        Double left = bounds.getMin().lon();
-//        Double right = bounds.getMax().lon();
         g.setStroke(stroke);
     }
 
