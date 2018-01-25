@@ -9,6 +9,7 @@ import org.openstreetmap.josm.data.Bounds;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
 import org.openstreetmap.josm.gui.io.UploadDialog;
+import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.plugins.geojson.DataSetBuilder;
 import org.openstreetmap.josm.plugins.geojson.DataSetBuilder.BoundedDataSet;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
@@ -28,7 +29,7 @@ public class TofixProject {
     Bounds bounds_default = null;
     DataSetBuilder dataSetBuilder = new DataSetBuilder();
     MapView mv = null;
-    TofixNewLayer tofixLayer = new TofixNewLayer("Tofixlayer");
+    TofixNewLayer tofixLayer = new TofixNewLayer(tr("Tofix:<Layer>"));
 
     public AccessToProject work(ItemBean item, AccessToProject accessToTask, double downloadSize) {
         try {
@@ -38,6 +39,8 @@ public class TofixProject {
             GeoJsonObject geoJsonObject = new GeometryCollection();
             final BoundedDataSet data = new DataSetBuilder().build(object);
             checkTofixLayer();
+            //set layer  name
+            tofixLayer.setName(tr("Tofix:" + accessToTask.getProject_name()));
             TofixDraw.draw(tofixLayer, data);
             Download.download(data.getBounds(),0L, downloadSize);
         } catch (final Exception e) {
