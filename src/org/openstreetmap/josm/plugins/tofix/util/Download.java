@@ -19,6 +19,7 @@ import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.gui.MapView;
 import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.gui.progress.ProgressMonitor;
 import org.openstreetmap.josm.plugins.tofix.TofixDialog;
@@ -32,9 +33,12 @@ public class Download {
     public static void download(Bounds bounds, final Long osm_obj_id, double downloadSize) {
         DownloadOsmTask task = new DownloadOsmTask();
         ProgressMonitor monitor = null;
-//        //Fix bbox to download
+        //Fix bbox to download
         if (bounds.getArea() == 0) {
             bounds = new Bounds(new BBox(bounds.getCenter().getX(), bounds.getCenter().getY(), downloadSize).toRectangle());
+        } else if (bounds.getArea() < 10) {
+            bounds.extend(bounds.getMax().lat() + 0.0001, bounds.getMax().lon() + 0.0001);
+            bounds.extend(bounds.getMin().lat() - 0.0001, bounds.getMin().lon() - 0.0001);
         } else if (bounds.getArea() > 10) {
             JOptionPane.showMessageDialog(Main.parent, tr("It is a big area, it can't be downloaded!"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
             return;
