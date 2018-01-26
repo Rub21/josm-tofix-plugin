@@ -63,7 +63,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     ItemTrackController itemTrackController = new ItemTrackController();
     JTabbedPane TabbedPanel = new javax.swing.JTabbedPane();
     JPanel jContentPanelProjects = new JPanel(new GridLayout(2, 1));
-    JPanel jContenActivation = new JPanel(new GridLayout(5, 1));
+    JPanel jContenActivation = new JPanel(new GridLayout(6, 1));
     JPanel jPanelProjects = new JPanel(new GridLayout(1, 1));
     JPanel jPanelQuery = new JPanel(new GridLayout(2, 1));
 
@@ -77,6 +77,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     private final Shortcut fixedShortcut;
     private final Shortcut noterrorButtonShortcut;
     private final JComboBox<String> jcomboBox;
+    private final JCheckBox jCheckBoxToken;
     private final JCheckBox jCheckBoxDeleteLayer;
     private final JCheckBox jCheckBoxSetNewAPI;
     private final JCheckBox jCheckBoxDownloadOSMData;
@@ -137,15 +138,15 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
                 JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
                 fillCombo();
             } else {
-
                 try {
                     String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
                     if (newHost == null || (newHost != null && ("".equals(newHost)))) {
                         Config.setHOST(Config.DEFAULT_HOST);
-                        jCheckBoxSetNewAPI.setSelected(true);
+                        jCheckBoxSetNewAPI.setSelected(false);
                     } else {
                         Config.setHOST(newHost);
-                        fillCombo();
+                        SetToken();
+
                     }
                 } catch (HeadlessException exc) {
                 }
@@ -153,6 +154,21 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         });
         jCheckBoxSetNewAPI.setBorderPainted(true);
         jContenActivation.add(jCheckBoxSetNewAPI);
+
+//==============================================================================TOKEN
+        jCheckBoxToken = new JCheckBox(tr("Set up My token"));
+        jCheckBoxToken.setSelected(false);
+        jCheckBoxToken.addActionListener((ActionEvent e) -> {
+            if (jCheckBoxToken.isSelected()) {
+                SetToken();
+            } else {
+                Config.setTOKEN(Config.DEFAULT_TOKEN);
+                JOptionPane.showMessageDialog(Main.parent, tr("You are using a default token"));
+                fillCombo();
+            }
+        });
+        jCheckBoxToken.setBorderPainted(true);
+        jContenActivation.add(jCheckBoxToken);
 //==============================================================================AUTO DELETE LAYER
         jCheckBoxDeleteLayer = new JCheckBox(tr("Auto delete layer"));
         jCheckBoxDeleteLayer.setSelected(true);
@@ -291,6 +307,24 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             fixedButton.setEnabled(false);
             noterrorButton.setEnabled(false);
         }
+    }
+
+    public void SetToken() {
+        if (Status.serverStatus()) {
+            //OPEN PAGE TO LOGIN
+            OpenBrowser.displayUrl(Config.getAPILogin());
+            // OPEN ACCESS showInputDialog TO ADD THE TOKEN
+            String token = JOptionPane.showInputDialog(tr("Enter you token access to the To-fix-backend"));
+            if (token == null || (token != null && ("".equals(token)))) {
+                Config.setTOKEN(Config.DEFAULT_TOKEN);
+            } else {
+                Config.setTOKEN(token);
+                fillCombo();
+            }
+        } else {
+            JOptionPane.showMessageDialog(Main.parent, tr("API did not response! ") + Config.getHOST());
+        }
+
     }
 
 // Event select a project, it automatic will get a item and display

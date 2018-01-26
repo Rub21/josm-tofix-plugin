@@ -16,7 +16,7 @@ public class Request {
         Util.print("sendPOST_Json => :" + url + "->" + object);
         HttpClient.create(new URL(url), "POST")
                 .setHeader("Content-Type", "application/json")
-                .setHeader("Authorization", Config.TOKEN)
+                .setHeader("Authorization", Config.getTOKEN())
                 .setAccept("application/json")
                 .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
                 .connect().disconnect();
@@ -26,7 +26,7 @@ public class Request {
         Util.print("sendPUT_Json => :" + url + "->" + object);
         HttpClient.create(new URL(url), "PUT")
                 .setHeader("Content-Type", "application/json")
-                .setHeader("Authorization", Config.TOKEN)
+                .setHeader("Authorization", Config.getTOKEN())
                 .setAccept("application/json")
                 .setRequestBody(object.getBytes(StandardCharsets.UTF_8))
                 .connect().disconnect();
@@ -35,7 +35,7 @@ public class Request {
     public static String sendGET(String url) throws IOException {
         Util.print("sendGET => :" + url);
         Response response = HttpClient.create(new URL(url))
-                .setHeader("Authorization", Config.TOKEN)
+                .setHeader("Authorization", Config.getTOKEN())
                 .connect();
         String result = response.fetchContent();
         response.disconnect();
