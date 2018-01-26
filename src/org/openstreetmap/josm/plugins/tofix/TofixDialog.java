@@ -284,7 +284,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             } else {
                 jcomboBox.setModel(new DefaultComboBoxModel<>());
                 jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));
-                JOptionPane.showMessageDialog(Main.parent, tr("API did not response!") + Config.getHOST());
+                JOptionPane.showMessageDialog(Main.parent, tr("API did not response! ") + Config.getHOST());
             }
         } else {
             skipButton.setEnabled(false);
@@ -385,10 +385,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             case 410:
                 JOptionPane.showMessageDialog(Main.parent, tr("There are no more items on this Project or Area!"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 mainAccessToProject.setAccess(false);
-                break;
-            case 503:
-                mainAccessToProject.setAccess(false);
-                new Notification(tr("Maintenance server")).show();
                 break;
             default:
                 mainAccessToProject.setAccess(false);

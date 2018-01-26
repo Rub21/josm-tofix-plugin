@@ -58,7 +58,6 @@ public class ItemController {
             reader.close();
         } catch (Exception ex) {
             item.setStatusServer(502);
-            Util.alert(ex);
             Logger.getLogger(ItemController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return item;
