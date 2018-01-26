@@ -11,16 +11,15 @@ public class Config {
     public static final String TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjUxMDgzNiIsInVzZXJuYW1lIjoiUnViMjEiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDAvNTEwLzgzNi9vcmlnaW5hbC9hNjI3NzkxZTFiZDJmZjk0ZWM1YjdjNDA4NjBmNTdiMy5qcGcifQ.aSBlGvOEvg1Ru_Kb0UXP6wR1MUjTYWd5zD-dXPY4lsQ";
     public static String QUERY;
     public static final String DEFAULT_QUERY = "?status=open&lock=unlocked&page_size=1&fc=true&random=true";
+    public static String BBOX = "none";
 
     public static String getQUERY() {
-        if (QUERY == null || QUERY.isEmpty()) {
+        if (BBOX.equals("none")) {
             QUERY = DEFAULT_QUERY;
+        } else {
+            QUERY = DEFAULT_QUERY + "&bbox=" + BBOX;
         }
         return QUERY;
-    }
-
-    public static void setQUERY(String bbox) {
-        QUERY = DEFAULT_QUERY + "&bbox=" + bbox;
     }
 
     public static String getHOST() {
@@ -32,6 +31,10 @@ public class Config {
 
     public static void setHOST(String aHOST) {
         HOST = aHOST;
+    }
+
+    public static void setBBOX(String bbox) {
+        BBOX = bbox;
     }
 
 }

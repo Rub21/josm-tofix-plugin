@@ -7,9 +7,6 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.swing.JOptionPane;
-import org.openstreetmap.josm.Main;
-import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.ItemBean;
 import org.openstreetmap.josm.plugins.tofix.util.Request;
@@ -45,7 +42,6 @@ public class ItemController {
         try {
             //Get item as String
             String itemString = Request.sendGET(accessToProject.getProject_url());
-            Util.print(itemString);
             JsonReader reader = Json.createReader(new StringReader(itemString));
             JsonArray arrayItems = reader.readArray();
             //Check if the array hays items
@@ -57,7 +53,6 @@ public class ItemController {
                 item.setStatusServer(200);
 
             } else {
-                JOptionPane.showMessageDialog(Main.parent, tr("There are no more items to work on this project!"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 item.setStatusServer(410);
             }
             reader.close();

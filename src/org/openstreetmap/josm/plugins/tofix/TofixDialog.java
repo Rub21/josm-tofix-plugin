@@ -1,7 +1,5 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import java.awt.Button;
-
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -40,6 +38,7 @@ import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
+import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
 import org.openstreetmap.josm.plugins.tofix.bean.ListProjectBean;
 import org.openstreetmap.josm.plugins.tofix.bean.ProjectBean;
@@ -49,7 +48,6 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
-import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -65,30 +63,32 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     ItemTrackController itemTrackController = new ItemTrackController();
     JTabbedPane TabbedPanel = new javax.swing.JTabbedPane();
     JPanel jContentPanelProjects = new JPanel(new GridLayout(2, 1));
-    JPanel jContenActivation = new JPanel(new GridLayout(3, 1));
+    JPanel jContenActivation = new JPanel(new GridLayout(5, 1));
     JPanel jPanelProjects = new JPanel(new GridLayout(1, 1));
     JPanel jPanelQuery = new JPanel(new GridLayout(2, 1));
-    JPanel jPanelDeleteLayer = new JPanel(new GridLayout(1, 1));
-    JPanel jPanelSetNewAPI = new JPanel(new GridLayout(2, 1));
 
     //OBJECTS FOR EVNETS
     private final JLabel JlabelTitleProject;
     private final SideButton skipButton;
     private final SideButton fixedButton;
     private final SideButton noterrorButton;
-    private final Button bboxButton;
     private final JTextField bboxJtextField;
     private final Shortcut skipShortcut;
     private final Shortcut fixedShortcut;
     private final Shortcut noterrorButtonShortcut;
     private final JComboBox<String> jcomboBox;
     private final JCheckBox jCheckBoxDeleteLayer;
-    private JCheckBox jCheckBoxSetNewAPI;
+    private final JCheckBox jCheckBoxSetNewAPI;
+    private final JCheckBox jCheckBoxDownloadOSMData;
+    private final JCheckBox jCheckBoxSetDataEditable;
+    private final JCheckBox jCheckBoxSetBbox;
 
     //VARS
     double zise = 0.0006; //size to download,per default
     boolean validator;
     private boolean needDeleteLayer;
+    private boolean isCheckedDownloadOSMData = true;
+    private boolean isCheckedEditableData = false;
     ArrayList<String> listStringsForCombo = new ArrayList<>();
 
     // LOCAL
@@ -125,20 +125,10 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         jcomboBox.addActionListener(this);
         jPanelProjects.add(jcomboBox);
         jContentPanelProjects.add(jPanelProjects);
-
         fillCombo();
-//==============================================================================AUTO DELETE LAYER
+//==============================================================================CONFIG API URL
         jContenActivation.add(new Label(tr("Select the checkbox to:")));
 
-        jCheckBoxDeleteLayer = new JCheckBox(tr("Auto delete layer"));
-        jCheckBoxDeleteLayer.setSelected(true);
-        needDeleteLayer = jCheckBoxDeleteLayer.isSelected();
-        jCheckBoxDeleteLayer.addItemListener((ItemEvent e) -> {
-            needDeleteLayer = e.getStateChange() == ItemEvent.SELECTED;
-        });
-        jPanelDeleteLayer.add(jCheckBoxDeleteLayer);
-        jContenActivation.add(jPanelDeleteLayer);
-//==============================================================================CONFIG API URL
         jCheckBoxSetNewAPI = new JCheckBox(tr("Set default API"));
         jCheckBoxSetNewAPI.setSelected(true);
         jCheckBoxSetNewAPI.addActionListener((ActionEvent e) -> {
@@ -161,9 +151,53 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
                 }
             }
         });
-        jPanelSetNewAPI.add(jCheckBoxSetNewAPI);
-        jContenActivation.add(jPanelSetNewAPI);
-//BUTTONS
+        jCheckBoxSetNewAPI.setBorderPainted(true);
+        jContenActivation.add(jCheckBoxSetNewAPI);
+//==============================================================================AUTO DELETE LAYER
+        jCheckBoxDeleteLayer = new JCheckBox(tr("Auto delete layer"));
+        jCheckBoxDeleteLayer.setSelected(true);
+        needDeleteLayer = jCheckBoxDeleteLayer.isSelected();
+        jCheckBoxDeleteLayer.addItemListener((ItemEvent e) -> {
+            needDeleteLayer = e.getStateChange() == ItemEvent.SELECTED;
+        });
+        jCheckBoxDeleteLayer.setBorderPainted(true);
+        jContenActivation.add(jCheckBoxDeleteLayer);
+//==============================================================================DOWNLOAD OSM DATA
+        jCheckBoxDownloadOSMData = new JCheckBox(tr("Download OSM Data"));
+        jCheckBoxDownloadOSMData.setSelected(true);
+        jCheckBoxDownloadOSMData.addItemListener((ItemEvent e) -> {
+            isCheckedDownloadOSMData = e.getStateChange() == ItemEvent.SELECTED;
+        });
+        jCheckBoxDownloadOSMData.setBorderPainted(true);
+        jContenActivation.add(jCheckBoxDownloadOSMData);
+//==============================================================================SET EDITABLE DATA
+        jCheckBoxSetDataEditable = new JCheckBox(tr("Set editable layer"));
+        jCheckBoxSetDataEditable.setSelected(false);
+        jCheckBoxSetDataEditable.addItemListener((ItemEvent e) -> {
+            isCheckedEditableData = e.getStateChange() == ItemEvent.SELECTED;
+            if (isCheckedEditableData) {
+                jCheckBoxDeleteLayer.setSelected(false);
+            }
+        });
+        jCheckBoxSetDataEditable.setBorderPainted(true);
+        jContenActivation.add(jCheckBoxSetDataEditable);
+//============================================================================== Select bbox button+jtextfield
+        jCheckBoxSetBbox = new JCheckBox(tr("Set BBox to request the items"));
+        jCheckBoxSetBbox.setSelected(false);
+        bboxJtextField = new JTextField();
+        jCheckBoxSetBbox.addItemListener((ItemEvent e) -> {
+            if (e.getStateChange() == 1) {
+                Bounds bounds = mv.getRealBounds();
+                String bbox = String.valueOf(bounds.getMinLon()) + "," + String.valueOf(bounds.getMinLat()) + "," + String.valueOf(bounds.getMaxLon()) + "," + String.valueOf(bounds.getMaxLat());
+                bboxJtextField.setText(bbox);
+                Config.setBBOX(bbox);
+            } else {
+                bboxJtextField.setText("");
+                Config.setBBOX("none");
+            }
+        });
+        jPanelQuery.add(jCheckBoxSetBbox);
+        jPanelQuery.add(bboxJtextField);
 //=============================================================================="Skip" button
         skipButton = new SideButton(new AbstractAction() {
             {
@@ -220,27 +254,10 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         noterrorButtonShortcut = Shortcut.registerShortcut("tofix:noterror", tr("tofix:Not a Error item"),
                 KeyEvent.VK_N, Shortcut.ALT_SHIFT);
         MainApplication.registerActionShortcut(new NotError_key_Action(), noterrorButtonShortcut);
-//============================================================================== Select bbox button+jtextfield
-        bboxJtextField = new JTextField();
-        bboxButton = new Button(tr("Bbox"));
-        bboxButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //BBox - bbox extent in minX, minY, maxX, maxY order
-                Bounds bounds = mv.getRealBounds();
-                String bbox = String.valueOf(bounds.getMinLat()) + ',' + String.valueOf(bounds.getMinLon()) + ',' + String.valueOf(bounds.getMaxLat()) + ',' + String.valueOf(bounds.getMaxLon());
-                bboxJtextField.setText(bbox);
-                Config.setQUERY(bbox);
-            }
-        });
-        jPanelQuery.add(bboxButton);
-        jPanelQuery.add(bboxJtextField);
 //============================================================================== FILL PANELS
         //PANEL TASKS
         jPanelProjects.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanelQuery.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanelDeleteLayer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanelSetNewAPI.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         TabbedPanel.addTab(tr("Projects"), jContentPanelProjects);
         TabbedPanel.addTab(tr("Activation"), jContenActivation);
@@ -249,10 +266,9 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
             skipButton, noterrorButton, fixedButton
         }));
-
     }
-
 //==============================================================================OBJECT EVENTS==============================================================================
+
     public void fillCombo() {
         listStringsForCombo.clear();
         listStringsForCombo.add(tr("Select a project ..."));
@@ -268,7 +284,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             } else {
                 jcomboBox.setModel(new DefaultComboBoxModel<>());
                 jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));
-                JOptionPane.showMessageDialog(Main.parent, tr("API did not respond!") + Config.getHOST());
+                JOptionPane.showMessageDialog(Main.parent, tr("API did not response!") + Config.getHOST());
             }
         } else {
             skipButton.setEnabled(false);
@@ -286,7 +302,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             mainAccessToProject.setProject_id(projectsList.getProjects().get(cb.getSelectedIndex() - 1).getId());
             mainAccessToProject.setProject_name(projectsList.getProjects().get(cb.getSelectedIndex() - 1).getName());
             project = projectsList.getProjects().get(cb.getSelectedIndex() - 1);
-
             deleteLayer();
             getNewItem();
             skipButton.setEnabled(true);
@@ -305,7 +320,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             skip();
             deleteLayer();
-
         }
     }
 
@@ -314,7 +328,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             eventFixed(e);
-
         }
     }
 
@@ -324,12 +337,12 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             notError();
             deleteLayer();
-
         }
     }
 
     private void eventFixed(ActionEvent e) {
-        if (!MainApplication.getLayerManager().getEditDataSet().isModified()) {
+
+        if (!MainApplication.getLayerManager().getActiveLayer().isSavable() || !MainApplication.getLayerManager().getEditDataSet().isModified()) {
             new Notification(tr("No change to upload!")).show();
             //Be sure you mark as fixed
             fixed();
@@ -366,10 +379,11 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         switch (item.getStatusServer()) {
             case 200:
                 mainAccessToProject.setAccess(true); //This atribute to access to  the actions
-                mainAccessToProject = tofixProject.work(item, mainAccessToProject, zise);
+                mainAccessToProject = tofixProject.work(item, mainAccessToProject, zise, isCheckedDownloadOSMData, isCheckedEditableData);
                 edit();
                 break;
             case 410:
+                JOptionPane.showMessageDialog(Main.parent, tr("There are no more items on this Project or Area!"), tr("Warning"), JOptionPane.WARNING_MESSAGE);
                 mainAccessToProject.setAccess(false);
                 break;
             case 503:
@@ -384,30 +398,22 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
 //Actions
     public void edit() {
-        if (mainAccessToProject.isAccess()) {
-            itemTrackController.lockItem(item, "locked");
-        }
+        itemTrackController.lockItem(item, "locked");
     }
 
     public void skip() {
-        if (mainAccessToProject.isAccess()) {
-            itemTrackController.lockItem(item, "unlocked");
-            getNewItem();
-        }
+        itemTrackController.lockItem(item, "unlocked");
+        getNewItem();
     }
 
     public void fixed() {
-        if (mainAccessToProject.isAccess()) {
-            itemTrackController.updateStatusItem(item, "fixed");
-            getNewItem();
-        }
+        itemTrackController.updateStatusItem(item, "fixed");
+        getNewItem();
     }
 
     public void notError() {
-        if (mainAccessToProject.isAccess()) {
-            itemTrackController.updateStatusItem(item, "noterror");
-            getNewItem();
-        }
+        itemTrackController.updateStatusItem(item, "noterror");
+        getNewItem();
     }
 
     public final void start() {
