@@ -67,6 +67,9 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     JPanel jPanelProjects = new JPanel(new GridLayout(1, 1));
     JPanel jPanelQuery = new JPanel(new GridLayout(2, 1));
 
+    private JDOAuth oauth;
+    private JDHost host;
+
     //OBJECTS FOR EVNETS
     private final JLabel JlabelTitleProject;
     private final SideButton skipButton;
@@ -106,6 +109,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
                 Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
 
+        //jDOAuth = new JDOAuth(Main.parent);
 //==============================================================================SETUP LINK TO THE PROJECT        
         JlabelTitleProject = new javax.swing.JLabel();
         JlabelTitleProject.setText(tr("<html><a href=\"\">List of projects</a></html>"));
@@ -126,30 +130,19 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         jcomboBox.addActionListener(this);
         jPanelProjects.add(jcomboBox);
         jContentPanelProjects.add(jPanelProjects);
-        fillCombo();
 //==============================================================================CONFIG API URL
         jContenActivation.add(new Label(tr("Select the checkbox to:")));
 
         jCheckBoxSetNewAPI = new JCheckBox(tr("Set default API"));
-        jCheckBoxSetNewAPI.setSelected(true);
+        jCheckBoxSetNewAPI.setSelected(false);
         jCheckBoxSetNewAPI.addActionListener((ActionEvent e) -> {
             if (jCheckBoxSetNewAPI.isSelected()) {
-                Config.setHOST(Config.DEFAULT_HOST);
-                JOptionPane.showMessageDialog(Main.parent, tr("Setting default URL"));
-                fillCombo();
-            } else {
-                try {
-                    String newHost = JOptionPane.showInputDialog(tr("Enter the new URL"));
-                    if (newHost == null || (newHost != null && ("".equals(newHost)))) {
-                        Config.setHOST(Config.DEFAULT_HOST);
-                        jCheckBoxSetNewAPI.setSelected(false);
-                    } else {
-                        Config.setHOST(newHost);
-                        SetToken();
-
-                    }
-                } catch (HeadlessException exc) {
-                }
+                host.setVisible(true);
+                if(host.getHost()!=null && host.getHost().equals("")){
+                    fillCombo();
+                }                
+            }else{
+                Config.preferences(Config.REMOVE, new String[]{"tofix-server.host"},Config.getPluginPreferencesFile().getAbsolutePath());
             }
         });
         jCheckBoxSetNewAPI.setBorderPainted(true);
@@ -161,10 +154,8 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         jCheckBoxToken.addActionListener((ActionEvent e) -> {
             if (jCheckBoxToken.isSelected()) {
                 SetToken();
-            } else {
-                Config.setTOKEN(Config.DEFAULT_TOKEN);
-                JOptionPane.showMessageDialog(Main.parent, tr("You are using a default token"));
-                fillCombo();
+            }else{
+                Config.preferences(Config.REMOVE, new String[]{"tofix-server.token"},Config.getPluginPreferencesFile().getAbsolutePath());
             }
         });
         jCheckBoxToken.setBorderPainted(true);
@@ -214,6 +205,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         });
         jPanelQuery.add(jCheckBoxSetBbox);
         jPanelQuery.add(bboxJtextField);
+
 //=============================================================================="Skip" button
         skipButton = new SideButton(new AbstractAction() {
             {
@@ -282,6 +274,12 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
             skipButton, noterrorButton, fixedButton
         }));
+
+        oauth = new JDOAuth(Main.parent);
+        host=new JDHost(Main.parent);
+        loadOAuthInfo();
+        
+
     }
 //==============================================================================OBJECT EVENTS==============================================================================
 
@@ -311,14 +309,15 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
     public void SetToken() {
         if (Status.serverStatus()) {
-            //OPEN PAGE TO LOGIN
-            OpenBrowser.displayUrl(Config.getAPILogin());
-            // OPEN ACCESS showInputDialog TO ADD THE TOKEN
-            String token = JOptionPane.showInputDialog(tr("Enter you token access to the To-fix-backend"));
-            if (token == null || (token != null && ("".equals(token)))) {
-                Config.setTOKEN(Config.DEFAULT_TOKEN);
+            oauth.setVisible(true);
+            if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {                
+                if (Config.preferences(Config.GET, new String[]{"tofix-server.token"},Config.getPluginPreferencesFile().getAbsolutePath()) != null) {
+                    Config.preferences(Config.UPDATE, new String[]{"tofix-server.token", oauth.getTofixToken()},Config.getPluginPreferencesFile().getAbsolutePath());
+                } else {
+                    Config.preferences(Config.ADD, new String[]{"tofix-server.token", oauth.getTofixToken()},Config.getPluginPreferencesFile().getAbsolutePath());
+                }
+                fillCombo();
             } else {
-                Config.setTOKEN(token);
                 fillCombo();
             }
         } else {
@@ -345,6 +344,18 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
             noterrorButton.setEnabled(false);
+        }
+    }
+
+    private void loadOAuthInfo() {
+        oauth.setUserInfo(Config.getUserName(), Config.getPassword(), Config.getTOKEN());
+        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {
+            jCheckBoxToken.setSelected(true);
+            fillCombo();
+        }
+        host.setHost(Config.getHOST());
+        if(host.getHost()!=null && !host.getHost().equals("")){
+            jCheckBoxSetNewAPI.setSelected(true);
         }
     }
 

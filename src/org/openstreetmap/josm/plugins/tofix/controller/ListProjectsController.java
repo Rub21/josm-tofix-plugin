@@ -28,15 +28,14 @@ import org.openstreetmap.josm.plugins.tofix.util.Request;
 public class ListProjectsController {
 
     private final ListProjectBean listProjectsBean = new ListProjectBean();
-    private final String url;
 
-    public ListProjectsController() {
-        this.url = Config.getHOST() + "/" + Config.API_VERSION + "/projects";
+    public String getUrl(){
+        return Config.getHOST() + "/" + Config.API_VERSION + "/projects";
     }
-
+    
     public ListProjectBean getListProjects() {
         List<ProjectBean> projects = new LinkedList<>();
-        try (JsonReader jsonReader = Json.createReader(new StringReader(Request.sendGET(url)))) {
+        try (JsonReader jsonReader = Json.createReader(new StringReader(Request.sendGET(getUrl())))) {
             JsonArray jsonArray = jsonReader.readArray();
             for (JsonValue value : jsonArray) {
                 ProjectBean projectBean = new ProjectBean();
@@ -55,5 +54,5 @@ public class ListProjectsController {
         Collections.sort(projects, (o1, o2) -> Collator.getInstance().compare(o1.getName(), o2.getName()));
         listProjectsBean.setProjects(projects);
         return listProjectsBean;
-    }
+    }    
 }
