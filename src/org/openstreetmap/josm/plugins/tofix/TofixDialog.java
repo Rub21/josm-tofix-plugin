@@ -134,28 +134,27 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         jContenActivation.add(new Label(tr("Select the checkbox to:")));
 
         jCheckBoxSetNewAPI = new JCheckBox(tr("Set default API"));
-        jCheckBoxSetNewAPI.setSelected(false);
         jCheckBoxSetNewAPI.addActionListener((ActionEvent e) -> {
-            if (jCheckBoxSetNewAPI.isSelected()) {
-                host.setVisible(true);
-                if(host.getHost()!=null && host.getHost().equals("")){
-                    fillCombo();
-                }                
-            }else{
-                Config.preferences(Config.REMOVE, new String[]{"tofix-server.host"},Config.getPluginPreferencesFile().getAbsolutePath());
+            if (!jCheckBoxSetNewAPI.isSelected()) {
+                setHost();
+            } else {
+                JOptionPane.showMessageDialog(this,tr("Setting default API Host"),tr("Confirmation"),JOptionPane.INFORMATION_MESSAGE);
+                Config.preferences(Config.UPDATE, new String[]{"tofix-server.host", Config.DEFAULT_API_HOST}, Config.getPluginPreferencesFile().getAbsolutePath());
+                //Config.preferences(Config.REMOVE, new String[]{"tofix-server.host"}, Config.getPluginPreferencesFile().getAbsolutePath());
             }
         });
         jCheckBoxSetNewAPI.setBorderPainted(true);
         jContenActivation.add(jCheckBoxSetNewAPI);
 
 //==============================================================================TOKEN
-        jCheckBoxToken = new JCheckBox(tr("Set up My token"));
-        jCheckBoxToken.setSelected(false);
+        jCheckBoxToken = new JCheckBox(tr("Set default Token"));
         jCheckBoxToken.addActionListener((ActionEvent e) -> {
-            if (jCheckBoxToken.isSelected()) {
-                SetToken();
-            }else{
-                Config.preferences(Config.REMOVE, new String[]{"tofix-server.token"},Config.getPluginPreferencesFile().getAbsolutePath());
+            if (!jCheckBoxToken.isSelected()) {
+                setToken();
+            } else {
+                JOptionPane.showMessageDialog(this,tr("Setting default Token"),tr("Confirmation"),JOptionPane.INFORMATION_MESSAGE);
+                Config.preferences(Config.UPDATE, new String[]{"tofix-server.token", Config.DEFAULT_TOKEN}, Config.getPluginPreferencesFile().getAbsolutePath());
+                //Config.preferences(Config.REMOVE, new String[]{"tofix-server.token"},Config.getPluginPreferencesFile().getAbsolutePath());
             }
         });
         jCheckBoxToken.setBorderPainted(true);
@@ -276,9 +275,8 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         }));
 
         oauth = new JDOAuth(Main.parent);
-        host=new JDHost(Main.parent);
+        host = new JDHost(Main.parent);
         loadOAuthInfo();
-        
 
     }
 //==============================================================================OBJECT EVENTS==============================================================================
@@ -307,14 +305,14 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         }
     }
 
-    public void SetToken() {
+    public void setToken() {
         if (Status.serverStatus()) {
             oauth.setVisible(true);
-            if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {                
-                if (Config.preferences(Config.GET, new String[]{"tofix-server.token"},Config.getPluginPreferencesFile().getAbsolutePath()) != null) {
-                    Config.preferences(Config.UPDATE, new String[]{"tofix-server.token", oauth.getTofixToken()},Config.getPluginPreferencesFile().getAbsolutePath());
+            if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {
+                if (Config.preferences(Config.GET, new String[]{"tofix-server.token"}, Config.getPluginPreferencesFile().getAbsolutePath()) != null) {
+                    Config.preferences(Config.UPDATE, new String[]{"tofix-server.token", oauth.getTofixToken()}, Config.getPluginPreferencesFile().getAbsolutePath());
                 } else {
-                    Config.preferences(Config.ADD, new String[]{"tofix-server.token", oauth.getTofixToken()},Config.getPluginPreferencesFile().getAbsolutePath());
+                    Config.preferences(Config.ADD, new String[]{"tofix-server.token", oauth.getTofixToken()}, Config.getPluginPreferencesFile().getAbsolutePath());
                 }
                 fillCombo();
             } else {
@@ -324,6 +322,12 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             JOptionPane.showMessageDialog(Main.parent, tr("API did not response! ") + Config.getHOST());
         }
 
+    }
+    private void setHost() {
+        host.setVisible(true);
+        if (host.getHost() != null && host.getHost().equals("")) {
+            fillCombo();
+        }
     }
 
 // Event select a project, it automatic will get a item and display
@@ -349,16 +353,24 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
     private void loadOAuthInfo() {
         oauth.setUserInfo(Config.getUserName(), Config.getPassword(), Config.getTOKEN());
-        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {
-            jCheckBoxToken.setSelected(true);
+        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {            
             fillCombo();
+            if(Config.isDefaultToken(oauth.getTofixToken())){
+                jCheckBoxToken.setSelected(true);
+            }else{
+                jCheckBoxToken.setSelected(false);
+            }
         }
         host.setHost(Config.getHOST());
-        if(host.getHost()!=null && !host.getHost().equals("")){
-            jCheckBoxSetNewAPI.setSelected(true);
+        if (host.getHost() != null && !host.getHost().equals("")) {            
+            if(Config.isDefaultAPI(host.getHost())){
+                jCheckBoxSetNewAPI.setSelected(true);
+            }else{
+                jCheckBoxSetNewAPI.setSelected(false);
+            }
         }
     }
-
+  
     public class skipKeyAction extends AbstractAction {
 
         @Override

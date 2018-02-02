@@ -28,7 +28,7 @@ public class Config {
     public static String BBOX = "none";
 
     public static final int GET = 0, UPDATE = 1, ADD = 2, REMOVE=3;
-    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI1MDgxNTEiLCJ1c2VybmFtZSI6InJpZGl4Y3IiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDIvNTA4LzE1MS9vcmlnaW5hbC8wMjMyMTMzN2E1ODE1ZDQ1YjdkZjY5YTNiMGU3YzM3OC5qcGcifQ.1FRC2s6F5Y3-SpeRQuNVg__6JZkmH4WK3zmrF9RTqk0";
+    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjcxMDY3MjEiLCJ1c2VybmFtZSI6InJpZGl4Y3JfcGVydWltcG9ydCIsImltYWdlIjoiaHR0cHM6Ly93d3cub3BlbnN0cmVldG1hcC5vcmcvYXR0YWNobWVudHMvdXNlcnMvaW1hZ2VzLzAwNy8xMDYvNzIxL29yaWdpbmFsLzAyMzIxMzM3YTU4MTVkNDViN2RmNjlhM2IwZTdjMzc4LmpwZyJ9.6TGNOnGqgL1VMYqIbvBgu-aefV0uHd2e7aIuGJDImgE";
     private static final String PREFERENCES_FILE = "preferences.xml";
     private static final String PLUGIN_PREFERENCES_FILE = "plugin_preferences.xml";
 
@@ -73,6 +73,13 @@ public class Config {
         }
         Object r = preferences(GET, new String[]{"tofix-server.token"},getPluginPreferencesFile().getAbsolutePath());
         return (r != null) ? r.toString() : Config.preferences(Config.ADD, new String[]{"tofix-server.token", DEFAULT_TOKEN}, Config.getPluginPreferencesFile().getAbsolutePath()).toString();
+    }
+    
+    public static boolean isDefaultToken(String t){
+        return t.equals(DEFAULT_TOKEN);
+    }
+    public static boolean isDefaultAPI(String a){
+        return a.equals(DEFAULT_API_HOST);
     }
 
     public static String getUserName() {
