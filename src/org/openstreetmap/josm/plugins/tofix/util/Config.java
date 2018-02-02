@@ -10,6 +10,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.tools.Logging;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,11 +22,13 @@ public class Config {
     public static final String URL_TOFIX = "http://osmlab.github.io/to-fix/";
     public static final String URL_OSM = "http://www.openstreetmap.org";
     public static final String URL_TOFIX_ISSUES = "https://github.com/JOSM/tofix/issues";
+    public static final String DEFAULT_API_HOST="http://localhost:3000";
     public static String QUERY;
     public static final String DEFAULT_QUERY = "?status=open&lock=unlocked&page_size=1&fc=true&random=true";
     public static String BBOX = "none";
 
     public static final int GET = 0, UPDATE = 1, ADD = 2, REMOVE=3;
+    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI1MDgxNTEiLCJ1c2VybmFtZSI6InJpZGl4Y3IiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDIvNTA4LzE1MS9vcmlnaW5hbC8wMjMyMTMzN2E1ODE1ZDQ1YjdkZjY5YTNiMGU3YzM3OC5qcGcifQ.1FRC2s6F5Y3-SpeRQuNVg__6JZkmH4WK3zmrF9RTqk0";
     private static final String PREFERENCES_FILE = "preferences.xml";
     private static final String PLUGIN_PREFERENCES_FILE = "plugin_preferences.xml";
 
@@ -43,7 +46,7 @@ public class Config {
             preparePluginPreferencesFile();
         }
         Object r = preferences(GET, new String[]{"tofix-server.host"},getPluginPreferencesFile().getAbsolutePath());
-        return (r != null) ? r.toString() : "";
+        return (r != null) ? r.toString() : Config.preferences(Config.ADD, new String[]{"tofix-server.host", DEFAULT_API_HOST}, Config.getPluginPreferencesFile().getAbsolutePath()).toString();
     }
 
     public static void setBBOX(String bbox) {
@@ -69,7 +72,7 @@ public class Config {
             preparePluginPreferencesFile();
         }
         Object r = preferences(GET, new String[]{"tofix-server.token"},getPluginPreferencesFile().getAbsolutePath());
-        return (r != null) ? r.toString() : "";
+        return (r != null) ? r.toString() : Config.preferences(Config.ADD, new String[]{"tofix-server.token", DEFAULT_TOKEN}, Config.getPluginPreferencesFile().getAbsolutePath()).toString();
     }
 
     public static String getUserName() {
@@ -87,7 +90,7 @@ public class Config {
     }
 
     public static File getPreferencesDirectory() {
-        return new File(System.getProperty("user.home") + File.separator + ".josm");
+        return Main.pref.getPreferencesDirectory();
     }
 
     public static File getCacheDirectory() {
@@ -177,7 +180,7 @@ public class Config {
             e.setAttribute("value", value);
             e1.appendChild(e);
         }
-        return "Success";
+        return value;
     }
 
     private static String update(Document doc, String key, String value) {
