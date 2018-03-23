@@ -28,7 +28,7 @@ public class Config {
     public static String BBOX = "none";
 
     public static final int GET = 0, UPDATE = 1, ADD = 2, REMOVE=3;
-    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjcxMDY3MjEiLCJ1c2VybmFtZSI6InJpZGl4Y3JfcGVydWltcG9ydCIsImltYWdlIjoiaHR0cHM6Ly93d3cub3BlbnN0cmVldG1hcC5vcmcvYXR0YWNobWVudHMvdXNlcnMvaW1hZ2VzLzAwNy8xMDYvNzIxL29yaWdpbmFsLzAyMzIxMzM3YTU4MTVkNDViN2RmNjlhM2IwZTdjMzc4LmpwZyJ9.6TGNOnGqgL1VMYqIbvBgu-aefV0uHd2e7aIuGJDImgE";
+    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI1MDgxNTEiLCJ1c2VybmFtZSI6InJpZGl4Y3IiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDIvNTA4LzE1MS9vcmlnaW5hbC8wMjMyMTMzN2E1ODE1ZDQ1YjdkZjY5YTNiMGU3YzM3OC5qcGcifQ._WeAlP2FwDbBV_zkH394O0mTSvpq8ABDUvd5ymnO_4M";
     private static final String PREFERENCES_FILE = "preferences.xml";
     private static final String PLUGIN_PREFERENCES_FILE = "plugin_preferences.xml";
 
@@ -84,7 +84,7 @@ public class Config {
 
     public static String getUserName() {
         Object r = preferences(GET, new String[]{"osm-server.username"});
-        return (r != null) ? r.toString() : "";
+        return (r != null) ? r.toString() : "josm";
     }
 
     public static String getPassword() {

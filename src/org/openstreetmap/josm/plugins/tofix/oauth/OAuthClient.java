@@ -1,20 +1,16 @@
 package org.openstreetmap.josm.plugins.tofix.oauth;
 //<editor-fold defaultstate="collapsed" desc="Dependencias">
-import org.openstreetmap.josm.plugins.tofix.oauth.signpost.OAuth;
-import org.openstreetmap.josm.plugins.tofix.oauth.signpost.OAuthProvider;
-import org.openstreetmap.josm.plugins.tofix.oauth.signpost.OAuthConsumer;
-import org.openstreetmap.josm.plugins.tofix.oauth.OAuthParameters;
-import org.openstreetmap.josm.plugins.tofix.oauth.OsmPrivileges;
-import org.openstreetmap.josm.plugins.tofix.oauth.OAuthToken;
+import org.openstreetmap.josm.plugins.tofix.oauth.signpost.*;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.*;
-import org.openstreetmap.josm.plugins.tofix.json.JSONObject;
+import javax.json.*;
+//import org.openstreetmap.josm.plugins.tofix.json.JSONObject;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.io.OsmApi;
+import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.HttpClient;
 import org.openstreetmap.josm.tools.CheckParameterUtil;
 import static org.openstreetmap.josm.tools.I18n.tr;
@@ -378,7 +374,7 @@ public class OAuthClient {
         return sessionId;
         //</editor-fold>
     }    
-    public static JSONObject getOSMUserInfo(String user) throws Exception{
+    public static JsonObject getOSMUserInfo(String user) throws Exception{
         //<editor-fold defaultstate="collapsed" desc="comment">
         String _url="http://hdyc.neis-one.org/users/"+user;
          URL url = null;
@@ -399,7 +395,10 @@ public class OAuthClient {
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line + "\n");
             }
-            return new JSONObject(stringBuilder.toString());
+            
+            JsonReader jsonReader = Json.createReader(new StringReader(stringBuilder.toString()));
+            JsonObject jsonObject = jsonReader.readObject(); 
+            return jsonObject;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -415,15 +414,17 @@ public class OAuthClient {
         //</editor-fold>
     }
     
-    public static JSONObject authTofixBackend(SessionId sessionId,OAuthToken requestToken) throws Exception {
+    public static JsonObject authTofixBackend(SessionId sessionId,OAuthToken requestToken) throws Exception {
         //<editor-fold defaultstate="collapsed" desc="comment">                   
-        String _url = "http://localhost:3000/v1/auth/openstreetmap/josm";
-        JSONObject userInfo = (JSONObject)getOSMUserInfo(sessionId.getUserName()).get("contributor");
+        String _url = Config.getAPILogin()+"/josm";
         
+        JsonObject userInfo = getOSMUserInfo(sessionId.getUserName()).getJsonObject("contributor");
+                
         Map<String, Object> params = new LinkedHashMap<>();
-        params.put("name", userInfo.get("name"));
-        params.put("id", userInfo.get("uid"));
-        params.put("image", userInfo.get("img"));
+        params.put("name", userInfo.getString("name"));
+        params.put("id", userInfo.getString("uid"));
+        String img = userInfo.getString("img");
+        params.put("image", img);//!img.equals("")?img:"https://osmlab.github.io/to-fix/favicon.png"
         params.put("key", requestToken.getKey());
         params.put("secret", requestToken.getSecret());
         params.put("oauth_token", sessionId.getToken());
@@ -457,7 +458,10 @@ public class OAuthClient {
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line + "\n");
             }
-            return new JSONObject(stringBuilder.toString());
+            
+            JsonReader jsonReader = Json.createReader(new StringReader(stringBuilder.toString()));
+            JsonObject jsonObject = jsonReader.readObject(); 
+            return jsonObject;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

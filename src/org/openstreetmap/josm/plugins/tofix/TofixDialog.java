@@ -14,6 +14,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
@@ -285,19 +287,12 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         listStringsForCombo.clear();
         listStringsForCombo.add(tr("Select a project ..."));
         if (Status.isInternetReachable()) {
-            if (Status.serverStatus()) {
-                projectsList = listProjectController.getListProjects();
+            projectsList = listProjectController.getListProjects();
                 for (int i = 0; i < projectsList.getProjects().size(); i++) {
                     listStringsForCombo.add(projectsList.getProjects().get(i).getName());
                 }
                 jcomboBox.setModel(new DefaultComboBoxModel<>());
-                jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));
-
-            } else {
-                jcomboBox.setModel(new DefaultComboBoxModel<>());
-                jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));
-                JOptionPane.showMessageDialog(Main.parent, tr("API did not response! ") + Config.getHOST());
-            }
+                jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));            
         } else {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
@@ -353,8 +348,11 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
     private void loadOAuthInfo() {
         oauth.setUserInfo(Config.getUserName(), Config.getPassword(), Config.getTOKEN());
-        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {            
-            fillCombo();
+        
+        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) { 
+            if(Status.serverStatus()){
+              fillCombo();
+            }           
             if(Config.isDefaultToken(oauth.getTofixToken())){
                 jCheckBoxToken.setSelected(true);
             }else{

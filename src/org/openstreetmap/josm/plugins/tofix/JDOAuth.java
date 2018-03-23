@@ -2,9 +2,9 @@ package org.openstreetmap.josm.plugins.tofix;
 
 import java.awt.Component;
 import javax.swing.JOptionPane;
-import org.openstreetmap.josm.plugins.tofix.json.JSONObject;
+//import org.openstreetmap.josm.plugins.tofix.json.JSONObject;
+import javax.json.*;
 import org.openstreetmap.josm.gui.util.GuiHelper;
-import org.openstreetmap.josm.plugins.tofix.TofixDialog;
 import static org.openstreetmap.josm.tools.I18n.tr;
 import org.openstreetmap.josm.tools.Logging;
 import org.openstreetmap.josm.plugins.tofix.oauth.OAuthToken;
@@ -227,9 +227,9 @@ public class JDOAuth extends javax.swing.JDialog {
 
     private void getTofixAccessToken() {
         try {
-            JSONObject json = OAuthClient.authTofixBackend(sessionId, requestToken);
+            JsonObject json = OAuthClient.authTofixBackend(sessionId, requestToken);
             if (json != null) {
-                String token = json.get("tfx_token").toString();
+                String token = json.getString("tfx_token");
                 jTextArea1.setText(token);
                 setTofixToken(token);
             }
@@ -238,7 +238,7 @@ public class JDOAuth extends javax.swing.JDialog {
         }
     }
 
-    private void autenticationOSM() {
+    public void autenticationOSM() {
         try {
             OAuthClient c = new OAuthClient();
             sessionId = c.authorise(jTextField1.getText(), jPasswordField1.getText(), OAuthClient.getPrivileges());
