@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.*;
 import javax.json.*;
-//import org.openstreetmap.josm.plugins.tofix.json.JSONObject;
 import org.openstreetmap.josm.Main;
 import org.openstreetmap.josm.io.OsmApi;
 import org.openstreetmap.josm.plugins.tofix.util.Config;

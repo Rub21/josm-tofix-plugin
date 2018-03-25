@@ -22,13 +22,13 @@ public class Config {
     public static final String URL_TOFIX = "http://osmlab.github.io/to-fix/";
     public static final String URL_OSM = "http://www.openstreetmap.org";
     public static final String URL_TOFIX_ISSUES = "https://github.com/JOSM/tofix/issues";
-    public static final String DEFAULT_API_HOST="http://localhost:3000";
+    public static final String DEFAULT_API_HOST="http://35.171.167.220:8000";
     public static String QUERY;
     public static final String DEFAULT_QUERY = "?status=open&lock=unlocked&page_size=1&fc=true&random=true";
     public static String BBOX = "none";
 
     public static final int GET = 0, UPDATE = 1, ADD = 2, REMOVE=3;
-    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjI1MDgxNTEiLCJ1c2VybmFtZSI6InJpZGl4Y3IiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDIvNTA4LzE1MS9vcmlnaW5hbC8wMjMyMTMzN2E1ODE1ZDQ1YjdkZjY5YTNiMGU3YzM3OC5qcGcifQ._WeAlP2FwDbBV_zkH394O0mTSvpq8ABDUvd5ymnO_4M";
+    public static final String DEFAULT_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjUxMDgzNiIsInVzZXJuYW1lIjoiUnViMjEiLCJpbWFnZSI6Imh0dHBzOi8vd3d3Lm9wZW5zdHJlZXRtYXAub3JnL2F0dGFjaG1lbnRzL3VzZXJzL2ltYWdlcy8wMDAvNTEwLzgzNi9vcmlnaW5hbC9hNjI3NzkxZTFiZDJmZjk0ZWM1YjdjNDA4NjBmNTdiMy5qcGcifQ.h1jRd5pCUmwCEr8N9-jRioV9jaLlLW5J2lyitJ6yWR8";
     private static final String PREFERENCES_FILE = "preferences.xml";
     private static final String PLUGIN_PREFERENCES_FILE = "plugin_preferences.xml";
 

@@ -2,7 +2,6 @@ package org.openstreetmap.josm.plugins.tofix;
 
 import java.awt.Component;
 import javax.swing.JOptionPane;
-//import org.openstreetmap.josm.plugins.tofix.json.JSONObject;
 import javax.json.*;
 import org.openstreetmap.josm.gui.util.GuiHelper;
 import static org.openstreetmap.josm.tools.I18n.tr;
