@@ -32,6 +32,8 @@ import org.openstreetmap.josm.Main;
 
 import org.openstreetmap.josm.actions.UploadAction;
 import org.openstreetmap.josm.data.Bounds;
+import org.openstreetmap.josm.data.ProjectionBounds;
+import org.openstreetmap.josm.data.coor.LatLon;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.gui.MapView;
@@ -39,6 +41,7 @@ import org.openstreetmap.josm.gui.Notification;
 import org.openstreetmap.josm.gui.SideButton;
 import org.openstreetmap.josm.gui.dialogs.ToggleDialog;
 import org.openstreetmap.josm.gui.io.UploadDialog;
+import org.openstreetmap.josm.gui.layer.Layer;
 import org.openstreetmap.josm.gui.layer.OsmDataLayer;
 import static org.openstreetmap.josm.gui.mappaint.mapcss.ExpressionFactory.Functions.tr;
 import org.openstreetmap.josm.plugins.tofix.bean.AccessToProject;
@@ -50,6 +53,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
+import org.openstreetmap.josm.plugins.tofix.util.Util;
 import org.openstreetmap.josm.tools.ImageProvider;
 import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
@@ -125,7 +129,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             }
         });
         jContentPanelProjects.add(JlabelTitleProject);
-
 //==============================================================================FILL COMBO
         listStringsForCombo.add(tr("Select a project ..."));
         jcomboBox = new JComboBox<>(listStringsForCombo.toArray(new String[]{}));
@@ -195,7 +198,17 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         bboxJtextField = new JTextField();
         jCheckBoxSetBbox.addItemListener((ItemEvent e) -> {
             if (e.getStateChange() == 1) {
-                Bounds bounds = mv.getRealBounds();
+                Layer layer = mv.getLayerManager().getActiveLayer();
+                Bounds bounds;
+                //get the editable bbox layer. 
+                if (layer.isSavable()) {
+                    ProjectionBounds projectionBounds = layer.getViewProjectionBounds();
+                    LatLon minLatlon = Main.getProjection().eastNorth2latlon(projectionBounds.getMin());
+                    LatLon maxLatlon = Main.getProjection().eastNorth2latlon(projectionBounds.getMax());
+                    bounds = new Bounds(minLatlon, maxLatlon);
+                } else {
+                    bounds = mv.getRealBounds();
+                }
                 String bbox = String.valueOf(bounds.getMinLon()) + "," + String.valueOf(bounds.getMinLat()) + "," + String.valueOf(bounds.getMaxLon()) + "," + String.valueOf(bounds.getMaxLat());
                 bboxJtextField.setText(bbox);
                 Config.setBBOX(bbox);
@@ -282,7 +295,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
     }
 //==============================================================================OBJECT EVENTS==============================================================================
-
     public void fillCombo() {
         listStringsForCombo.clear();
         listStringsForCombo.add(tr("Select a project ..."));
