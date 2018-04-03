@@ -254,9 +254,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         jPanelProjects.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanelQuery.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        TabbedPanel.addTab(tr("Projects"), jContentPanelProjects);
-        TabbedPanel.addTab(tr("Activation"), jContenActivation);
-        TabbedPanel.addTab(tr("Querying"), jPanelQuery);
+        TabbedPanel.addTab(tr("Projects"), jContentPanelProjects);        
         //add panel in JOSM
         createLayout(TabbedPanel, false, Arrays.asList(new SideButton[]{
             skipButton, noterrorButton, fixedButton
@@ -334,24 +332,29 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     }
 
     private void loadOAuthInfo() {
-        oauth.setUserInfo(Config.getUserName(), Config.getPassword(), Config.getTOKEN());
+        if (!Config.getUserName().equals("")) {
+            TabbedPanel.addTab(tr("Activation"), jContenActivation);
+            TabbedPanel.addTab(tr("Querying"), jPanelQuery);
+            
+            oauth.setUserInfo(Config.getUserName(), Config.getPassword(), Config.getTOKEN());
 
-        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {
-            if (Status.serverStatus()) {
-                fillCombo();
+            if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {
+                if (Status.serverStatus()) {
+                    fillCombo();
+                }
+                if (Config.isDefaultToken(oauth.getTofixToken())) {
+                    jCheckBoxToken.setSelected(true);
+                } else {
+                    jCheckBoxToken.setSelected(false);
+                }
             }
-            if (Config.isDefaultToken(oauth.getTofixToken())) {
-                jCheckBoxToken.setSelected(true);
-            } else {
-                jCheckBoxToken.setSelected(false);
-            }
-        }
-        host.setHost(Config.getHOST());
-        if (host.getHost() != null && !host.getHost().equals("")) {
-            if (Config.isDefaultAPI(host.getHost())) {
-                jCheckBoxSetNewAPI.setSelected(true);
-            } else {
-                jCheckBoxSetNewAPI.setSelected(false);
+            host.setHost(Config.getHOST());
+            if (host.getHost() != null && !host.getHost().equals("")) {
+                if (Config.isDefaultAPI(host.getHost())) {
+                    jCheckBoxSetNewAPI.setSelected(true);
+                } else {
+                    jCheckBoxSetNewAPI.setSelected(false);
+                }
             }
         }
     }

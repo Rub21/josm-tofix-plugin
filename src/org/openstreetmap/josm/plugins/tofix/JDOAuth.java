@@ -69,6 +69,8 @@ public class JDOAuth extends javax.swing.JDialog {
 
         jLabel3.setText("Password:");
 
+        jTextField1.setEditable(false);
+
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
@@ -197,7 +199,6 @@ public class JDOAuth extends javax.swing.JDialog {
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        jTextField1.setText("");
         jPasswordField1.setText("");
         jTextArea1.setText("");
         jTabbedPane1.setSelectedIndex(0);

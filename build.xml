@@ -12,5 +12,5 @@
     <property name="plugin.canloadatruntime" value="true"/>
     <import file="../build-common.xml"/>
     <fileset id="plugin.requires.jars" dir="${plugin.dist.dir}">
-    </fileset>
+    </fileset>    
 </project>
