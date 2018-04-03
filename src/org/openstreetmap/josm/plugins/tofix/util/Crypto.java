@@ -1,6 +1,5 @@
 package org.openstreetmap.josm.plugins.tofix.util;
 
-import java.nio.charset.Charset;
 import javax.xml.bind.DatatypeConverter;
 
 /**

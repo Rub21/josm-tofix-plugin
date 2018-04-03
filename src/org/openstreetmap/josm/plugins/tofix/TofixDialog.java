@@ -1,8 +1,6 @@
 package org.openstreetmap.josm.plugins.tofix;
 
-import java.awt.Cursor;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,12 +8,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import static javax.swing.Action.NAME;
@@ -23,7 +17,6 @@ import static javax.swing.Action.SHORT_DESCRIPTION;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -53,9 +46,7 @@ import org.openstreetmap.josm.plugins.tofix.controller.ItemTrackController;
 import org.openstreetmap.josm.plugins.tofix.controller.ListProjectsController;
 import org.openstreetmap.josm.plugins.tofix.util.Config;
 import org.openstreetmap.josm.plugins.tofix.util.Status;
-import org.openstreetmap.josm.plugins.tofix.util.Util;
 import org.openstreetmap.josm.tools.ImageProvider;
-import org.openstreetmap.josm.tools.OpenBrowser;
 import org.openstreetmap.josm.tools.Shortcut;
 
 /**
@@ -68,7 +59,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     //PANELS
     ItemTrackController itemTrackController = new ItemTrackController();
     JTabbedPane TabbedPanel = new javax.swing.JTabbedPane();
-    JPanel jContentPanelProjects = new JPanel(new GridLayout(2, 1));
+    JPanel jContentPanelProjects = new JPanel(new GridLayout(1, 1));
     JPanel jContenActivation = new JPanel(new GridLayout(6, 1));
     JPanel jPanelProjects = new JPanel(new GridLayout(1, 1));
     JPanel jPanelQuery = new JPanel(new GridLayout(2, 1));
@@ -76,8 +67,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
     private JDOAuth oauth;
     private JDHost host;
 
-    //OBJECTS FOR EVNETS
-    private final JLabel JlabelTitleProject;
+    //OBJECTS FOR EVENTS
     private final SideButton skipButton;
     private final SideButton fixedButton;
     private final SideButton noterrorButton;
@@ -114,21 +104,6 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         super(tr("To-fix"), "icontofix", tr("Open to-fix window."),
                 Shortcut.registerShortcut("Tool:To-fix", tr("Toggle: {0}", tr("Tool:To-fix")),
                         KeyEvent.VK_T, Shortcut.ALT_CTRL_SHIFT), 170);
-
-        //jDOAuth = new JDOAuth(Main.parent);
-//==============================================================================SETUP LINK TO THE PROJECT        
-        JlabelTitleProject = new javax.swing.JLabel();
-        JlabelTitleProject.setText(tr("<html><a href=\"\">List of projects</a></html>"));
-        JlabelTitleProject.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        JlabelTitleProject.addMouseListener(
-                new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e
-            ) {
-                OpenBrowser.displayUrl(Config.URL_TOFIX);
-            }
-        });
-        jContentPanelProjects.add(JlabelTitleProject);
 //==============================================================================FILL COMBO
         listStringsForCombo.add(tr("Select a project ..."));
         jcomboBox = new JComboBox<>(listStringsForCombo.toArray(new String[]{}));
@@ -143,9 +118,8 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             if (!jCheckBoxSetNewAPI.isSelected()) {
                 setHost();
             } else {
-                JOptionPane.showMessageDialog(this,tr("Setting default API Host"),tr("Confirmation"),JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, tr("Setting default API Host"), tr("Confirmation"), JOptionPane.INFORMATION_MESSAGE);
                 Config.preferences(Config.UPDATE, new String[]{"tofix-server.host", Config.DEFAULT_API_HOST}, Config.getPluginPreferencesFile().getAbsolutePath());
-                //Config.preferences(Config.REMOVE, new String[]{"tofix-server.host"}, Config.getPluginPreferencesFile().getAbsolutePath());
             }
         });
         jCheckBoxSetNewAPI.setBorderPainted(true);
@@ -157,9 +131,8 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
             if (!jCheckBoxToken.isSelected()) {
                 setToken();
             } else {
-                JOptionPane.showMessageDialog(this,tr("Setting default Token"),tr("Confirmation"),JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, tr("Setting default Token"), tr("Confirmation"), JOptionPane.INFORMATION_MESSAGE);
                 Config.preferences(Config.UPDATE, new String[]{"tofix-server.token", Config.DEFAULT_TOKEN}, Config.getPluginPreferencesFile().getAbsolutePath());
-                //Config.preferences(Config.REMOVE, new String[]{"tofix-server.token"},Config.getPluginPreferencesFile().getAbsolutePath());
             }
         });
         jCheckBoxToken.setBorderPainted(true);
@@ -295,16 +268,17 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
     }
 //==============================================================================OBJECT EVENTS==============================================================================
+
     public void fillCombo() {
         listStringsForCombo.clear();
         listStringsForCombo.add(tr("Select a project ..."));
         if (Status.isInternetReachable()) {
             projectsList = listProjectController.getListProjects();
-                for (int i = 0; i < projectsList.getProjects().size(); i++) {
-                    listStringsForCombo.add(projectsList.getProjects().get(i).getName());
-                }
-                jcomboBox.setModel(new DefaultComboBoxModel<>());
-                jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));            
+            for (int i = 0; i < projectsList.getProjects().size(); i++) {
+                listStringsForCombo.add(projectsList.getProjects().get(i).getName());
+            }
+            jcomboBox.setModel(new DefaultComboBoxModel<>());
+            jcomboBox.setModel(new DefaultComboBoxModel<>(listStringsForCombo.toArray(new String[]{})));
         } else {
             skipButton.setEnabled(false);
             fixedButton.setEnabled(false);
@@ -330,6 +304,7 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
         }
 
     }
+
     private void setHost() {
         host.setVisible(true);
         if (host.getHost() != null && host.getHost().equals("")) {
@@ -360,27 +335,27 @@ public final class TofixDialog extends ToggleDialog implements ActionListener {
 
     private void loadOAuthInfo() {
         oauth.setUserInfo(Config.getUserName(), Config.getPassword(), Config.getTOKEN());
-        
-        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) { 
-            if(Status.serverStatus()){
-              fillCombo();
-            }           
-            if(Config.isDefaultToken(oauth.getTofixToken())){
+
+        if (oauth.getTofixToken() != null && !oauth.getTofixToken().equals("")) {
+            if (Status.serverStatus()) {
+                fillCombo();
+            }
+            if (Config.isDefaultToken(oauth.getTofixToken())) {
                 jCheckBoxToken.setSelected(true);
-            }else{
+            } else {
                 jCheckBoxToken.setSelected(false);
             }
         }
         host.setHost(Config.getHOST());
-        if (host.getHost() != null && !host.getHost().equals("")) {            
-            if(Config.isDefaultAPI(host.getHost())){
+        if (host.getHost() != null && !host.getHost().equals("")) {
+            if (Config.isDefaultAPI(host.getHost())) {
                 jCheckBoxSetNewAPI.setSelected(true);
-            }else{
+            } else {
                 jCheckBoxSetNewAPI.setSelected(false);
             }
         }
     }
-  
+
     public class skipKeyAction extends AbstractAction {
 
         @Override
