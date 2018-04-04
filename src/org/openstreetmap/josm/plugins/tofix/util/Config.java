@@ -109,7 +109,7 @@ public class Config {
     public static File getCurrentDirectory() {
         return new File(System.getProperty("user.dir"));
     }
-
+    @SuppressWarnings("deprecation")
     public static File getPreferencesDirectory() {
         return Main.pref.getPreferencesDirectory();
     }
